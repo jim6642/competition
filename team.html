@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>寻找队友 — 竞赛信息门户</title>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--primary:#4f46e5;--primary-dark:#3730a3;--bg:#f1f5f9;--card:#fff;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--radius:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+header{background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem}
+.logo{display:flex;align-items:center;gap:10px;font-size:1.35rem;font-weight:700;color:var(--primary)}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{font-size:.9rem;font-weight:500;color:var(--text-muted);padding:.4rem .8rem;border-radius:8px;text-decoration:none}
+.nav-links a:hover,.nav-links a.active{color:var(--primary);background:#eef2ff}
+.container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+.hero{text-align:center;padding:2rem 0}
+.hero h1{font-size:2rem;font-weight:800;color:var(--text)}
+.hero p{color:var(--text-muted);margin-top:.5rem}
+
+.layout{display:flex;gap:1.5rem;align-items:flex-start}
+.form-card{flex:1;background:var(--card);border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,0.06);padding:1.5rem;position:sticky;top:80px}
+.form-card h2{font-size:1.1rem;margin-bottom:1rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.82rem;font-weight:600;margin-bottom:.3rem;color:var(--text)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.6rem .8rem;border:2px solid var(--border);border-radius:8px;font-size:.9rem;outline:none;font-family:inherit}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary)}
+.btn{display:inline-block;padding:.6rem 1.5rem;border-radius:8px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;background:var(--primary);color:#fff;width:100%}
+.btn:hover{background:var(--primary-dark)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.list-area{flex:2}
+.team-card{background:var(--card);border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,0.06);padding:1.2rem;margin-bottom:1rem;border-left:4px solid var(--primary)}
+.team-card .title{font-size:1rem;font-weight:700;margin-bottom:.3rem}
+.team-card .meta{font-size:.82rem;color:var(--text-muted);margin-bottom:.5rem}
+.team-card .needs{margin-bottom:.5rem}
+.team-card .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:500;margin-right:4px;background:#eef2ff;color:var(--primary)}
+.team-card .contact{font-size:.82rem;color:var(--primary);margin-top:.5rem}
+.status-msg{text-align:center;padding:2rem;color:var(--text-muted)}
+footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem}
+@media(max-width:768px){.layout{flex-direction:column}.form-card{position:static}}
+</style>
+</head>
+<body>
+<header>
+<div class="nav">
+<a href="index.html" class="logo"><i class="fas fa-trophy"></i>竞赛信息门户</a>
+<div class="nav-links">
+<a href="index.html">竞赛资讯</a>
+<a href="team.html" class="active">寻找队友</a>
+<a href="resources.html">资料分享</a>
+<a href="mailto:3352875852@qq.com"><i class="far fa-envelope"></i> 3352875852@qq.com</a>
+</div>
+</div>
+</header>
+
+<div class="container">
+<div class="hero">
+<h1>🤝 寻找竞赛队友</h1>
+<p>发布组队需求，找到志同道合的伙伴</p>
+</div>
+
+<div class="layout">
+<div class="form-card">
+<h2>发布组队需求</h2>
+<div class="form-group"><label>竞赛名称</label><input type="text" id="contestName" placeholder="如：互联网+、挑战杯..."></div>
+
+<div class="form-group"><label>招募角色</label><input type="text" id="roles" placeholder="如：前端开发、UI设计、数据分析"></div>
+<div class="form-group"><label>联系方式</label><input type="text" id="contact" placeholder="QQ/微信/邮箱"></div>
+<div class="form-group"><label>补充说明</label><textarea id="description" placeholder="介绍你的项目和期望..."></textarea></div>
+<button class="btn" id="submitBtn" onclick="submitPost()">发布组队信息</button>
+<p style="font-size:.75rem;color:var(--text-muted);margin-top:.5rem" id="submitStatus"></p>
+</div>
+
+<div class="list-area" id="teamList">
+<div class="status-msg">正在加载组队信息...</div>
+</div>
+</div>
+</div>
+<footer>© 2026 竞赛信息门户 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
+
+<script>
+const SB_URL = 'https://wmkvdeakwcfkcuxvypzr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indta3ZkZWFrd2Nma2N1eHZ5cHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODMwMTYsImV4cCI6MjA5ODA1OTAxNn0.QBsq3rfqhBtPv2bd_WySx8i38UI2Rvw9xbA7gf0iYK0';
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+async function loadTeams() {
+  const list = document.getElementById('teamList');
+  try {
+    const { data, error } = await sb.from('teams').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      list.innerHTML = '<div class="status-msg">暂无组队信息，来发布第一条吧！</div>';
+      return;
+    }
+    list.innerHTML = data.map(t => '<div class="team-card"><div class="title">'+esc(t.team_name)+' — '+esc(t.contest_name)+'</div><div class="meta">发布于 '+new Date(t.created_at).toLocaleDateString('zh-CN')+'</div><div class="needs">'+t.roles.split(',').map(r=>'<span class="tag">招募：'+r.trim()+'</span>').join(' ')+'</div><div style="font-size:.85rem;color:var(--text-muted)">'+esc(t.description||'')+'</div><div class="contact"><i class="far fa-address-book"></i> 联系方式：'+esc(t.contact||'')+'</div></div>').join('');
+  } catch(e) {
+    list.innerHTML = '<div class="status-msg">⚠️ 数据库连接中...如果持续显示此消息，Supabase 实例可能已休眠。<br>请稍后刷新页面。</div>';
+  }
+}
+
+function esc(s) { var d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+
+async function submitPost() {
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('submitStatus');
+  const data = {
+    contest_name: document.getElementById('contestName').value.trim(),
+    roles: document.getElementById('roles').value.trim(),
+    contact: document.getElementById('contact').value.trim(),
+    description: document.getElementById('description').value.trim(),
+    created_at: new Date().toISOString()
+  };
+  if (!data.contest_name || !data.roles || !data.contact) {
+    status.textContent = '请填写竞赛名称、招募角色和联系方式';
+    return;
+  }
+  btn.disabled = true; btn.textContent = '提交中...';
+  try {
+    const { error } = await sb.from('teams').insert([data]);
+    if (error) throw error;
+    status.textContent = '✅ 发布成功！';
+    document.getElementById('contestName').value = '';
+    document.getElementById('teamName').value = '';
+    document.getElementById('roles').value = '';
+    document.getElementById('contact').value = '';
+    document.getElementById('description').value = '';
+    loadTeams();
+  } catch(e) {
+    status.textContent = '❌ 提交失败：数据库暂不可用，请稍后重试';
+  }
+  btn.disabled = false; btn.textContent = '发布组队信息';
+}
+
+loadTeams();
+</script>
+</body>
+</html>

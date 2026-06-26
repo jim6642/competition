@@ -1,406 +1,515 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>大学生竞赛服务平台 - 资讯·组队·经验分享</title>
-  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Microsoft YaHei", sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞赛信息门户 — 大学生竞赛一站式平台</title>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #4f46e5; --primary-light: #818cf8; --primary-dark: #3730a3;
+  --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --text-muted: #64748b;
+  --border: #e2e8f0; --radius: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06); --shadow-hover: 0 10px 25px rgba(0,0,0,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6;
+}
+a{text-decoration:none;color:inherit}
 
-    :root {
-      --main: #2563eb;
-      --light: #eff6ff;
-      --dark: #1e3a8a;
-      --gray: #64748b;
-      --white: #ffffff;
-    }
+header{
+  background: rgba(255,255,255,0.85); backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav{
+  max-width: 1400px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 1.5rem;
+}
+.logo{display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 700; color: var(--primary)}
+.logo i{font-size: 1.6rem}
+.nav-links{display: flex; gap: 1.5rem; align-items: center}
+.nav-links a{font-size: 0.9rem; font-weight: 500; color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 8px}
+.nav-links a:hover,.nav-links a.active{color: var(--primary); background: #eef2ff}
 
-    body {
-      background-color: #f8fafc;
-      color: #334155;
-      line-height: 1.6;
-    }
+.hero{
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #a855f7 100%);
+  color: #fff; text-align: center; padding: 3.5rem 1.5rem 4.5rem; position: relative; overflow: hidden;
+}
+.hero h1{font-size: 2.3rem; font-weight: 800; margin-bottom: 0.6rem}
+.hero p{font-size: 1.05rem; opacity: 0.85; max-width: 600px; margin: 0 auto 1.8rem}
+.hero .stats{display: flex; gap: 2.5rem; justify-content: center}
+.hero .stats span{font-size: 1.8rem; font-weight: 700}
+.hero .stats small{display: block; font-size: 0.8rem; opacity: 0.7}
 
-    /* 导航栏 */
-    header {
-      background: var(--white);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      position: sticky;
-      top: 0;
-      z-index: 999;
-    }
+.main-layout{max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem; display: flex; gap: 1.5rem; align-items: flex-start}
+.content-area{flex: 1; min-width: 0}
+.sidebar{width: 340px; flex-shrink: 0; position: sticky; top: 80px}
 
-    .nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.5rem;
-    }
+.toolbar{
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.2rem 1.5rem;
+  margin-top: -2.5rem; position: relative; z-index: 10;
+  display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center;
+}
+.search-box{flex: 1; min-width: 200px; position: relative}
+.search-box i{position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted)}
+.search-box input{
+  width: 100%; padding: 0.7rem 1rem 0.7rem 2.4rem;
+  border: 2px solid var(--border); border-radius: 10px; font-size: 0.9rem; outline: none;
+}
+.search-box input:focus{border-color: var(--primary-light)}
+.filter-group{display: flex; gap: 0.3rem; flex-wrap: wrap}
+.chip{
+  padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.78rem;
+  font-weight: 500; cursor: pointer; border: 1.5px solid var(--border);
+  background: #fff; color: var(--text-muted); white-space: nowrap; user-select: none;
+}
+.chip:hover{border-color: var(--primary-light); color: var(--primary)}
+.chip.active{background: var(--primary); color: #fff; border-color: var(--primary)}
+.result-count{margin: 1rem 0 0; font-size: 0.85rem; color: var(--text-muted)}
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--main);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+.card-grid{display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; margin-top: 0.8rem}
+.card{
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden; transition: transform .25s, box-shadow .25s;
+}
+.card:hover{transform: translateY(-3px); box-shadow: var(--shadow-hover)}
+.card-banner{
+  height: 130px; position: relative; display: flex; align-items: center; justify-content: center;
+  background-size: cover; background-position: center;
+}
+.card-banner .level-badge{
+  position: absolute; top: 10px; left: 10px; padding: 3px 8px; border-radius: 5px;
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;
+}
+.level-national{background: #dc2626; color: #fff}
+.level-provincial{background: #d97706; color: #fff}
+.level-school{background: #6b7280; color: #fff}
+.level-intl{background: #7c3aed; color: #fff}
+.card-body{padding: 1rem 1.2rem; flex:1}
+.card-body h3{font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; line-height: 1.4}
+.card-body .org{font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem}
+.date-row{display: flex; gap: 0.6rem; margin: 0.4rem 0 0.6rem; flex-wrap: wrap}
+.date-item{
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.78rem; color: var(--text-muted);
+  background: #f8fafc; padding: 3px 9px; border-radius: 5px;
+}
+.date-item i{font-size: 0.7rem; color: var(--primary)}
+.date-label{font-weight: 600; color: var(--text); margin-right: 1px}
+.tags{margin-bottom: 0.5rem}
+.tag{
+  display: inline-block; padding: 2px 6px; border-radius: 4px;
+  font-size: 0.7rem; font-weight: 500; margin-right: 3px; margin-bottom: 3px;
+  background: #eef2ff; color: var(--primary);
+}
+.card-footer{
+  padding: 0.6rem 1.2rem; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.deadline-tag{
+  display: inline-block; padding: 2px 8px; border-radius: 5px;
+  font-size: 0.78rem; font-weight: 500;
+  background: #fef3c7; color: #b45309;
+}
+.deadline-tag.open{background: #d1fae5; color: #065f46}
+.deadline-tag.ended{background: #f1f5f9; color: #94a3b8}
+.deadline-tag strong{font-size: 0.9rem}
+.deadline-urgent{animation: pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.card-footer .btn{
+  padding: 0.4rem 0.9rem; border-radius: 7px; font-size: 0.78rem;
+  font-weight: 600; background: var(--primary); color: #fff;
+}
+.card-footer .btn:hover{background: var(--primary-dark)}
 
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-    }
+/* Sidebar Calendar */
+.sidebar-widget{
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.2rem; margin-bottom: 1rem;
+}
+.sidebar-widget h3{font-size: 1rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--text)}
+.calendar-header{
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;
+}
+.calendar-header button{
+  border: 1px solid var(--border); background: #fff; border-radius: 6px;
+  padding: 4px 10px; cursor: pointer; font-size: 0.85rem;
+}
+.calendar-header button:hover{background: #f1f5f9}
+.calendar-header .month-label{font-weight: 700; font-size: 0.95rem}
+.calendar-grid{display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 2px}
+.calendar-grid .day-header{font-size: 0.68rem; color: var(--text-muted); padding: 4px 0; font-weight: 600}
+.calendar-grid .day{
+  font-size: 0.75rem; padding: 3px 0 11px; border-radius: 5px; cursor: default; position: relative;
+}
+.calendar-grid .day.has-event{cursor:pointer;font-weight:600}.calendar-grid .day.has-event:hover{background:#eef2ff;color:var(--primary)}.calendar-grid .day:hover{background: #f1f5f9}#calDetail{font-size:.78rem;line-height:1.5}
+.calendar-grid .day.other-month{color: #cbd5e1}
+.calendar-grid .day.today{background: var(--primary); color: #fff; font-weight: 700}
+.calendar-grid .day .dots-wrap{display:flex;justify-content:center;gap:3px;position:absolute;bottom:1px;left:0;right:0;line-height:1}.calendar-grid .day .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.calendar-grid .day .dot.reg{background: #f59e0b}
+.calendar-grid .day .dot.comp{background:#3b82f6}.calendar-grid .day .dot.deadline{background:#ef4444}
 
-    .nav-links a {
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-      transition: 0.3s;
-    }
+.calendar-legend{display: flex; gap: 0.8rem; margin-top: 0.7rem; font-size: 0.72rem; color: var(--text-muted)}
+.calendar-legend span{display: flex; align-items: center; gap: 4px}
+.legend-dot{width: 8px; height: 8px; border-radius: 50%; display: inline-block}
 
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--main);
-    }
+.timeline-item{
+  display: flex; align-items: flex-start; gap: 8px; padding: 0.55rem 0;
+  border-bottom: 1px solid #f1f5f9; font-size: 0.8rem;
+}
+.timeline-item:last-child{border-bottom: none}
+.timeline-item .tl-dot{
+  width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0;
+}
+.timeline-item .tl-dot.deadline-dot{background: #ef4444}
+.timeline-item .tl-dot.reg-dot{background: #f59e0b}
+.timeline-item .tl-name{font-weight: 600; color: var(--text)}
+.timeline-item .tl-date{font-size: 0.72rem; color: var(--text-muted)}
+.timeline-item .tl-type{font-size: 0.68rem; color: var(--text-muted)}
 
-    .btn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
-      transition: 0.3s;
-      text-decoration: none;
-      display: inline-block;
-    }
+.empty{text-align: center; padding: 4rem 2rem; color: var(--text-muted)}
+.empty i{font-size: 3rem; display: block; margin-bottom: 1rem; opacity: .3}
 
-    .btn-primary {
-      background: var(--main);
-      color: white;
-    }
+footer{
+  background: var(--text); color: #94a3b8; text-align: center;
+  padding: 2rem 1.5rem; margin-top: 3rem;
+}
+footer a{color: #cbd5e1}
 
-    .btn-primary:hover {
-      background: var(--dark);
-    }
-
-    /* 横幅 */
-    .banner {
-      background: linear-gradient(to right, var(--main), #4f46e5);
-      color: white;
-      text-align: center;
-      padding: 3rem 1rem;
-    }
-
-    .banner h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .banner p {
-      font-size: 1.1rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    /* 主体容器 */
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: var(--dark);
-      font-size: 1.8rem;
-      position: relative;
-    }
-
-    .section-title::after {
-      content: "";
-      width: 60px;
-      height: 4px;
-      background: var(--main);
-      display: block;
-      margin: 10px auto;
-      border-radius: 2px;
-    }
-
-    /* 卡片布局 */
-    .card-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .card {
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.05);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    }
-
-    .card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-
-    .card-body {
-      padding: 1.2rem;
-    }
-
-    .card-title {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      color: var(--dark);
-    }
-
-    .card-text {
-      color: var(--gray);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 3px 8px;
-      background: var(--light);
-      color: var(--main);
-      font-size: 0.8rem;
-      border-radius: 4px;
-      margin-right: 5px;
-      margin-bottom: 5px;
-    }
-
-    /* 组队专区 */
-    .team-box {
-      background: white;
-      padding: 1.2rem;
-      border-radius: 10px;
-      border-left: 4px solid var(--main);
-      margin-bottom: 1rem;
-    }
-
-    .team-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.8rem;
-    }
-
-    .team-name {
-      font-weight: bold;
-      color: var(--dark);
-    }
-
-    .team-needs {
-      color: var(--main);
-      font-size: 0.9rem;
-    }
-
-    /* 发布按钮 */
-    .publish {
-      text-align: center;
-      margin: 2rem 0;
-    }
-
-    /* 经验分享 */
-    .article {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
-    }
-
-    .article h3 {
-      color: var(--dark);
-      margin-bottom: 0.8rem;
-    }
-
-    .article-meta {
-      color: var(--gray);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    /* 页脚 */
-    footer {
-      background: var(--dark);
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-top: 3rem;
-    }
-
-    /* 移动端适配 */
-    @media (max-width: 768px) {
-      .nav-links {
-        gap: 1rem;
-      }
-      .banner h1 {
-        font-size: 1.8rem;
-      }
-    }
-  </style>
+@media(max-width: 1100px){
+  .main-layout{flex-direction: column}
+  .sidebar{width: 100%; position: static}
+  .card-grid{grid-template-columns: 1fr}
+}
+@media(max-width: 768px){
+  .hero h1{font-size: 1.5rem}
+  .card-grid{grid-template-columns: 1fr}
+  .toolbar{flex-direction: column}
+  .nav-links{gap: 0.5rem}
+}
+</style>
 </head>
 <body>
 
-<!-- 导航栏 -->
 <header>
   <div class="nav">
-    <div class="logo">
-      <i class="fas fa-trophy"></i> 大学生竞赛平台
-    </div>
+    <a href="index.html" class="logo"><i class="fas fa-trophy"></i>竞赛信息门户</a>
     <div class="nav-links">
-      <a href="#" class="active">首页</a>
-      <a href="#contest">竞赛资讯</a>
-      <a href="#team">寻找队友</a>
-      <a href="#experience">经验分享</a>
-      <a href="#" class="btn btn-primary">登录/注册</a>
+      <a href="index.html" class="active">竞赛资讯</a>
+      <a href="team.html">🤝 寻找队友</a>
+      <a href="resources.html">📚 资料分享</a>
+      <a href="mailto:3352875852@qq.com" style="font-weight:600;color:var(--primary)"><i class="far fa-envelope"></i> 3352875852@qq.com</a>
     </div>
   </div>
 </header>
 
-<!-- 横幅 -->
-<section class="banner">
-  <h1>一站式大学生竞赛服务平台</h1>
-  <p>及时获取竞赛信息 | 快速找到靠谱队友 | 学习前辈获奖经验</p>
+<section class="hero">
+  <h1>📋 找到属于你的竞赛</h1>
+  <p>覆盖国家级、省级、校级赛事，助你第一时间掌握报名信息</p>
+  <div class="stats">
+    <div><span id="totalCount">--</span><small>收录赛事</small></div>
+    <div><span id="nationalCount">--</span><small>国家级赛事</small></div>
+    <div><span id="ongoingCount">--</span><small>正在报名</small></div>
+  </div>
 </section>
 
-<!-- 主体内容 -->
-<div class="container">
-
-  <!-- 竞赛资讯 -->
-  <section id="contest">
-    <h2 class="section-title">最新竞赛资讯</h2>
-    <div class="card-group">
-      <div class="card">
-        <img src="https://picsum.photos/id/1/600/400" alt="互联网+大赛">
-        <div class="card-body">
-          <div class="tag">国家级</div>
-          <div class="tag">创新创业</div>
-          <h3 class="card-title">中国国际“互联网+”大学生创新创业大赛</h3>
-          <p class="card-text">报名时间：3月-6月 | 参赛对象：全体高校学生</p>
-          <a href="contest-detail.html" class="btn btn-primary">查看详情</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="https://picsum.photos/id/24/600/400" alt="挑战杯">
-        <div class="card-body">
-          <div class="tag">国家级</div>
-          <div class="tag">科技竞赛</div>
-          <h3 class="card-title">“挑战杯”全国大学生课外学术科技作品竞赛</h3>
-          <p class="card-text">报名时间：9月-11月 | 两年一届</p>
-          <a href="contest-detail.html" class="btn btn-primary">查看详情</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="https://picsum.photos/id/20/600/400" alt="数学建模">
-        <div class="card-body">
-          <div class="tag">国家级</div>
-          <div class="tag">数理建模</div>
-          <h3 class="card-title">全国大学生数学建模竞赛</h3>
-          <p class="card-text">报名时间：8月 | 比赛为期3天</p>
-          <a href="contest-detail.html" class="btn btn-primary">查看详情</a>
-        </div>
-      </div>
+<div class="main-layout">
+<div class="content-area">
+  <div class="toolbar">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="搜索竞赛名称、主办方、关键词...">
     </div>
-  </section>
-
-  <!-- 寻找队友 -->
-  <section id="team">
-    <h2 class="section-title">寻找竞赛队友</h2>
-    <div class="publish">
-      <button class="btn btn-primary"><i class="fas fa-plus"></i> 发布组队需求</button>
+    <div class="filter-group" id="levelFilters">
+      <span style="font-size:.78rem;color:var(--text-muted);padding:.4rem 0;margin-right:2px">等级:</span>
+      <span class="chip active" data-level="all">全部</span>
+      <span class="chip" data-level="国家级">国家级</span>
+      <span class="chip" data-level="国际级">国际级</span>
+      <span class="chip" data-level="省级">省级</span>
+      <span class="chip" data-level="校级">校级</span>
     </div>
-
-    <div class="team-box">
-      <div class="team-header">
-        <div class="team-name">互联网+大赛创业组</div>
-        <div class="team-needs">急招：设计、编程</div>
-      </div>
-      <p>我们已有2人，缺前端开发与UI设计，有项目基础，认真负责、时间充裕的同学联系～</p>
-      <small>发布者：小李 | 计算机学院</small>
-      <div style="margin-top:10px;">
-        <a href="team-detail.html" class="btn btn-primary">查看详情/加入队伍</a>
-      </div>
+    <div class="filter-group" id="typeFilters">
+      <span style="font-size:.78rem;color:var(--text-muted);padding:.4rem 0;margin-right:2px">类型:</span>
+      <span class="chip active" data-type="all">全部</span>
+      <span class="chip" data-type="创新创业">创新创业</span>
+      <span class="chip" data-type="编程算法">编程算法</span>
+      <span class="chip" data-type="数模">数模</span>
+      <span class="chip" data-type="设计">设计</span>
+      <span class="chip" data-type="英语">英语</span>
+      <span class="chip" data-type="综合">综合</span>
     </div>
-
-    <div class="team-box">
-      <div class="team-header">
-        <div class="team-name">数学建模竞赛组队</div>
-        <div class="team-needs">急招：建模、写作</div>
-      </div>
-      <p>寻找擅长论文写作或数学建模的队友，有竞赛经验优先，目标省奖及以上。</p>
-      <small>发布者：小张 | 理学院</small>
-      <div style="margin-top:10px;">
-        <a href="team-detail.html" class="btn btn-primary">查看详情/加入队伍</a>
-      </div>
-    </div>
-
-    <div class="team-box">
-      <div class="team-header">
-        <div class="team-name">挑战杯科研项目</div>
-        <div class="team-needs">急招：数据分析</div>
-      </div>
-      <p>科研项目已开题，需要会Python数据分析的队友，态度认真即可。</p>
-      <small>发布者：小王 | 工学院</small>
-      <div style="margin-top:10px;">
-        <a href="team-detail.html" class="btn btn-primary">查看详情/加入队伍</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 经验分享 -->
-  <section id="experience">
-    <h2 class="section-title">竞赛经验分享</h2>
-
-    <div class="article">
-      <h3>互联网+大赛备赛全攻略：从0到省奖心得</h3>
-      <div class="article-meta">作者：获奖学长 | 2025-10-10</div>
-      <p>备赛核心：选题要贴合政策、团队分工明确、计划书逻辑清晰、路演自信表达。大一也能拿奖，关键是坚持和学习……</p>
-      <a href="article-detail.html" class="btn btn-primary">阅读全文</a>
-    </div>
-
-    <div class="article">
-      <h3>数学建模零基础入门：三天如何高效完成比赛</h3>
-      <div class="article-meta">作者：建模大佬 | 2025-09-28</div>
-      <p>零基础不用慌！掌握基础模型+学会写作模板+合理分工，三天也能交出高质量论文。本文附常用模型与模板……</p>
-      <a href="article-detail.html" class="btn btn-primary">阅读全文</a>
-    </div>
-
-    <div class="article">
-      <h3>如何找到靠谱的竞赛队友？避坑指南</h3>
-      <div class="article-meta">作者：平台管理员 | 2025-10-05</div>
-      <p>找队友三要素：能力匹配、时间稳定、态度负责。建议提前沟通分工，避免中途弃赛，提高获奖概率……</p>
-      <a href="article-detail.html" class="btn btn-primary">阅读全文</a>
-    </div>
-  </section>
-
+  </div>
+  <p class="result-count" id="resultCount"></p>
+  <div class="card-grid" id="cardGrid"></div>
+  <div class="empty" id="empty" style="display:none">
+    <i class="fas fa-search"></i><h3>没有找到匹配的竞赛</h3><p>试试调整筛选条件或搜索关键词</p>
+  </div>
 </div>
 
-<!-- 页脚 -->
+<aside class="sidebar">
+  <div class="sidebar-widget" id="calendarWidget">
+    <h3><i class="far fa-calendar-alt"></i> 竞赛日历</h3>
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+      <span class="month-label" id="monthLabel"></span>
+      <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div><div id="calDetail" style="display:none;margin-top:.6rem;padding:.5rem .7rem;background:#f8fafc;border-radius:8px;font-size:.78rem;max-height:180px;overflow-y:auto"></div><div class="calendar-legend">
+      <span><span class="legend-dot" style="background:#f59e0b"></span> 报名期</span>
+      <span><span class="legend-dot" style="background:#3b82f6"></span> 比赛期</span>
+      <span><span class="legend-dot" style="background:#ef4444"></span> 报名截止</span>
+    </div>
+  </div>
+  <div class="sidebar-widget">
+    <h3><i class="far fa-clock"></i> 即将报名截止</h3>
+    <div id="deadlineList"></div>
+  </div>
+</aside>
+</div>
+
 <footer>
-  <p>© 2025 大学生竞赛服务平台 | 资讯·组队·经验分享</p>
-  <p style="margin-top:10px; font-size:0.9rem;">助力每一位大学生斩获竞赛奖项</p>
+  <p><strong>竞赛信息门户</strong> — 大学生竞赛一站式信息平台</p>
+  <p style="font-size:.82rem;margin-top:.5rem">数据来源各竞赛官网 · 如有出入以官网为准 · <a href="mailto:3352875852@qq.com">📧 联系我</a></p>
+  <p style="font-size:.75rem;margin-top:.8rem">© 2026 Competition Portal</p>
 </footer>
 
-</body>
-</html>
+<script src="data.js"></script>
+<script>
+
+let currentLevel = 'all', currentType = 'all', searchQuery = '';
+let calYear, calMonth;
+
+const bannerColors = {
+  '国家级':'linear-gradient(135deg, #dc2626, #f87171)',
+  '国际级':'linear-gradient(135deg, #7c3aed, #a78bfa)',
+  '省级':'linear-gradient(135deg, #d97706, #fbbf24)',
+  '校级':'linear-gradient(135deg, #475569, #94a3b8)'
+};
+const bannerIcons = {
+  '创新创业':'fa-lightbulb', '编程算法':'fa-code', '数模':'fa-chart-line',
+  '设计':'fa-palette', '英语':'fa-language', '综合':'fa-star',
+  '机器人':'fa-robot', '电子':'fa-microchip', '经管':'fa-chart-pie'
+};
+
+function parseMonthDay(str) {
+  if (!str) return [];
+  const result = [];
+  const mRegex = /(\d+)月/g;
+  let m;
+  while ((m = mRegex.exec(str)) !== null) {
+    const month = parseInt(m[1]);
+    const dayRegex = /(\d+)日/g;
+    const rest = str.slice(m.index);
+    let d;
+    while ((d = dayRegex.exec(rest)) !== null) {
+      result.push({ month: month, day: parseInt(d[1]) });
+    }
+    if (!/\d+日/.test(rest)) result.push({ month: month, day: 1 });
+  }
+  return result;
+}
+
+function getCalendarEvents(year, month) {
+  const events = {};
+  competitionData.forEach(function(c) {
+    if (c.deadline) {
+      var d = new Date(c.deadline);
+      if (d.getFullYear() === year && d.getMonth() + 1 === month) {
+        var day = d.getDate();
+        if (!events[day]) events[day] = [];
+        events[day].push({ name: c.name, type: 'deadline', dot: 'both', short: c.name.slice(0,8) });
+      }
+    }
+    var regDates = parseMonthDay(c.regDate);
+    regDates.forEach(function(rd) {
+      if (rd.month === month && !(events[rd.day] && events[rd.day].some(function(e){return e.type === 'deadline';}))) {
+        if (!events[rd.day]) events[rd.day] = [];
+        if (!events[rd.day].some(function(e){return e.type === 'reg';})) {
+          events[rd.day].push({ name: c.name, type: 'reg', dot: 'reg', short: c.name.slice(0,8) });
+        }
+      }
+    });
+    var compDates = parseMonthDay(c.compDate);
+    compDates.forEach(function(cd) {
+      if (cd.month === month && !(events[cd.day] && events[cd.day].some(function(e){return e.type === 'deadline';}))) {
+        if (!events[cd.day]) events[cd.day] = [];
+        if (!events[cd.day].some(function(e){return e.type === 'comp';})) {
+          events[cd.day].push({ name: c.name, type: 'comp', dot: 'comp', short: c.name.slice(0,8) });
+        }
+      }
+    });
+  });
+  return events;
+}
+
+function renderCalendar() {
+  var monthLabel = calYear + '\u5E74 ' + calMonth + '\u6708';
+  document.getElementById('monthLabel').textContent = monthLabel;
+  var events = getCalendarEvents(calYear, calMonth);
+  window._calEvents = events;
+  var firstDay = new Date(calYear, calMonth - 1, 1).getDay();
+  var daysInMonth = new Date(calYear, calMonth, 0).getDate();
+  var today = new Date();
+  var isToday = (today.getFullYear() === calYear && today.getMonth() + 1 === calMonth) ? today.getDate() : 0;
+  var html = '<div class="day-header">\u65E5</div><div class="day-header">\u4E00</div><div class="day-header">\u4E8C</div><div class="day-header">\u4E09</div><div class="day-header">\u56DB</div><div class="day-header">\u4E94</div><div class="day-header">\u516D</div>';
+  for (var i = 0; i < firstDay; i++) html += '<div class="day other-month"></div>';
+  for (var d = 1; d <= daysInMonth; d++) {
+    var cls = 'day';
+    if (d === isToday) cls += ' today';
+    var dots = '';
+    if (events[d]) {
+      var hasDeadline = events[d].some(function(e){return e.type === 'deadline';});
+      var hasReg = events[d].some(function(e){return e.type === 'reg';});
+      var hasComp = events[d].some(function(e){return e.type === 'comp';});
+      if (hasReg) dots += '<span class="dot reg"></span>';
+      if (hasComp) dots += '<span class="dot comp"></span>';
+      if (hasDeadline) dots += '<span class="dot deadline"></span>';
+      var dotWrap = '<span class="dots-wrap">' + dots + '</span>';
+      cls += ' has-event';
+      html += '<div class="' + cls + '" onclick="showDayDetail(' + d + ')" title="\u70B9\u51FB\u67E5\u770B\u8BE6\u60C5">' + d + dotWrap + '</div>';
+    } else {
+      html += '<div class="' + cls + '">' + d + '</div>';
+    }
+  }
+  document.getElementById('calendarGrid').innerHTML = html;
+  document.getElementById('calDetail').style.display = 'none';
+}
+
+function showDayDetail(day) {
+  var events = window._calEvents[day];
+  if (!events) return;
+  var detail = document.getElementById('calDetail');
+  var label = calMonth + '\u6708' + day + '\u65E5';
+  var html = '<div style="font-weight:700;margin-bottom:5px;color:var(--text)">\u{1F4C5} ' + label + '</div>';
+  events.forEach(function(e){
+    var badge = e.type === 'deadline' ? '<span style="background:#fef2f2;color:#dc2626;padding:1px 5px;border-radius:3px;font-size:.7rem">\u{1F4CC}\u622A\u6B62</span>' : e.type === 'reg' ? '<span style="background:#fffbeb;color:#b45309;padding:1px 5px;border-radius:3px;font-size:.7rem">\u{1F4DD}\u62A5\u540D</span>' : '<span style="background:#eff6ff;color:#2563eb;padding:1px 5px;border-radius:3px;font-size:.7rem">\u{1F3C6}\u6BD4\u8D5B</span>';
+    html += '<div style="padding:3px 0;border-bottom:1px solid #e2e8f0">' + badge + ' <span style="font-weight:500">' + e.name + '</span></div>';
+  });
+  detail.innerHTML = html;
+  detail.style.display = 'block';
+}
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 12) { calMonth = 1; calYear++; }
+  if (calMonth < 1) { calMonth = 12; calYear--; }
+  renderCalendar();
+}
+
+function renderDeadlines() {
+  var now = new Date();
+  var upcoming = competitionData.filter(function(c){
+    if (!c.deadline || c.status === '已结束') return false;
+    var dl = new Date(c.deadline);
+    var daysLeft = Math.ceil((dl - now) / (1000*60*60*24));
+    return dl >= now && daysLeft <= 30;
+  }).sort(function(a,b){
+    return new Date(a.deadline) - new Date(b.deadline);
+  });
+  var html = '';
+  upcoming.forEach(function(c){
+    var daysLeft = Math.ceil((new Date(c.deadline) - now) / (1000*60*60*24));
+    var dotClass = daysLeft <= 14 ? 'deadline-dot' : 'reg-dot';
+    html += '<div class="timeline-item"><span class="tl-dot ' + dotClass + '"></span><div><div class="tl-name">' + c.name + '</div><div class="tl-date">报名截止 ' + c.deadline + '（' + daysLeft + '天后）</div></div></div>';
+  });
+  document.getElementById('deadlineList').innerHTML = html || '<p style="font-size:.78rem;color:var(--text-muted)">暂无即将报名截止的竞赛</p>';
+}
+
+function renderCard(c) {
+  var nowDate = new Date();
+  var regStart = c.regStart ? new Date(c.regStart) : null;
+  var deadlineD = c.deadline ? new Date(c.deadline) : null;
+  var compStart = c.compStart ? new Date(c.compStart) : null;
+  var compEnd = c.compEnd ? new Date(c.compEnd) : null;
+  var phase = '', phaseIcon = '', countdownHTML = '', countdownDays = null;
+
+  if (compEnd && nowDate > compEnd) {
+    phase = '已结束'; phaseIcon = '🏁';
+    countdownHTML = '<span class="deadline-tag ended">已结束</span>';
+  } else if (compStart && nowDate >= compStart && (!compEnd || nowDate <= compEnd)) {
+    phase = '比赛中'; phaseIcon = '🏆';
+    countdownDays = compEnd ? Math.ceil((compEnd - nowDate) / 86400000) : null;
+    countdownHTML = countdownDays ? '<span class="deadline-tag open">距比赛结束 <strong>' + countdownDays + '</strong> 天</span>' : '<span class="deadline-tag open">比赛中</span>';
+  } else if (deadlineD && nowDate > deadlineD && compStart && nowDate < compStart) {
+    phase = '备赛冲刺'; phaseIcon = '🔥';
+    countdownDays = Math.ceil((compStart - nowDate) / 86400000);
+    countdownHTML = '<span class="deadline-tag">距比赛开始 <strong>' + countdownDays + '</strong> 天</span>';
+  } else if (regStart && deadlineD && nowDate >= regStart && nowDate <= deadlineD) {
+    phase = '报名中'; phaseIcon = '📝';
+    countdownDays = Math.ceil((deadlineD - nowDate) / 86400000);
+    var urgentClass2 = countdownDays <= 7 ? ' deadline-urgent' : '';
+    countdownHTML = '<span class="deadline-tag' + urgentClass2 + '">距报名截止 <strong>' + countdownDays + '</strong> 天</span>';
+  } else if (regStart && nowDate < regStart) {
+    phase = '即将报名'; phaseIcon = '⏳';
+    countdownDays = Math.ceil((regStart - nowDate) / 86400000);
+    countdownHTML = '<span class="deadline-tag">距报名开始 <strong>' + countdownDays + '</strong> 天</span>';
+  } else {
+    countdownHTML = '<span class="deadline-tag">待公布</span>';
+  }
+
+  const levelClass = c.level === '国家级' ? 'level-national' : c.level === '国际级' ? 'level-intl' : c.level === '省级' ? 'level-provincial' : 'level-school';
+  const icon = bannerIcons[c.type] || 'fa-star';
+  const bgStyle = c.image ? 'background:linear-gradient(0deg, rgba(0,0,0,.3), rgba(0,0,0,.05)), url('+c.image+') center/cover' : 'background:'+(bannerColors[c.level]||bannerColors['校级']);
+  const iconHTML = c.image ? '' : '<i class="fas '+icon+'" style="position:absolute;font-size:2.5rem;opacity:.3;bottom:8px;right:14px"></i>';
+
+  return '<div class="card"><div class="card-banner" style="'+bgStyle+'"><span class="level-badge '+levelClass+'">'+c.level+'</span>'+(phase ? '<span class="phase-badge" style="position:absolute;top:10px;right:10px;padding:3px 8px;border-radius:5px;font-size:0.7rem;font-weight:600;background:'+(phase==='已结束'?'#f1f5f9;color:#94a3b8':phase==='比赛中'?'#dbeafe;color:#1d4ed8':phase==='备赛冲刺'?'#fef3c7;color:#b45309':phase==='报名中'?'#dcfce7;color:#16a34a':'#f0fdf4;color:#16a34a')+'">'+phaseIcon+' '+phase+'</span>' : '') +iconHTML+'</div><div class="card-body"><h3>'+c.name+'</h3><p class="org"><i class="far fa-building"></i> '+c.organizer+'</p><div class="date-row"><div class="date-item"><i class="far fa-calendar-check"></i><span class="date-label">报名</span>'+c.regDate+'</div><div class="date-item"><i class="fas fa-flag-checkered"></i><span class="date-label">比赛</span>'+c.compDate+'</div></div><div class="tags"><span class="tag">'+c.type+'</span>'+(c.subtype?' <span class="tag">'+c.subtype+'</span>':'')+'</div></div><div class="card-footer"><div class="deadline">'+countdownHTML+'</div><a href="'+(c.url||'#')+'" target="_blank" class="btn">查看详情 <i class="fas fa-external-link-alt" style="font-size:.7rem"></i></a></div></div>';
+}
+
+function renderCards() {
+  let filtered = competitionData;
+  if (currentLevel !== 'all') filtered = filtered.filter(function(c){return c.level === currentLevel;});
+  if (currentType !== 'all') filtered = filtered.filter(function(c){return c.type === currentType;});
+  if (searchQuery) {
+    var q = searchQuery.toLowerCase();
+    filtered = filtered.filter(function(c){
+      return c.name.toLowerCase().indexOf(q) !== -1 || c.organizer.toLowerCase().indexOf(q) !== -1 || (c.keywords||[]).some(function(k){return k.toLowerCase().indexOf(q) !== -1;}) || c.type.toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  filtered.sort(function(a,b){
+    var aDL = a.deadline ? new Date(a.deadline) : new Date('2099-12-31');
+    var bDL = b.deadline ? new Date(b.deadline) : new Date('2099-12-31');
+    return aDL - bDL;
+  });
+  document.getElementById('cardGrid').innerHTML = filtered.length ? filtered.map(renderCard).join('') : '';
+  document.getElementById('empty').style.display = filtered.length ? 'none' : 'block';
+  document.getElementById('resultCount').textContent = filtered.length + ' 个竞赛';
+}
+
+function updateStats() {
+  document.getElementById('totalCount').textContent = competitionData.length;
+  document.getElementById('nationalCount').textContent = competitionData.filter(function(c){return c.level === '国家级';}).length;
+  var now = new Date();
+  document.getElementById('ongoingCount').textContent = competitionData.filter(function(c){
+    if (c.status === '已结束') return false;
+    if (!c.deadline) return c.status !== '已结束';
+    return new Date(c.deadline) >= now;
+  }).length;
+}
+
+function refreshAll() { renderCards(); renderCalendar(); renderDeadlines(); updateStats(); }
+
+document.getElementById('searchInput').addEventListener('input', function(e){ searchQuery = e.target.value.trim(); refreshAll(); });
+document.querySelectorAll('#levelFilters .chip').forEach(function(chip){ chip.addEventListener('click', function(){
+  document.querySelectorAll('#levelFilters .chip').forEach(function(c){c.classList.remove('active');});
+  chip.classList.add('active'); currentLevel = chip.dataset.level; refreshAll();
+});});
+document.querySelectorAll('#typeFilters .chip').forEach(function(chip){ chip.addEventListener('click', function(){
+  document.querySelectorAll('#typeFilters .chip').forEach(function(c){c.classList.remove('active');});
+  chip.classList.add('active'); currentType = chip.dataset.type; refreshAll();
+});});
+
+var now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth() + 1;
+refreshAll();
+</script></body></html>
+
+
+
+
+
+
+
+
