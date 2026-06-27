@@ -484,9 +484,11 @@ function updateStats() {
   document.getElementById('nationalCount').textContent = competitionData.filter(function(c){return c.level === '国家级';}).length;
   var now = new Date();
   document.getElementById('ongoingCount').textContent = competitionData.filter(function(c){
-    if (c.status === '已结束') return false;
-    if (!c.deadline) return c.status !== '已结束';
-    return new Date(c.deadline) >= now;
+    var n = new Date();
+    var rs = c.regStart ? new Date(c.regStart) : null;
+    var dl = c.deadline ? new Date(c.deadline) : null;
+    if (!rs || !dl) return false;
+    return n >= rs && n <= dl;
   }).length;
 }
 
