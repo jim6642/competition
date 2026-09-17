@@ -6,36 +6,50 @@
 <title>智能寻找队友 — 竞赛信息门户</title>
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--primary:#4f46e5;--bg:#f1f5f9;--card:#fff;--text:#1e293b;--muted:#64748b}
+:root{--primary:#4f46e5;--bg:#f1f5f9;--card:#fff;--text:#1e293b;--muted:#64748b;--line:#e2e8f0}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text)}
 header{background:#fff;padding:15px 30px;box-shadow:0 2px 10px #0001}.nav{max-width:1200px;margin:auto;display:flex;justify-content:space-between}.logo{color:var(--primary);font-weight:800;font-size:22px}.nav a{text-decoration:none;color:#64748b;margin-left:20px}
-.container{max-width:1200px;margin:auto;padding:30px}.hero{text-align:center;margin-bottom:30px}.hero h1{font-size:32px}.hero p{color:var(--muted)}
-.layout{display:grid;grid-template-columns:360px 1fr;gap:25px}.card{background:white;border-radius:16px;padding:25px;box-shadow:0 5px 20px #0001}.label{font-size:13px;font-weight:bold;color:#475569;margin-top:14px}.info{background:#f8fafc;border-radius:10px;padding:12px;margin-top:6px}.tag{display:inline-block;background:#eef2ff;color:var(--primary);padding:4px 10px;border-radius:15px;font-size:12px;margin:3px}.btn{background:var(--primary);color:white;border:0;padding:12px;width:100%;border-radius:8px;cursor:pointer;margin-top:20px}.match{border:1px solid #eee;padding:20px;border-radius:14px;margin-bottom:16px}.top{display:flex;justify-content:space-between}.score{font-size:28px;color:var(--primary);font-weight:800}.reason{color:var(--muted);font-size:14px;margin-top:10px}.progress{height:8px;background:#e2e8f0;border-radius:8px;margin-top:8px}.bar{height:100%;background:#4f46e5;border-radius:8px}.status{font-size:13px;color:#64748b;margin-top:8px}
-@media(max-width:800px){.layout{grid-template-columns:1fr}}
+.container{max-width:1200px;margin:auto;padding:30px}.hero{text-align:center;margin-bottom:30px}.hero h1{font-size:34px}.hero p{color:var(--muted);margin-top:8px}
+.grid{display:grid;grid-template-columns:360px 1fr;gap:25px}.card{background:#fff;border-radius:18px;padding:25px;box-shadow:0 5px 20px #0001;margin-bottom:20px}
+.profile h2,.recommend h2{margin-bottom:18px}.avatar{width:70px;height:70px;border-radius:50%;background:#eef2ff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:bold;margin-bottom:15px}
+.item{margin:12px 0}.label{font-size:13px;color:var(--muted);margin-bottom:5px}.tag{display:inline-block;background:#eef2ff;color:var(--primary);padding:5px 12px;border-radius:15px;font-size:13px;margin:3px}
+.status{background:#f8fafc;padding:15px;border-radius:12px;margin-top:15px;border-left:4px solid var(--primary)}
+.match{border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px;display:flex;justify-content:space-between;gap:20px}.match h3{margin-bottom:5px}.score{font-size:28px;font-weight:800;color:var(--primary)}.reason{color:var(--muted);font-size:14px;margin-top:10px}.bar{height:8px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin-top:5px}.bar span{display:block;height:100%;background:#4f46e5}.analysis{font-size:13px;color:#475569;margin-top:12px}
+.team-box{display:flex;gap:10px;flex-wrap:wrap}.role{padding:10px;border-radius:10px;background:#f8fafc}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header><div class="nav"><div class="logo"><i class="fa fa-trophy"></i> 竞赛信息门户</div><div><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="resources.html">资料分享</a></div></div></header>
 <div class="container">
-<div class="hero"><h1>🤝 智能寻找竞赛队友</h1><p>基于专业背景、技能结构、竞赛经历和当前状态，寻找能力互补的伙伴</p></div>
-<div class="layout">
-<div class="card"><h2>我的竞赛画像</h2>
-<div class="label">基本信息</div><div class="info">张同学<br>微电子科学与工程 · 大三</div>
-<div class="label">技能标签</div><div class="info"><span class="tag">Verilog</span><span class="tag">FPGA</span><span class="tag">PCB设计</span><span class="tag">模拟电路</span></div>
-<div class="label">竞赛经历</div><div class="info">参与过校内电子设计相关项目<br>正在准备FPGA创新设计竞赛</div>
-<div class="label">当前需求</div><div class="info">寻找：嵌入式开发、算法方向队友</div>
-<div class="label">目标比赛</div><div class="info">全国大学生电子设计竞赛</div>
-<button class="btn" onclick="match()">开始智能匹配</button>
+<div class="hero"><h1>🤝 智能竞赛组队中心</h1><p>根据专业背景、竞赛经历与团队需求，寻找能力互补的伙伴</p></div>
+<div class="grid">
+<div>
+<div class="card profile">
+<h2>我的竞赛画像</h2>
+<div class="avatar">张</div>
+<h3>张同学</h3>
+<p>电子科技大学 · 微电子科学与工程 · 大三</p>
+<div class="item"><div class="label">团队定位</div>硬件设计负责人</div>
+<div class="item"><div class="label">专业技能</div><span class="tag">FPGA</span><span class="tag">Verilog</span><span class="tag">PCB</span><span class="tag">模拟电路</span></div>
+<div class="item"><div class="label">竞赛经历</div>参与电子设计相关项目，正在准备 FPGA 创新设计竞赛</div>
+<div class="status"><b>当前需求</b><br>寻找：嵌入式开发、算法方向队友<br>目标：电子设计竞赛 / 智能车竞赛</div>
 </div>
-<div class="card"><h2>推荐队友</h2><p class="status">系统根据技能互补、比赛方向和经历计算匹配度</p><div id="result" style="margin-top:20px"></div></div>
-</div></div>
+</div>
+<div>
+<div class="card recommend"><h2>AI匹配推荐</h2><div id="result"></div></div>
+<div class="card"><h2>当前队伍分析</h2><p>根据你的能力画像，系统分析：</p><div class="team-box" style="margin-top:15px"><div class="role">已有能力：硬件设计</div><div class="role">缺少：算法开发</div><div class="role">缺少：视觉处理</div></div></div>
+</div>
+</div>
+</div>
 <script>
 const users=[
-{name:'李同学',major:'计算机科学与技术 · 大三',skills:['Python','OpenCV','深度学习'],contest:'参加过智能车竞赛，负责视觉算法',state:'正在寻找硬件方向队友',score:94,reason:'算法能力可以补充你的硬件设计能力，适合智能车、电赛等项目'},
-{name:'王同学',major:'自动化 · 大二',skills:['STM32','嵌入式','控制算法'],contest:'完成过STM32项目开发',state:'希望加入电子类竞赛团队',score:89,reason:'嵌入式方向与FPGA高度互补，可以形成完整开发链路'},
-{name:'陈同学',major:'机械工程 · 大三',skills:['CAD','机械结构','建模'],contest:'机器人竞赛参与者',state:'寻找电子控制方向队友',score:78,reason:'机械能力可以补充机器人类比赛的结构设计需求'}];
-function match(){document.getElementById('result').innerHTML=users.map(u=>`<div class="match"><div class="top"><div><h3>${u.name}</h3><p>${u.major}</p></div><div class="score">${u.score}%</div></div><div>${u.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div><div class="status">竞赛经历：${u.contest}</div><div class="status">当前状态：${u.state}</div><div class="progress"><div class="bar" style="width:${u.score}%"></div></div><div class="reason">推荐理由：${u.reason}</div></div>`).join('')}
-match();
+{name:'李同学',major:'计算机科学与技术 · 大三',role:'算法负责人',skills:['Python','OpenCV','深度学习'],exp:'参加智能车竞赛，负责视觉算法模块',score:94,reason:'你的 FPGA 与硬件能力可以和他的算法能力形成互补，适合智能车、电赛等方向',detail:['技能互补 96%','比赛方向 92%','经验匹配 88%']},
+{name:'王同学',major:'自动化 · 大三',role:'嵌入式开发',skills:['STM32','嵌入式','控制系统'],exp:'完成嵌入式控制项目',score:89,reason:'可以补充控制与软件开发能力，形成完整硬件系统团队',detail:['技能互补 90%','比赛方向 91%','经验匹配 82%']},
+{name:'陈同学',major:'机械工程 · 大二',role:'结构设计',skills:['CAD','机械设计','建模'],exp:'机器人竞赛参与者',score:78,reason:'适合机器人类竞赛，补充机械结构方向能力',detail:['技能互补 80%','比赛方向 78%','经验匹配 75%']}
+];
+function render(){document.getElementById('result').innerHTML=users.map(u=>`<div class="match"><div><h3>${u.name}</h3><p>${u.major} · ${u.role}</p>${u.skills.map(s=>`<span class="tag">${s}</span>`).join('')}<p style="margin-top:10px">竞赛经历：${u.exp}</p><div class="analysis">${u.detail.map(d=>d+'<div class="bar"><span style="width:'+d.match(/\d+/)[0]+'%"></span></div>').join('')}</div><div class="reason">推荐理由：${u.reason}</div></div><div class="score">${u.score}%</div></div>`).join('')}
+render();
 </script>
 </body>
 </html>
