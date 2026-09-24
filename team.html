@@ -15,75 +15,97 @@ header{position:sticky;top:0;z-index:20;background:#fffffff0;backdrop-filter:blu
 .identity{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:17px;background:linear-gradient(100deg,#eef2ff,#f8fafc);border-radius:12px}.avatar{display:grid;place-items:center;width:54px;height:54px;flex:none;border-radius:14px;background:var(--primary);color:#fff;font-size:1.3rem;font-weight:800}.identity h3{margin:0;font-size:1.1rem}.identity p{margin:2px 0 0;color:var(--muted);font-size:.83rem}.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px}.field.wide{grid-column:1/-1}.field-label{display:block;margin-bottom:5px;color:var(--muted);font-size:.75rem}.field-value{font-size:.9rem;font-weight:600}.field-value.regular{font-weight:400}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{display:inline-block;padding:4px 9px;border-radius:6px;background:var(--soft);color:var(--primary);font-size:.76rem;font-weight:600}
 .goal-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}.goal-tab{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:8px 13px;cursor:pointer;font-size:.82rem;font-weight:600}.goal-tab:hover{border-color:#a5b4fc;color:var(--primary)}.goal-tab[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}.team-top{padding:15px;background:#f8fafc;border-radius:12px;margin-bottom:17px}.team-top strong{display:block;font-size:.92rem}.team-top p{margin:3px 0 0;color:var(--muted);font-size:.79rem}.team-columns{display:grid;grid-template-columns:1fr 1fr;gap:15px}.team-column{padding:14px;border:1px solid var(--line);border-radius:10px}.team-column h3{display:flex;align-items:center;gap:7px;margin:0 0 10px;font-size:.86rem}.team-column h3 i{color:var(--green)}.team-column.missing h3 i{color:#ea580c}.team-member{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:.8rem}.team-member span{color:var(--muted)}.gap-list{display:flex;flex-wrap:wrap;align-content:flex-start;gap:7px}.gap{padding:5px 9px;border-radius:6px;background:#fff7ed;color:#c2410c;font-size:.76rem;font-weight:700}.team-summary{margin:15px 0 0;padding:10px 12px;border-radius:9px;background:var(--soft);color:#3730a3;font-size:.8rem}
 .recommend-panel{margin-top:18px}.recommend-head{align-items:center}.recommend-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.candidate{border:1px solid var(--line);border-radius:13px;padding:20px;display:flex;flex-direction:column;gap:13px;background:#fff}.candidate-top{display:flex;justify-content:space-between;gap:12px}.candidate-name{display:flex;align-items:center;gap:10px}.mini-avatar{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#e0e7ff;color:var(--primary);font-weight:800}.candidate h3{margin:0;font-size:1rem}.candidate-sub{margin:2px 0 0;color:var(--muted);font-size:.77rem}.score{text-align:right;color:var(--primary);white-space:nowrap}.score strong{display:block;font-size:1.45rem;line-height:1}.score small{font-size:.7rem;font-weight:600}.candidate-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.78rem;color:#475569}.candidate-meta b{color:var(--text)}.candidate-row{font-size:.79rem}.candidate-row .field-label{margin-bottom:6px}.candidate-row p{margin:0;color:#475569}.fit-box{margin-top:auto;padding:12px;border-radius:9px;background:#ecfdf5;font-size:.79rem;color:#065f46}.fit-box strong{display:block;margin-bottom:3px}.reason{font-size:.8rem;color:#475569}.reason strong{color:var(--text)}.details-button{align-self:flex-start;border:0;background:none;color:var(--primary);font-weight:700;font-size:.78rem;cursor:pointer;padding:0}.details-button:hover{text-decoration:underline}.details-button i{margin-left:4px;font-size:.7rem}.details{display:none;border-top:1px solid var(--line);padding-top:12px}.details.open{display:block}.metric{display:grid;grid-template-columns:100px 1fr 34px;align-items:center;gap:8px;margin-top:7px;font-size:.73rem;color:var(--muted)}.bar{height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden}.bar span{display:block;height:100%;border-radius:99px;background:var(--primary)}.metric b{text-align:right;color:var(--text)}.details p{margin:10px 0 0;color:var(--muted);font-size:.73rem}.method-note{margin:17px 0 0;color:var(--muted);font-size:.77rem}.method-note strong{color:#475569}footer{padding:25px 20px;text-align:center;background:#1e293b;color:#94a3b8;font-size:.8rem}
+.search-panel{margin-bottom:18px}.search-grid{display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:13px}.search-field label{display:block;margin-bottom:6px;font-size:.8rem;font-weight:700}.search-field input,.search-field select{width:100%;min-height:42px;padding:9px 11px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:var(--text);font:inherit;font-size:.85rem}.search-field input:focus,.search-field select:focus{outline:2px solid #a5b4fc;border-color:var(--primary)}.search-field small{display:block;margin-top:5px;color:var(--muted);font-size:.72rem}.search-field.full{grid-column:1/-1}.search-note{margin:13px 0 0;color:var(--muted);font-size:.78rem}.search-note a,.profile-link{color:var(--primary);font-weight:700}.profile-link:hover,.search-note a:hover{text-decoration:underline}.empty{grid-column:1/-1;padding:30px;text-align:center;border:1px dashed #cbd5e1;border-radius:12px;color:var(--muted)}
 @media(max-width:900px){.top-grid{grid-template-columns:1fr}.recommend-grid{grid-template-columns:1fr}.nav-links{gap:4px}.nav-links a{padding:.35rem .5rem}}@media(max-width:600px){.nav{align-items:flex-start;flex-direction:column;padding:12px 16px;gap:8px}.logo{font-size:1.05rem}.logo i{font-size:1.2rem}.nav-links{width:100%;overflow-x:auto}.nav-links a{font-size:.78rem}.hero-inner{padding:38px 18px 70px}.container{padding:0 14px 40px}.panel{padding:18px}.profile-grid,.team-columns{grid-template-columns:1fr}.field.wide{grid-column:auto}.flow{gap:6px}.flow span{font-size:.72rem;padding:6px 8px}.candidate{padding:16px}.candidate-meta{grid-template-columns:1fr}}
+@media(max-width:600px){.search-grid{grid-template-columns:1fr}.search-field.full{grid-column:auto}}
 </style>
 </head>
 <body>
-<header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a class="active" aria-current="page" href="team.html">寻找队友</a><a href="resources.html">资料分享</a></nav></div></header>
+<header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a class="active" aria-current="page" href="team.html">寻找队友</a><a href="resources.html">资料分享</a><a href="profile.html">个人中心</a></nav></div></header>
 <section class="hero"><div class="hero-inner"><span class="eyebrow"><i class="fas fa-users"></i> 竞赛组队实验室</span><h1>找到能补齐队伍拼图的队友</h1><p>从个人竞赛画像出发，识别当前队伍缺口，再根据能力、比赛方向与经历推荐合适的伙伴。</p><div class="flow" aria-label="组队匹配流程"><span><b>1</b>我的竞赛画像</span><span><b>2</b>当前队伍情况</span><span><b>3</b>智能推荐队友</span><span><b>4</b>为什么推荐</span></div></div></section>
 <main class="container">
-<div class="demo-note"><i class="fas fa-circle-info"></i><span>以下为模拟组队案例。切换目标比赛，可以查看队伍缺口与推荐结果如何变化。</span></div>
+<div class="demo-note"><i class="fas fa-circle-info"></i><span>以下均为虚构同学资料，仅用于体验匹配。个人资料保存在当前浏览器，不会发布到网站。</span></div>
+<section class="panel search-panel" aria-labelledby="search-title"><div class="section-head"><div><h2 id="search-title">先选比赛，再找合适的同学</h2><p>先选目标比赛，再按期望队友的专业、年级和所需领域筛选。</p></div><span class="step">MATCH</span></div><div class="search-grid"><div class="search-field full"><label for="competition-select">目标竞赛</label><select id="competition-select"></select></div><div class="search-field"><label for="search-major">期望队友专业</label><input id="search-major" type="text" maxlength="60" autocomplete="off" placeholder="不限专业"><small>输入专业关键词；留空不限。</small></div><div class="search-field"><label for="search-grade">期望队友年级</label><select id="search-grade"><option value="">不限年级</option><option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研一</option><option>研二</option></select></div><div class="search-field"><label for="search-domains">需要补充的领域</label><input id="search-domains" type="text" maxlength="120" placeholder="如：算法、视觉"><small>多个领域用顿号或逗号分隔；留空则按当前队伍缺口推荐。</small></div></div><p class="search-note">领域默认读取你的画像。也可以 <button type="button" class="details-button" id="use-profile-filters">填入我自己的专业和年级</button> 试试同背景筛选；想长期修改资料，去 <a href="profile.html">个人中心</a>。</p></section>
 <div class="top-grid">
-<section class="panel" aria-labelledby="profile-title"><div class="section-head"><div><h2 id="profile-title">我的竞赛画像</h2><p>让队友看见你能承担什么，也说明你需要什么。</p></div><span class="step">STEP 01</span></div><div class="identity"><div class="avatar" aria-hidden="true">张</div><div><h3>张同学</h3><p>电子科技大学 · 微电子科学与工程 · 大三</p></div></div><div class="profile-grid">
-<div class="field"><span class="field-label">姓名</span><div class="field-value">张同学</div></div><div class="field"><span class="field-label">年级</span><div class="field-value">大三</div></div><div class="field"><span class="field-label">学校</span><div class="field-value">电子科技大学</div></div><div class="field"><span class="field-label">专业</span><div class="field-value">微电子科学与工程</div></div><div class="field wide"><span class="field-label">技能方向</span><div class="chips"><span class="chip">FPGA</span><span class="chip">Verilog</span><span class="chip">PCB 设计</span><span class="chip">模拟电路</span></div></div><div class="field wide"><span class="field-label">竞赛经历</span><div class="field-value regular">参与校级电子设计项目，负责电路搭建与 FPGA 模块调试。</div></div><div class="field wide"><span class="field-label">当前参加目标比赛</span><div class="field-value" id="profile-goal"></div></div><div class="field"><span class="field-label">在队伍中的定位</span><div class="field-value">硬件设计负责人</div></div><div class="field"><span class="field-label">希望寻找的队友类型</span><div class="field-value regular" id="wanted-roles"></div></div>
+<section class="panel" aria-labelledby="profile-title"><div class="section-head"><div><h2 id="profile-title">我的竞赛画像</h2><p>这里展示已保存的画像；可前往 <a class="profile-link" href="profile.html">个人中心编辑</a>。</p></div><span class="step">STEP 01</span></div><div class="identity"><div class="avatar" id="profile-avatar" aria-hidden="true"></div><div><h3 id="profile-name"></h3><p id="profile-identity"></p></div></div><div class="profile-grid">
+<div class="field"><span class="field-label">姓名</span><div class="field-value" id="profile-name-field"></div></div><div class="field"><span class="field-label">年级</span><div class="field-value" id="profile-grade"></div></div><div class="field"><span class="field-label">学校</span><div class="field-value" id="profile-school"></div></div><div class="field"><span class="field-label">专业</span><div class="field-value" id="profile-major"></div></div><div class="field wide"><span class="field-label">技能方向</span><div class="chips" id="profile-skills"></div></div><div class="field wide"><span class="field-label">竞赛经历</span><div class="field-value regular" id="profile-experience"></div></div><div class="field wide"><span class="field-label">当前参加目标比赛</span><div class="field-value" id="profile-goal"></div></div><div class="field"><span class="field-label">在队伍中的定位</span><div class="field-value" id="profile-role"></div></div><div class="field"><span class="field-label">希望寻找的队友类型</span><div class="field-value regular" id="wanted-roles"></div></div>
 </div></section>
-<section class="panel" aria-labelledby="team-title"><div class="section-head"><div><h2 id="team-title">当前队伍情况</h2><p>先看现有能力，再决定下一位队友该补哪里。</p></div><span class="step">STEP 02</span></div><div class="goal-tabs" role="group" aria-label="选择模拟目标比赛"><button class="goal-tab" type="button" data-goal="edc" aria-pressed="true">电子设计竞赛</button><button class="goal-tab" type="button" data-goal="robomaster" aria-pressed="false">RoboMaster</button></div><div class="team-top"><strong id="team-name"></strong><p id="team-description"></p></div><div class="team-columns"><div class="team-column"><h3><i class="fas fa-circle-check"></i> 已有成员</h3><div id="team-members"></div></div><div class="team-column missing"><h3><i class="fas fa-puzzle-piece"></i> 当前缺少</h3><div class="gap-list" id="team-gaps"></div></div></div><p class="team-summary" id="team-summary"></p></section>
+<section class="panel" aria-labelledby="team-title"><div class="section-head"><div><h2 id="team-title">当前队伍情况</h2><p>先看现有能力，再决定下一位队友该补哪里。</p></div><span class="step">STEP 02</span></div><div class="team-top"><strong id="team-name"></strong><p id="team-description"></p></div><div class="team-columns"><div class="team-column"><h3><i class="fas fa-circle-check"></i> 已有成员</h3><div id="team-members"></div></div><div class="team-column missing"><h3><i class="fas fa-puzzle-piece"></i> 当前缺少</h3><div class="gap-list" id="team-gaps"></div></div></div><p class="team-summary" id="team-summary"></p></section>
 </div>
 <section class="panel recommend-panel" aria-labelledby="recommend-title"><div class="section-head recommend-head"><div><h2 id="recommend-title">智能推荐队友</h2><p id="recommend-subtitle"></p></div><span class="step">STEP 03 / 04</span></div><div class="recommend-grid" id="recommendations"></div><p class="method-note"><strong>匹配依据：</strong>技能互补 40% · 比赛方向 25% · 竞赛经历 20% · 专业方向 15%。分数由当前模拟队伍缺口和候选人资料计算，仅用于演示。</p></section>
 </main><footer>竞赛信息门户 · 让每一种能力都找到合适的赛场</footer>
+<script src="profile.js"></script>
+<script src="matching-data.js"></script>
 <script>
-const scenarios = {
-  edc: {label:'全国大学生电子设计竞赛',name:'电子设计竞赛 · 智能感知项目组',description:'目标：完成可感知、可控制、可交互的作品原型。',members:[{name:'张同学',role:'硬件设计'},{name:'王同学',role:'嵌入式'}],gaps:['算法','视觉','软件开发'],related:['RoboMaster 机甲大师赛']},
-  robomaster: {label:'RoboMaster 机甲大师赛',name:'RoboMaster · 机器人战队',description:'目标：完善机器人感知、决策与机械执行能力。',members:[{name:'张同学',role:'硬件设计'},{name:'王同学',role:'嵌入式'}],gaps:['算法','视觉','软件开发','机械结构'],related:['全国大学生电子设计竞赛']}
-};
-const candidates = [
-  {name:'李同学',school:'西安电子科技大学',major:'计算机科学与技术',grade:'大三',role:'视觉算法',skills:['Python','OpenCV','深度学习'],experience:'电子设计竞赛省赛二等奖，负责目标识别；参与 RoboMaster 校队视觉模块。',experienceLevel:4,capabilities:['算法','视觉'],competitions:['全国大学生电子设计竞赛','RoboMaster 机甲大师赛'],majorArea:'计算机'},
-  {name:'林同学',school:'电子科技大学',major:'软件工程',grade:'大二',role:'软件开发',skills:['C++','Qt','数据可视化'],experience:'电子设计竞赛校赛参赛，完成上位机界面与数据通信。',experienceLevel:3,capabilities:['软件开发'],competitions:['全国大学生电子设计竞赛'],majorArea:'软件'},
-  {name:'周同学',school:'华南理工大学',major:'人工智能',grade:'大三',role:'视觉与软件',skills:['ROS','计算机视觉','C++'],experience:'RoboMaster 分区赛参赛，负责视觉定位与机器人软件。',experienceLevel:4,capabilities:['视觉','软件开发'],competitions:['RoboMaster 机甲大师赛'],majorArea:'计算机'},
-  {name:'陈同学',school:'哈尔滨工业大学',major:'机械设计制造及其自动化',grade:'大二',role:'机械结构',skills:['SolidWorks','结构设计','三维建模'],experience:'RoboMaster 校内赛参赛，负责底盘结构设计。',experienceLevel:3,capabilities:['机械结构'],competitions:['RoboMaster 机甲大师赛'],majorArea:'机械'},
-  {name:'赵同学',school:'北京理工大学',major:'自动化',grade:'大三',role:'控制与软件',skills:['STM32','C语言','控制系统'],experience:'电子设计竞赛省赛参赛，负责控制程序与系统联调。',experienceLevel:4,capabilities:['嵌入式','软件开发'],competitions:['全国大学生电子设计竞赛'],majorArea:'自动化'}
-];
-const majorFit = {edc:{'计算机':100,'软件':100,'自动化':95,'机械':45},robomaster:{'计算机':100,'软件':90,'自动化':95,'机械':100}};
-function evaluate(candidate,goalKey){
-  const goal=scenarios[goalKey];
-  const fills=goal.gaps.filter(gap=>candidate.capabilities.includes(gap));
-  const skill=Math.round(100*fills.length/Math.min(2,goal.gaps.length));
-  const direction=candidate.competitions.includes(goal.label)?100:candidate.competitions.some(item=>goal.related.includes(item))?55:0;
+const profile=loadProfile();
+const competitionSelect=document.getElementById('competition-select');
+Object.entries(matchScenarios).forEach(([key,scenario])=>competitionSelect.add(new Option(scenario.label,key)));
+competitionSelect.value=matchScenarios[profile.competition]?profile.competition:'edc';
+document.getElementById('search-domains').value=profile.wanted;
+function relatedMajor(major,domain){
+  const map={'算法':'计算机 软件 数学 统计 人工智能 信息','视觉':'计算机 人工智能 数字媒体 机器人','软件开发':'计算机 软件 数据 网络 信息','机械结构':'机械 机器人 工业设计','三维建模':'机械 工业设计 机器人','嵌入式':'电子 自动化 机器人 信息','数据分析':'统计 数学 数据 经济 社会','论文写作':'数学 统计 文学 社会 英语','英文写作':'英语 国际 数学','可视化':'设计 数据 统计 经济','产品设计':'设计 媒体 市场','商业分析':'工商 市场 经济','路演表达':'传播 市场 数字媒体','代码实现':'计算机 软件 信息 人工智能','测试优化':'计算机 软件 网络 机器人','云计算':'计算机 数据 网络','网络安全':'网络 信息 安全'};
+  return (map[domain]||'').split(' ').some(term=>term&&major.includes(term));
+}
+function evaluate(candidate,goalKey,wanted){
+  const goal=matchScenarios[goalKey];
+  const fills=wanted.filter(domain=>candidate.capabilities.includes(domain));
+  const skill=Math.min(100,Math.round(100*fills.length/Math.min(2,wanted.length)));
+  const direction=candidate.competitions.includes(goalKey)?100:candidate.competitions.some(item=>goal.related.includes(item))?65:0;
   const experience=candidate.experienceLevel*20;
-  const major=majorFit[goalKey][candidate.majorArea]||40;
+  const major=fills.some(domain=>relatedMajor(candidate.major,domain))?100:60;
   const score=Math.round(skill*.40+direction*.25+experience*.20+major*.15);
   return {candidate,fills,score,metrics:[{label:'技能互补',value:skill,weight:'40%'},{label:'比赛方向',value:direction,weight:'25%'},{label:'竞赛经历',value:experience,weight:'20%'},{label:'专业方向',value:major,weight:'15%'}]};
 }
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
 function renderCandidate(result,index,goalKey){
   const person=result.candidate;
-  const direct=person.competitions.includes(scenarios[goalKey].label);
-  const contribution=result.fills.length?result.fills.join('、'):'当前缺口较少，可作为后续储备成员';
-  const reason=result.fills.length?`可补齐${result.fills.join('和')}能力；${direct?'有目标比赛相关经历':'有相近竞赛经历'}，${person.major}背景适合参与项目协作。`:`有${person.major}背景和竞赛经历，但目前与队伍的优先缺口重合较少。`;
+  const direct=person.competitions.includes(goalKey);
+  const contribution=result.fills.join('、');
+  const reason=`可补齐${result.fills.join('和')}能力；${direct?'有目标比赛相关经历':'有相近竞赛经历'}，${person.major}背景适合这一分工。`;
   return `<article class="candidate"><div class="candidate-top"><div class="candidate-name"><div class="mini-avatar" aria-hidden="true">${escapeHtml(person.name.slice(0,1))}</div><div><h3>${escapeHtml(person.name)}</h3><p class="candidate-sub">${escapeHtml(person.school)} · ${escapeHtml(person.grade)}</p></div></div><div class="score"><strong>${result.score}%</strong><small>匹配度</small></div></div><div class="candidate-meta"><div><b>专业：</b>${escapeHtml(person.major)}</div><div><b>队伍定位：</b>${escapeHtml(person.role)}</div></div><div class="candidate-row"><span class="field-label">技能方向</span><div class="chips">${person.skills.map(skill=>`<span class="chip">${escapeHtml(skill)}</span>`).join('')}</div></div><div class="candidate-row"><span class="field-label">竞赛经历</span><p>${escapeHtml(person.experience)}</p></div><div class="fit-box"><strong><i class="fas fa-puzzle-piece"></i> 可以补充的能力</strong>${escapeHtml(contribution)}</div><div class="reason"><strong>推荐理由：</strong>${escapeHtml(reason)}</div><button type="button" class="details-button" data-details="detail-${index}" aria-expanded="false" aria-controls="detail-${index}">查看匹配依据 <i class="fas fa-chevron-down"></i></button><div class="details" id="detail-${index}">${result.metrics.map(metric=>`<div class="metric"><span>${metric.label} ${metric.weight}</span><div class="bar"><span style="width:${metric.value}%"></span></div><b>${metric.value}</b></div>`).join('')}<p>各项为 0–100 分，按权重加总后四舍五入；覆盖两个当前缺口时，技能互补项为满分。</p></div></article>`;
 }
 function render(goalKey){
-  const goal=scenarios[goalKey];
-  document.querySelectorAll('.goal-tab').forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.goal===goalKey)));
-  document.getElementById('profile-goal').textContent=goal.label;
-  document.getElementById('wanted-roles').textContent=goal.gaps.join('、');
+  const goal=matchScenarios[goalKey];
+  const typed=splitProfileList(document.getElementById('search-domains').value);
+  const wanted=typed.length?typed:goal.gaps;
+  const majorFilter=document.getElementById('search-major').value.trim().toLocaleLowerCase();
+  const gradeFilter=document.getElementById('search-grade').value;
+  document.getElementById('profile-goal').textContent=matchScenarios[profile.competition]?.label||'未选择';
+  document.getElementById('wanted-roles').textContent=profile.wanted||'未填写';
   document.getElementById('team-name').textContent=goal.name;
   document.getElementById('team-description').textContent=goal.description;
-  document.getElementById('team-members').innerHTML=goal.members.map(member=>`<div class="team-member"><strong>${escapeHtml(member.role)}</strong><span>${escapeHtml(member.name)}</span></div>`).join('');
+  document.getElementById('team-members').innerHTML=goal.members.map((role,index)=>`<div class="team-member"><strong>${escapeHtml(role)}</strong><span>${index===0?escapeHtml(profile.name||'我'):'模拟队员'}</span></div>`).join('');
   document.getElementById('team-gaps').innerHTML=goal.gaps.map(gap=>`<span class="gap">+ ${escapeHtml(gap)}</span>`).join('');
   document.getElementById('team-summary').textContent=`已有 ${goal.members.length} 名成员，优先寻找能覆盖 ${goal.gaps.length} 个能力缺口的队友。`;
-  const ranked=candidates.map(candidate=>evaluate(candidate,goalKey)).filter(result=>result.fills.length>0).sort((a,b)=>b.score-a.score);
-  document.getElementById('recommend-subtitle').textContent=`面向${goal.label}，按队伍缺口排序的 ${ranked.length} 位模拟候选人。`;
-  document.getElementById('recommendations').innerHTML=ranked.map((result,index)=>renderCandidate(result,index,goalKey)).join('');
+  const ranked=mockCandidates.filter(candidate=>(!majorFilter||candidate.major.toLocaleLowerCase().includes(majorFilter))&&(!gradeFilter||candidate.grade===gradeFilter)).map(candidate=>evaluate(candidate,goalKey,wanted)).filter(result=>result.fills.length>0&&result.candidate.competitions.some(item=>item===goalKey||goal.related.includes(item))).sort((a,b)=>b.score-a.score||b.fills.length-a.fills.length);
+  document.getElementById('recommend-subtitle').textContent=`共 ${mockCandidates.length} 位虚构同学，筛选出 ${ranked.length} 位与「${goal.label}」及所需领域相符的候选人。`;
+  document.getElementById('recommendations').innerHTML=ranked.length?ranked.map((result,index)=>renderCandidate(result,index,goalKey)).join(''):'<div class="empty">暂时没有符合比赛和所需领域的模拟同学。试试清空领域输入，查看当前队伍缺口的推荐。</div>';
 }
-document.querySelectorAll('.goal-tab').forEach(tab=>tab.addEventListener('click',()=>render(tab.dataset.goal)));
+function renderProfile(){
+  const entries={'profile-name':profile.name,'profile-name-field':profile.name,'profile-grade':profile.grade,'profile-school':profile.school,'profile-major':profile.major,'profile-experience':profile.experience,'profile-role':profile.role};
+  Object.entries(entries).forEach(([id,value])=>document.getElementById(id).textContent=value||'未填写');
+  document.getElementById('profile-avatar').textContent=(profile.name||'我').slice(0,1);
+  document.getElementById('profile-identity').textContent=[profile.school,profile.major,profile.grade].filter(Boolean).join(' · ');
+  document.getElementById('profile-skills').innerHTML=splitProfileList(profile.skills).map(skill=>`<span class="chip">${escapeHtml(skill)}</span>`).join('')||'未填写';
+}
+competitionSelect.addEventListener('change',()=>{
+  document.getElementById('search-domains').value=matchScenarios[competitionSelect.value].gaps.join('、');
+  render(competitionSelect.value);
+});
+document.getElementById('use-profile-filters').addEventListener('click',()=>{
+  document.getElementById('search-major').value=profile.major;
+  document.getElementById('search-grade').value=profile.grade;
+  render(competitionSelect.value);
+});
+['search-major','search-grade','search-domains'].forEach(id=>document.getElementById(id).addEventListener('input',()=>render(competitionSelect.value)));
 document.getElementById('recommendations').addEventListener('click',event=>{
   const button=event.target.closest('.details-button');if(!button)return;
   const details=document.getElementById(button.dataset.details);
   const open=details.classList.toggle('open');button.setAttribute('aria-expanded',String(open));
   button.innerHTML=`${open?'收起匹配依据':'查看匹配依据'} <i class="fas fa-chevron-${open?'up':'down'}"></i>`;
 });
-render('edc');
+renderProfile();
+render(competitionSelect.value);
 </script>
 </body>
 </html>

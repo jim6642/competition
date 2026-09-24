@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人中心 — 竞赛信息门户</title>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--primary:#4f46e5;--soft:#eef2ff;--bg:#f1f5f9;--text:#1e293b;--muted:#64748b;--line:#e2e8f0}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}header{position:sticky;top:0;z-index:20;background:#fffffff0;backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.nav{max-width:1400px;margin:auto;padding:.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{display:flex;align-items:center;gap:10px;color:var(--primary);font-size:1.35rem;font-weight:700;white-space:nowrap}.logo i{font-size:1.6rem}.nav-links{display:flex;align-items:center;gap:1.5rem}.nav-links a{padding:.4rem .8rem;border-radius:8px;color:var(--muted);font-size:.9rem;font-weight:500;white-space:nowrap}.nav-links a:hover,.nav-links a.active{background:var(--soft);color:var(--primary)}.hero{background:linear-gradient(135deg,#4f46e5,#7c3aed 60%,#a855f7);color:#fff}.hero-inner{max-width:1100px;margin:auto;padding:47px 24px 73px}.hero h1{margin:0 0 7px;font-size:clamp(1.8rem,4vw,2.5rem)}.hero p{max-width:680px;margin:0;color:#eef2ff}.container{max-width:1100px;margin:-38px auto 0;padding:0 24px 60px;position:relative}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,.8fr);gap:18px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 8px #1e293b0b;padding:24px}.panel h2{margin:0;font-size:1.2rem}.intro{margin:5px 0 20px;color:var(--muted);font-size:.85rem}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field.wide{grid-column:1/-1}.field label{display:block;margin-bottom:6px;font-size:.82rem;font-weight:700}.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:var(--text);font-size:.88rem}.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid #a5b4fc;border-color:var(--primary)}.field textarea{min-height:84px;resize:vertical}.field small{display:block;margin-top:5px;color:var(--muted);font-size:.75rem}.actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:23px}.primary,.secondary{padding:9px 16px;border-radius:9px;cursor:pointer;font-weight:700}.primary{border:1px solid var(--primary);background:var(--primary);color:#fff}.secondary{border:1px solid var(--line);background:#fff;color:var(--muted)}.primary:hover{background:#4338ca}.secondary:hover{background:#f8fafc}.status{min-height:24px;color:#047857;font-size:.82rem}.status.error{color:#b91c1c}.preview{position:sticky;top:92px}.identity{display:flex;align-items:center;gap:12px;margin:17px 0;padding:14px;border-radius:11px;background:var(--soft)}.avatar{display:grid;place-items:center;width:48px;height:48px;border-radius:12px;background:var(--primary);color:#fff;font-weight:800;font-size:1.2rem}.identity strong{display:block}.identity span{display:block;color:var(--muted);font-size:.78rem}.preview dl{margin:0}.preview dt{margin-top:14px;color:var(--muted);font-size:.75rem}.preview dd{margin:3px 0 0;overflow-wrap:anywhere;font-size:.88rem}.note{margin-top:18px;padding:12px;background:#f8fafc;border-radius:9px;color:var(--muted);font-size:.78rem}.note a{color:var(--primary);font-weight:700}footer{padding:25px 20px;text-align:center;background:#1e293b;color:#94a3b8;font-size:.8rem}@media(max-width:800px){.layout{grid-template-columns:1fr}.preview{position:static}}@media(max-width:600px){.nav{align-items:flex-start;flex-direction:column;padding:12px 16px;gap:8px}.logo{font-size:1.05rem}.logo i{font-size:1.2rem}.nav-links{width:100%;overflow-x:auto;gap:4px}.nav-links a{font-size:.78rem;padding:.35rem .5rem}.hero-inner{padding:36px 18px 67px}.container{padding:0 14px 40px}.panel{padding:18px}.form-grid{grid-template-columns:1fr}.field.wide{grid-column:auto}}
+</style>
+</head>
+<body>
+<header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="resources.html">资料分享</a><a class="active" aria-current="page" href="profile.html">个人中心</a></nav></div></header>
+<section class="hero"><div class="hero-inner"><h1>我的竞赛画像</h1><p>把你的专业背景、技能和组队需求整理成一张可编辑的画像，让匹配更贴近实际竞赛分工。</p></div></section>
+<main class="container"><div class="layout"><section class="panel" aria-labelledby="edit-title"><h2 id="edit-title">编辑个人资料</h2><p class="intro">已填入虚构示例。修改后点击保存，寻找队友页面会读取新资料。</p><form id="profile-form"><div class="form-grid">
+<div class="field"><label for="name">姓名 / 昵称</label><input id="name" name="name" maxlength="30" required></div>
+<div class="field"><label for="school">学校</label><input id="school" name="school" maxlength="60" required></div>
+<div class="field"><label for="major">专业</label><input id="major" name="major" maxlength="60" required></div>
+<div class="field"><label for="grade">年级</label><select id="grade" name="grade" required><option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研一</option><option>研二</option></select></div>
+<div class="field wide"><label for="skills">技能方向</label><input id="skills" name="skills" maxlength="200" placeholder="如：Python、数据分析、海报设计"><small>多个技能用顿号或逗号分隔。</small></div>
+<div class="field wide"><label for="experience">竞赛经历</label><textarea id="experience" name="experience" maxlength="500" placeholder="做过什么项目、负责哪部分、取得什么成果"></textarea></div>
+<div class="field wide"><label for="competition">当前参加目标比赛</label><select id="competition" name="competition"></select></div>
+<div class="field"><label for="role">在队伍中的定位</label><input id="role" name="role" maxlength="80" placeholder="如：算法负责人"></div>
+<div class="field"><label for="wanted">希望寻找的队友类型 / 所需领域</label><input id="wanted" name="wanted" maxlength="120" placeholder="如：视觉、软件开发"><small>寻找队友页面会默认带入这里填写的领域。</small></div>
+</div><div class="actions"><button class="primary" type="submit">保存个人资料</button><button class="secondary" type="button" id="reset-profile">恢复虚构示例</button><span class="status" id="save-status" role="status" aria-live="polite"></span></div></form></section>
+<aside class="panel preview" aria-labelledby="preview-title"><h2 id="preview-title">画像预览</h2><div class="identity"><div class="avatar" id="preview-avatar" aria-hidden="true"></div><div><strong id="preview-name"></strong><span id="preview-identity"></span></div></div><dl><dt>技能方向</dt><dd id="preview-skills"></dd><dt>竞赛经历</dt><dd id="preview-experience"></dd><dt>目标比赛</dt><dd id="preview-competition"></dd><dt>队伍定位</dt><dd id="preview-role"></dd><dt>希望寻找</dt><dd id="preview-wanted"></dd></dl><p class="note">这是浏览器本地演示资料，不需要登录，也不会同步到其他设备或展示给其他人。保存后可去 <a href="team.html">寻找队友</a> 查看推荐。</p></aside></div></main>
+<footer>竞赛信息门户 · 让每一种能力都找到合适的赛场</footer>
+<script src="profile.js"></script><script src="matching-data.js"></script>
+<script>
+const form=document.getElementById('profile-form');
+const status=document.getElementById('save-status');
+const fields=Object.keys(DEFAULT_PROFILE);
+Object.entries(matchScenarios).forEach(([key,scenario])=>form.elements.competition.add(new Option(scenario.label,key)));
+function fill(profile){fields.forEach(key=>{form.elements[key].value=profile[key]||'';});preview();}
+function current(){return Object.fromEntries(fields.map(key=>[key,form.elements[key].value.trim()]));}
+function preview(){
+  const value=current();
+  const show=(id,text)=>document.getElementById(id).textContent=text||'未填写';
+  show('preview-avatar',(value.name||'我').slice(0,1));show('preview-name',value.name);show('preview-identity',[value.school,value.major,value.grade].filter(Boolean).join(' · '));
+  ['skills','experience','role','wanted'].forEach(key=>show('preview-'+key,value[key]));
+  show('preview-competition',matchScenarios[value.competition]?.label);
+}
+form.addEventListener('input',()=>{preview();status.textContent='尚未保存';status.classList.remove('error');});
+form.addEventListener('change',preview);
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  if(!form.reportValidity())return;
+  try{saveProfile(current());status.textContent='已保存到当前浏览器';status.classList.remove('error');}
+  catch(_){status.textContent='保存失败：请检查浏览器是否允许本地存储';status.classList.add('error');}
+});
+document.getElementById('reset-profile').addEventListener('click',()=>{fill(DEFAULT_PROFILE);status.textContent='已恢复示例，请点击保存以应用';status.classList.remove('error');});
+fill(loadProfile());
+</script>
+</body>
+</html>
