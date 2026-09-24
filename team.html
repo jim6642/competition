@@ -1,55 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>智能寻找队友 — 竞赛信息门户</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>智能竞赛组队中心</title>
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--primary:#4f46e5;--bg:#f1f5f9;--card:#fff;--text:#1e293b;--muted:#64748b;--line:#e2e8f0}
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text)}
-header{background:#fff;padding:15px 30px;box-shadow:0 2px 10px #0001}.nav{max-width:1200px;margin:auto;display:flex;justify-content:space-between}.logo{color:var(--primary);font-weight:800;font-size:22px}.nav a{text-decoration:none;color:#64748b;margin-left:20px}
-.container{max-width:1200px;margin:auto;padding:30px}.hero{text-align:center;margin-bottom:30px}.hero h1{font-size:34px}.hero p{color:var(--muted);margin-top:8px}
-.grid{display:grid;grid-template-columns:360px 1fr;gap:25px}.card{background:#fff;border-radius:18px;padding:25px;box-shadow:0 5px 20px #0001;margin-bottom:20px}
-.profile h2,.recommend h2{margin-bottom:18px}.avatar{width:70px;height:70px;border-radius:50%;background:#eef2ff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:bold;margin-bottom:15px}
-.item{margin:12px 0}.label{font-size:13px;color:var(--muted);margin-bottom:5px}.tag{display:inline-block;background:#eef2ff;color:var(--primary);padding:5px 12px;border-radius:15px;font-size:13px;margin:3px}
-.status{background:#f8fafc;padding:15px;border-radius:12px;margin-top:15px;border-left:4px solid var(--primary)}
-.match{border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px;display:flex;justify-content:space-between;gap:20px}.match h3{margin-bottom:5px}.score{font-size:28px;font-weight:800;color:var(--primary)}.reason{color:var(--muted);font-size:14px;margin-top:10px}.bar{height:8px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin-top:5px}.bar span{display:block;height:100%;background:#4f46e5}.analysis{font-size:13px;color:#475569;margin-top:12px}
-.team-box{display:flex;gap:10px;flex-wrap:wrap}.role{padding:10px;border-radius:10px;background:#f8fafc}
-@media(max-width:800px){.grid{grid-template-columns:1fr}}
+:root{--p:#4f46e5;--bg:#f1f5f9;--card:#fff;--text:#1e293b;--muted:#64748b}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,"Microsoft YaHei",sans-serif;color:var(--text)}header{background:#fff;padding:16px 30px;box-shadow:0 2px 10px #0001}.nav{max-width:1200px;margin:auto;display:flex;justify-content:space-between}.logo{font-weight:800;color:var(--p);font-size:22px}.nav a{margin-left:20px;color:var(--muted);text-decoration:none}.container{max-width:1200px;margin:auto;padding:30px}.hero{text-align:center;margin-bottom:30px}.hero h1{font-size:36px}.hero p{color:var(--muted)}.grid{display:grid;grid-template-columns:380px 1fr;gap:25px}.card{background:#fff;border-radius:18px;padding:25px;box-shadow:0 5px 20px #0001;margin-bottom:20px}.avatar{width:70px;height:70px;border-radius:50%;background:#eef2ff;color:var(--p);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:bold}.tag{display:inline-block;background:#eef2ff;color:var(--p);padding:5px 12px;border-radius:20px;margin:3px;font-size:13px}.label{color:var(--muted);font-size:13px;margin-top:15px}.status{background:#f8fafc;padding:15px;border-left:4px solid var(--p);margin-top:15px}.match{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;margin-bottom:15px;display:flex;justify-content:space-between}.score{font-size:30px;color:var(--p);font-weight:800}.bar{height:8px;background:#e2e8f0;border-radius:8px;margin:5px 0}.bar span{display:block;height:100%;background:#4f46e5;border-radius:8px}.small{font-size:14px;color:var(--muted)}.role{background:#f8fafc;padding:10px;border-radius:10px;display:inline-block;margin:5px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header><div class="nav"><div class="logo"><i class="fa fa-trophy"></i> 竞赛信息门户</div><div><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="resources.html">资料分享</a></div></div></header>
-<div class="container">
-<div class="hero"><h1>🤝 智能竞赛组队中心</h1><p>根据专业背景、竞赛经历与团队需求，寻找能力互补的伙伴</p></div>
-<div class="grid">
-<div>
-<div class="card profile">
-<h2>我的竞赛画像</h2>
-<div class="avatar">张</div>
-<h3>张同学</h3>
-<p>电子科技大学 · 微电子科学与工程 · 大三</p>
-<div class="item"><div class="label">团队定位</div>硬件设计负责人</div>
-<div class="item"><div class="label">专业技能</div><span class="tag">FPGA</span><span class="tag">Verilog</span><span class="tag">PCB</span><span class="tag">模拟电路</span></div>
-<div class="item"><div class="label">竞赛经历</div>参与电子设计相关项目，正在准备 FPGA 创新设计竞赛</div>
-<div class="status"><b>当前需求</b><br>寻找：嵌入式开发、算法方向队友<br>目标：电子设计竞赛 / 智能车竞赛</div>
-</div>
-</div>
-<div>
-<div class="card recommend"><h2>AI匹配推荐</h2><div id="result"></div></div>
-<div class="card"><h2>当前队伍分析</h2><p>根据你的能力画像，系统分析：</p><div class="team-box" style="margin-top:15px"><div class="role">已有能力：硬件设计</div><div class="role">缺少：算法开发</div><div class="role">缺少：视觉处理</div></div></div>
-</div>
-</div>
-</div>
+<div class="container"><div class="hero"><h1>🤝 智能竞赛组队中心</h1><p>根据个人能力、比赛目标和团队缺口，寻找最合适的竞赛伙伴</p></div>
+<div class="grid"><div class="card"><h2>我的竞赛画像</h2><div class="avatar">张</div><h3>张同学</h3><p>电子科技大学 · 微电子科学与工程 · 大三</p><div class="label">团队定位</div><p>硬件设计负责人</p><div class="label">能力标签</div><div><span class="tag">FPGA</span><span class="tag">Verilog</span><span class="tag">PCB</span><span class="tag">模拟电路</span></div><div class="label">竞赛经历</div><p>参与电子设计项目，准备FPGA创新设计竞赛</p><div class="label">目标比赛</div><p>全国大学生电子设计竞赛</p><div class="status"><b>当前队伍缺口</b><br>需要：算法开发、嵌入式方向成员</div></div>
+<div><div class="card"><h2>智能匹配结果</h2><div id="list"></div></div><div class="card"><h2>匹配逻辑</h2><p class="small">系统根据以下因素计算匹配度：</p><span class="role">技能互补 40%</span><span class="role">比赛方向 30%</span><span class="role">项目经历 20%</span><span class="role">时间匹配 10%</span></div></div></div></div>
 <script>
-const users=[
-{name:'李同学',major:'计算机科学与技术 · 大三',role:'算法负责人',skills:['Python','OpenCV','深度学习'],exp:'参加智能车竞赛，负责视觉算法模块',score:94,reason:'你的 FPGA 与硬件能力可以和他的算法能力形成互补，适合智能车、电赛等方向',detail:['技能互补 96%','比赛方向 92%','经验匹配 88%']},
-{name:'王同学',major:'自动化 · 大三',role:'嵌入式开发',skills:['STM32','嵌入式','控制系统'],exp:'完成嵌入式控制项目',score:89,reason:'可以补充控制与软件开发能力，形成完整硬件系统团队',detail:['技能互补 90%','比赛方向 91%','经验匹配 82%']},
-{name:'陈同学',major:'机械工程 · 大二',role:'结构设计',skills:['CAD','机械设计','建模'],exp:'机器人竞赛参与者',score:78,reason:'适合机器人类竞赛，补充机械结构方向能力',detail:['技能互补 80%','比赛方向 78%','经验匹配 75%']}
-];
-function render(){document.getElementById('result').innerHTML=users.map(u=>`<div class="match"><div><h3>${u.name}</h3><p>${u.major} · ${u.role}</p>${u.skills.map(s=>`<span class="tag">${s}</span>`).join('')}<p style="margin-top:10px">竞赛经历：${u.exp}</p><div class="analysis">${u.detail.map(d=>d+'<div class="bar"><span style="width:'+d.match(/\d+/)[0]+'%"></span></div>').join('')}</div><div class="reason">推荐理由：${u.reason}</div></div><div class="score">${u.score}%</div></div>`).join('')}
-render();
-</script>
-</body>
-</html>
+const users=[{n:'李同学',m:'计算机科学与技术 · 大三',r:'算法负责人',s:['Python','OpenCV','深度学习'],e:'智能车竞赛视觉算法经验',score:94,why:'补充你的算法能力，形成硬件+算法组合'},{n:'王同学',m:'自动化 · 大三',r:'嵌入式开发',s:['STM32','嵌入式','控制系统'],e:'完成嵌入式控制项目',score:89,why:'补充软件和控制能力，适合电子设计竞赛'},{n:'陈同学',m:'机械工程 · 大二',r:'结构设计',s:['CAD','机械设计','建模'],e:'机器人竞赛经历',score:78,why:'适合机器人方向，补充机械能力'}];
+document.getElementById('list').innerHTML=users.map(u=>`<div class="match"><div><h3>${u.n}</h3><p>${u.m} · ${u.r}</p>${u.s.map(x=>`<span class="tag">${x}</span>`).join('')}<p class="small">竞赛经历：${u.e}</p><p><b>推荐原因：</b>${u.why}</p><div>技能互补<div class="bar"><span style="width:${u.score}%"></span></div></div></div><div class="score">${u.score}%</div></div>`).join('');
+</script></body></html>
