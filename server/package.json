@@ -1,0 +1,17 @@
+{
+  "name": "competition-portal-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "竞赛门户账号、组队招募与私聊 API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node --check server.js && node --check ../api-client.js && node --check ../auth-nav.js && node --check ../team-live.js && node --check ../profile.js && node --check ../matching-data.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.3"
+  }
+}

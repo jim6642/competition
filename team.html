@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>智能竞赛组队 — 竞赛信息门户</title>
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="live.css">
 <style>
 :root{--primary:#4f46e5;--soft:#eef2ff;--bg:#f1f5f9;--text:#1e293b;--muted:#64748b;--line:#e2e8f0;--green:#059669}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6}a{text-decoration:none;color:inherit}button{font:inherit}
@@ -26,21 +28,24 @@ header{position:sticky;top:0;z-index:20;background:#fffffff0;backdrop-filter:blu
 <header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a class="active" aria-current="page" href="team.html">寻找队友</a><a href="resources.html">资料分享</a><a href="profile.html">个人中心</a></nav></div></header>
 <section class="hero"><div class="hero-inner"><span class="eyebrow"><i class="fas fa-users"></i> 竞赛组队实验室</span><h1>找到能补齐队伍拼图的队友</h1><p>从个人竞赛画像出发，识别当前队伍缺口，再根据能力、比赛方向与经历推荐合适的伙伴。</p><div class="flow" aria-label="组队匹配流程"><span><b>1</b>我的竞赛画像</span><span><b>2</b>当前队伍情况</span><span><b>3</b>智能推荐队友</span><span><b>4</b>为什么推荐</span></div></div></section>
 <main class="container">
-<div class="demo-note"><i class="fas fa-circle-info"></i><span>以下均为虚构同学资料，仅用于体验匹配。个人资料和队伍设置保存在当前浏览器，不会发布到网站。</span></div>
+<div class="demo-note"><i class="fas fa-circle-info"></i><span>智能推荐中的候选人是虚构演示资料。登录后可在下方浏览真实用户发布的招募，并与队友私聊。</span></div>
 <section class="panel search-panel" aria-labelledby="search-title"><div class="section-head"><div><h2 id="search-title">先选比赛，再找合适的同学</h2><p>先选目标比赛，再按期望队友的专业、年级和所需领域筛选。</p></div><span class="step">MATCH</span></div><div class="search-grid"><div class="search-field full"><label for="competition-select">目标竞赛</label><select id="competition-select"></select></div><div class="search-field"><label for="search-major">期望队友专业</label><input id="search-major" type="text" maxlength="60" autocomplete="off" placeholder="不限专业"><small>输入专业关键词；留空不限。</small></div><div class="search-field"><label for="search-grade">期望队友年级</label><select id="search-grade"><option value="">不限年级</option><option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研一</option><option>研二</option></select></div><div class="search-field full"><label id="search-domains-title">需要补充的技能方向 / 领域</label><div class="tag-picker" id="search-domains" role="group" aria-labelledby="search-domains-title"></div><small>点击标签可多选，队伍缺口与推荐会同步更新；没有合适的标签时可自定义。</small></div></div><p class="search-note">首次进入会带入你的画像标签；已调整过队伍时可 <button type="button" class="details-button" id="use-profile-domains">重新载入画像标签</button>。也可 <button type="button" class="details-button" id="use-profile-filters">填入我自己的专业和年级</button> 试试同背景筛选；长期修改资料请到 <a href="profile.html">个人中心</a>。</p></section>
 <div class="top-grid">
 <section class="panel" aria-labelledby="profile-title"><div class="section-head"><div><h2 id="profile-title">我的竞赛画像</h2><p>这里展示已保存的画像；可前往 <a class="profile-link" href="profile.html">个人中心编辑</a>。</p></div><span class="step">STEP 01</span></div><div class="identity"><div class="avatar" id="profile-avatar" aria-hidden="true"></div><div><h3 id="profile-name"></h3><p id="profile-identity"></p></div></div><div class="profile-grid">
 <div class="field"><span class="field-label">姓名</span><div class="field-value" id="profile-name-field"></div></div><div class="field"><span class="field-label">年级</span><div class="field-value" id="profile-grade"></div></div><div class="field"><span class="field-label">学校</span><div class="field-value" id="profile-school"></div></div><div class="field"><span class="field-label">专业</span><div class="field-value" id="profile-major"></div></div><div class="field wide"><span class="field-label">技能方向</span><div class="chips" id="profile-skills"></div></div><div class="field wide"><span class="field-label">竞赛经历</span><div class="field-value regular" id="profile-experience"></div></div><div class="field wide"><span class="field-label">当前参加目标比赛</span><div class="field-value" id="profile-goal"></div></div><div class="field"><span class="field-label">在队伍中的定位</span><div class="field-value" id="profile-role"></div></div><div class="field"><span class="field-label">希望寻找的队友类型</span><div class="chips" id="wanted-roles"></div></div>
 </div></section>
 <section class="panel" aria-labelledby="team-title"><div class="section-head"><div><h2 id="team-title">当前队伍情况</h2><p>成员、缺口和招募人数都可以按你目前的状态调整。</p></div><span class="step">STEP 02</span></div><div class="team-top"><strong id="team-name"></strong><p id="team-description"></p></div><div class="team-controls"><button class="small-button" type="button" id="only-me">目前只有我</button><label for="recruit-count">计划招募 <select id="recruit-count"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> 人</label><button class="small-button" type="button" id="reset-team">恢复此比赛示例</button></div><div class="team-columns"><div class="team-column"><h3><i class="fas fa-circle-check"></i> 已有成员</h3><div id="team-members"></div><form class="team-add" id="add-member-form"><input id="member-name" aria-label="新成员姓名" maxlength="30" placeholder="成员姓名" required><input id="member-role" aria-label="新成员分工" maxlength="40" placeholder="负责领域" required><button class="small-button" type="submit">添加</button></form><p class="team-help">可移除示例成员；你自己的资料请在个人中心修改。</p></div><div class="team-column missing"><h3><i class="fas fa-puzzle-piece"></i> 当前缺少</h3><div class="gap-list" id="team-gaps"></div><select class="gap-select" id="new-gap" aria-label="选择要添加的能力缺口"><option value="">选择领域标签</option></select><button class="small-button" type="button" id="add-gap">添加缺口</button><p class="team-help">点击缺口旁的 × 可移除；自定义标签可在上方添加。</p></div></div><p class="team-summary" id="team-summary"></p></section>
-</div>
-<section class="panel recommend-panel" aria-labelledby="recommend-title"><div class="section-head recommend-head"><div><h2 id="recommend-title">智能推荐队友</h2><p id="recommend-subtitle"></p></div><span class="step">STEP 03 / 04</span></div><div class="recommend-grid" id="recommendations"></div><p class="method-note"><strong>匹配依据：</strong>技能互补 40% · 比赛方向 25% · 竞赛经历 20% · 专业方向 15%。分数由当前模拟队伍缺口和候选人资料计算，仅用于演示。</p></section>
+ </div>
+ <section class="panel live-panel" aria-labelledby="live-title"><div class="section-head recommend-head"><div><h2 id="live-title">真实组队招募</h2><p id="live-status" class="live-status">正在连接账号服务……</p></div><span class="step">REAL TEAMS</span></div><div class="live-login" id="live-login" hidden>登录后发布当前招募、查看其他同学的队伍信息并开始私聊。<a href="account.html">登录 / 注册</a></div><div class="live-authenticated" id="live-authenticated" hidden><div class="live-toolbar"><button class="chat-button" id="publish-current" type="button">发布当前队伍招募</button><span id="publish-note" class="live-hint">发布前请检查上方队伍成员和缺口，确认这是你要公开的真实信息。</span></div><div class="live-own-list" id="my-posts-wrap" hidden><h3 class="live-subhead">我发布的招募</h3><div id="my-posts"></div></div><div class="live-columns"><section><h3 class="live-subhead">符合当前筛选的队伍</h3><div class="live-posts" id="live-posts"><div class="live-empty">选择比赛后显示招募。</div></div></section><aside><h3 class="live-subhead">最近私聊</h3><div class="live-conversations" id="live-conversations"><div class="live-empty">登录后可与发布招募的同学私聊。</div></div></aside></div></div></section>
+ <section class="panel recommend-panel" aria-labelledby="recommend-title"><div class="section-head recommend-head"><div><h2 id="recommend-title">智能推荐队友</h2><p id="recommend-subtitle"></p></div><span class="step">STEP 03 / 04</span></div><div class="recommend-grid" id="recommendations"></div><p class="method-note"><strong>演示推荐：</strong>下方虚构候选人的匹配依据为技能互补、比赛方向、竞赛经历和专业方向；真实用户招募位于本区上方。</p></section>
 </main><footer>竞赛信息门户 · 让每一种能力都找到合适的赛场</footer>
-<div class="chat-overlay" id="chat-overlay" hidden><section class="chat-dialog" role="dialog" aria-modal="true" aria-labelledby="chat-title"><div class="chat-header"><div><h2 id="chat-title"></h2><p>私聊演示 · 消息只显示在本页，不会发送给真实用户</p></div><button type="button" class="chat-close" id="chat-close" aria-label="关闭私聊">×</button></div><div class="chat-log" id="chat-log" role="log" aria-live="polite"></div><div class="chat-compose"><div class="chat-shortcuts"><button type="button" id="share-profile">发送我的竞赛资料</button><button type="button" id="share-team">发送当前队伍状态</button></div><textarea id="chat-input" maxlength="500" placeholder="输入想对这位同学说的话……"></textarea><div class="chat-compose-row"><span>仅供演示，不会联网发送。</span><button class="chat-button" type="button" id="chat-send">发送演示消息</button></div></div></section></div>
+ <div class="chat-overlay" id="chat-overlay" hidden><section class="chat-dialog" role="dialog" aria-modal="true" aria-labelledby="chat-title"><div class="chat-header"><div><h2 id="chat-title"></h2><p id="chat-mode-note">私聊演示 · 消息只显示在本页，不会发送给真实用户</p></div><button type="button" class="chat-close" id="chat-close" aria-label="关闭私聊">×</button></div><div class="chat-log" id="chat-log" role="log" aria-live="polite"></div><div class="chat-compose"><div class="chat-shortcuts"><button type="button" id="share-profile">发送我的竞赛资料</button><button type="button" id="share-team">发送当前队伍状态</button></div><textarea id="chat-input" maxlength="1000" placeholder="输入想对这位同学说的话……"></textarea><div class="chat-compose-row"><span id="chat-send-note">仅供演示，不会联网发送。</span><button class="chat-button" type="button" id="chat-send">发送演示消息</button></div></div></section></div>
 <script src="profile.js"></script>
 <script src="matching-data.js"></script>
+<script src="api-client.js"></script>
+<script src="auth-nav.js"></script>
 <script>
-const profile=loadProfile();
+ let profile=loadProfile();
 const competitionSelect=document.getElementById('competition-select');
 Object.entries(matchScenarios).forEach(([key,scenario])=>competitionSelect.add(new Option(scenario.label,key)));
 competitionSelect.value=matchScenarios[profile.competition]?profile.competition:'edc';
@@ -57,7 +62,7 @@ function teamFor(key){
   return current;
 }
 function saveTeam(){try{localStorage.setItem(TEAM_KEY,JSON.stringify(savedTeams));}catch(_){/* 页面仍可在本次访问中使用 */}}
-function updateTeam(){domainPicker.setSelected(teamFor(competitionSelect.value).gaps);saveTeam();render(competitionSelect.value);}
+function updateTeam(){domainPicker.setSelected(teamFor(competitionSelect.value).gaps);saveTeam();render(competitionSelect.value);window.refreshLiveFeed?.();}
 const domainPicker=createTagPicker(document.getElementById('search-domains'),domainTagGroups,()=>{
   teamFor(competitionSelect.value).gaps=domainPicker.getSelected();updateTeam();
 });
@@ -169,11 +174,13 @@ function addBubble(message,mine){
   document.getElementById('chat-log').scrollTop=document.getElementById('chat-log').scrollHeight;
 }
 function demoSend(message){
+ if(window.sendLiveChatMessage){window.sendLiveChatMessage(message);return;}
   if(!activePerson||!message.trim())return;
   const value=message.trim();chatHistory.get(activePerson.name).push(value);addBubble(value,true);
   document.getElementById('chat-input').value='';
 }
 function openChat(name){
+ window.clearLiveChat?.();
   const person=mockCandidates.find(candidate=>candidate.name===name);if(!person)return;
   activePerson=person;previousFocus=document.activeElement;
   document.getElementById('chat-title').textContent=`与 ${person.name} 私聊`;
@@ -186,6 +193,7 @@ function openChat(name){
   document.getElementById('chat-input').focus();
 }
 function closeChat(){
+ window.clearLiveChat?.();
   document.getElementById('chat-overlay').hidden=true;document.body.style.overflow='';activePerson=null;
   if(previousFocus?.isConnected)previousFocus.focus();
 }
@@ -199,7 +207,7 @@ document.getElementById('share-profile').addEventListener('click',()=>{
 });
 document.getElementById('share-team').addEventListener('click',()=>{
   const team=teamFor(competitionSelect.value);
-  demoSend(`【当前队伍状态】\n比赛：${matchScenarios[competitionSelect.value].label}\n已有成员：${profile.name||'我'}（${profile.role||'我的分工'}）${team.members.map(member=>`、${member.name}（${member.role}）`).join('')}\n需要补充：${team.gaps.join('、')||'暂未设置'}\n计划招募：${team.recruitCount} 人`);
+  demoSend(`【当前队伍需求】\n比赛：${matchScenarios[competitionSelect.value].label}\n我的定位：${profile.role||'未填写'}\n需要补充：${team.gaps.join('、')||'暂未设置'}\n计划招募：${team.recruitCount} 人`);
 });
 document.getElementById('recommendations').addEventListener('click',event=>{
   const chatButton=event.target.closest('.chat-button');if(chatButton){openChat(chatButton.dataset.person);return;}
@@ -211,5 +219,6 @@ document.getElementById('recommendations').addEventListener('click',event=>{
 renderProfile();
 render(competitionSelect.value);
 </script>
+<script src="team-live.js"></script>
 </body>
 </html>

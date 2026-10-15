@@ -1,4 +1,4 @@
-// 演示版画像仅保存在当前浏览器，不会上传或分享给其他访客。
+// 匿名演示画像保存在当前浏览器；登录后的账号画像另行同步到服务器。
 const PROFILE_KEY = 'competition.profile.v1';
 const DEFAULT_PROFILE = Object.freeze({
   name: '张同学', school: '电子科技大学', major: '微电子科学与工程', grade: '大三',

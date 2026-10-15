@@ -1,0 +1,1 @@
+.account-entry{color:var(--primary)!important;font-weight:700!important}.account-logout{border:1px solid #c7d2fe;background:#fff;color:var(--primary);border-radius:8px;padding:.35rem .7rem;font-size:.82rem;font-weight:700;white-space:nowrap;cursor:pointer}.account-logout:hover{background:var(--soft)}.account-logout:disabled{opacity:.55;cursor:wait}

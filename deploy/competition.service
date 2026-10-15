@@ -1,0 +1,31 @@
+[Unit]
+Description=Competition Portal API and Website
+After=network.target
+
+[Service]
+Type=simple
+User=competition
+Group=competition
+WorkingDirectory=/var/www/competition/server
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3002
+Environment=COMPETITION_DB_PATH=/var/lib/competition/competition.sqlite
+ExecStartPre=/usr/local/bin/node --check /var/www/competition/server/server.js
+ExecStart=/usr/local/bin/node /var/www/competition/server/server.js
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadOnlyPaths=/var/www/competition
+ReadWritePaths=/var/lib/competition
+
+[Install]
+WantedBy=multi-user.target
