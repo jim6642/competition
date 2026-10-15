@@ -99,6 +99,8 @@ const statements = {
   conversations: db.prepare(`SELECT c.id, c.created_at,
       CASE WHEN c.user_a = @uid THEN ub.id ELSE ua.id END AS other_id,
       CASE WHEN c.user_a = @uid THEN ub.username ELSE ua.username END AS other_name,
+      (SELECT m.id FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_message_id,
+      (SELECT m.sender_id FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_sender_id,
       (SELECT body FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_message,
       (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_at
     FROM conversations c JOIN users ua ON ua.id = c.user_a JOIN users ub ON ub.id = c.user_b

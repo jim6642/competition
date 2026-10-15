@@ -8,12 +8,26 @@
   const myPostsWrap = document.getElementById('my-posts-wrap');
   const conversationsBox = document.getElementById('live-conversations');
   let account = null;
+  let conversationReadStorageKey = null;
   let liveTimer = null;
   let conversationId = null;
   let lastMessageId = 0;
 
   function safe(value) { return escapeHtml(value == null ? '' : value); }
   function empty(text) { return `<div class="live-empty">${safe(text)}</div>`; }
+  function readConversationState() {
+    if (!conversationReadStorageKey) return {};
+    try {
+      const value = JSON.parse(localStorage.getItem(conversationReadStorageKey));
+      return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+    } catch (_) { return {}; }
+  }
+  function markConversationRead(id, messageId) {
+    if (!conversationReadStorageKey || !Number(messageId)) return;
+    const read = readConversationState();
+    read[id] = Math.max(Number(read[id]) || 0, Number(messageId) || 0);
+    try { localStorage.setItem(conversationReadStorageKey, JSON.stringify(read)); } catch (_) { /* unread badge remains best-effort */ }
+  }
   function matchScore(post) {
     const self = profile || {};
     const candidateProfile = post.profile || {};
@@ -68,7 +82,14 @@
     if (!api.enabled || !account) return;
     try {
       const {conversations} = await api.request('/api/conversations');
-      conversationsBox.innerHTML = conversations.length ? conversations.map(item => `<button class="live-conversation" type="button" data-conversation-id="${Number(item.id)}" data-person="${safe(item.other_name)}"><strong>${safe(item.other_name)}</strong><span>${safe(item.last_message || '会话已建立，发一条消息开始交流')}</span></button>`).join('') : empty('还没有私聊。发布招募后可联系其他队伍。');
+      const read = readConversationState();
+      let unreadCount = 0;
+      conversationsBox.innerHTML = conversations.length ? conversations.map(item => {
+        const unread = Number(item.last_sender_id) !== Number(account.id) && Number(item.last_message_id) > (Number(read[item.id]) || 0);
+        if (unread) unreadCount += 1;
+        return `<button class="live-conversation" type="button" data-conversation-id="${Number(item.id)}" data-person="${safe(item.other_name)}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${safe(item.other_name)}</strong>${unread ? '<span style="display:inline-flex;flex:none;padding:2px 7px;border-radius:999px;background:#fef2f2;color:#b91c1c;font-size:.65rem;font-weight:700">新消息</span>' : ''}</div><span>${safe(item.last_message || '会话已建立，发一条消息开始交流')}</span></button>`;
+      }).join('') : empty('还没有私聊。发布招募后可联系其他队伍。');
+      conversationsBox.parentElement.querySelector('.live-subhead').textContent = unreadCount ? `最近私聊 · ${unreadCount} 个会话有新消息` : '最近私聊';
     } catch (error) { conversationsBox.innerHTML = empty(error.message); }
   }
 
@@ -84,6 +105,10 @@
     if (initial) document.getElementById('chat-log').replaceChildren();
     messages.forEach(message => showMessage(message, message.sender_id === account.id));
     if (initial && !messages.length) addBubble('会话已建立。可以先发送你的竞赛资料或当前组队状态。', false);
+    if (initial || messages.length) {
+      markConversationRead(conversationId, lastMessageId);
+      await refreshConversations();
+    }
   }
 
   async function openConversation(id, name) {
@@ -200,6 +225,7 @@
         return;
       }
       account = user;
+      conversationReadStorageKey = `competition.chat.read.v1.account.${user.id}`;
       const {profile: savedProfile} = await api.profile();
       profile = {...savedProfile, name: savedProfile.name || user.username};
       switchTeamState(user.id);
