@@ -31,9 +31,10 @@ header{
   padding: 0.9rem 1.5rem;
 }
 .logo{display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 700; color: var(--primary)}
+.logo{white-space: nowrap}
 .logo i{font-size: 1.6rem}
 .nav-links{display: flex; gap: 1.5rem; align-items: center}
-.nav-links a{font-size: 0.9rem; font-weight: 500; color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 8px}
+.nav-links a{font-size: 0.9rem; font-weight: 500; color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 8px; white-space: nowrap}
 .nav-links a:hover,.nav-links a.active{color: var(--primary); background: #eef2ff}
 
 .hero{
@@ -192,6 +193,13 @@ footer a{color: #cbd5e1}
   .card-grid{grid-template-columns: 1fr}
   .toolbar{flex-direction: column}
   .nav-links{gap: 0.5rem}
+  .nav-links a{font-size: .78rem;padding: .35rem .5rem}
+}
+@media(max-width: 600px){
+  .nav{align-items:flex-start;flex-direction:column;padding:12px 16px;gap:8px}
+  .logo{font-size:1.05rem}
+  .logo i{font-size:1.2rem}
+  .nav-links{width:100%;overflow-x:auto}
 }
 </style>
 </head>
@@ -200,13 +208,11 @@ footer a{color: #cbd5e1}
 <header>
   <div class="nav">
     <a href="index.html" class="logo"><i class="fas fa-trophy"></i>竞赛信息门户</a>
-    <div class="nav-links">
+    <nav class="nav-links" aria-label="主导航">
       <a href="index.html" class="active">竞赛资讯</a>
-      <a href="team.html">🤝 寻找队友</a>
-      <a href="resources.html">📚 资料分享</a>
-      <a href="profile.html">👤 个人中心</a>
-      <a href="mailto:3352875852@qq.com" style="font-weight:600;color:var(--primary)"><i class="far fa-envelope"></i> 3352875852@qq.com</a>
-    </div>
+      <a href="team.html">寻找队友</a>
+      <a href="profile.html">个人中心</a>
+    </nav>
   </div>
 </header>
 
@@ -276,8 +282,9 @@ footer a{color: #cbd5e1}
 
 <footer>
   <p><strong>竞赛信息门户</strong> — 大学生竞赛一站式信息平台</p>
-  <p style="font-size:.82rem;margin-top:.5rem">数据来源各竞赛官网 · 如有出入以官网为准 · <a href="mailto:3352875852@qq.com">📧 联系我</a></p>
+  <p style="font-size:.82rem;margin-top:.5rem">数据来源各竞赛官网 · 如有出入以官网为准</p>
   <p style="font-size:.75rem;margin-top:.8rem">© 2026 Competition Portal</p>
+  <p style="font-size:.82rem;margin-top:.5rem"><a href="mailto:3352875852@qq.com">📧 3352875852@qq.com</a></p>
 </footer>
 
 <script src="data.js"></script>

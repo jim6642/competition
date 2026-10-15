@@ -12,7 +12,7 @@
 </style>
 </head>
 <body>
-<header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="resources.html">资料分享</a><a class="active" aria-current="page" href="profile.html">个人中心</a></nav></div></header>
+<header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a class="active" aria-current="page" href="profile.html">个人中心</a></nav></div></header>
 <section class="hero"><div class="hero-inner"><h1>我的竞赛画像</h1><p>把你的专业背景、技能和组队需求整理成一张可编辑的画像，让匹配更贴近实际竞赛分工。</p></div></section>
 <main class="container"><div class="layout"><section class="panel" aria-labelledby="edit-title"><h2 id="edit-title">编辑个人资料</h2><p class="intro">已填入虚拟示例，可编辑技能标签。登录后保存会同步到账号，可用于真实组队和私聊。</p><form id="profile-form"><div class="form-grid">
 <div class="field"><label for="name">姓名 / 昵称</label><input id="name" name="name" maxlength="30" required></div>
@@ -26,7 +26,7 @@
 <div class="field wide"><span class="field-title" id="wanted-title">希望寻找的队友类型 / 所需领域</span><div class="tag-picker" id="wanted-tags" role="group" aria-labelledby="wanted-title"></div><small>与寻找队友页使用同一套领域标签；自定义领域若没有对应候选人能力，演示版可能无法匹配。</small></div>
 </div><div class="actions"><button class="primary" type="submit">保存个人资料</button><button class="secondary" type="button" id="reset-profile">恢复虚构示例</button><span class="status" id="save-status" role="status" aria-live="polite"></span></div></form></section>
 <aside class="panel preview" aria-labelledby="preview-title"><h2 id="preview-title">画像预览</h2><div class="identity"><div class="avatar" id="preview-avatar" aria-hidden="true"></div><div><strong id="preview-name"></strong><span id="preview-identity"></span></div></div><dl><dt>技能方向</dt><dd id="preview-skills"></dd><dt>竞赛经历</dt><dd id="preview-experience"></dd><dt>目标比赛</dt><dd id="preview-competition"></dd><dt>队伍定位</dt><dd id="preview-role"></dd><dt>希望寻找</dt><dd id="preview-wanted"></dd></dl><p class="note">未登录时资料只保存在当前浏览器。登录后保存会同步到账号；发布招募时，你主动公开的竞赛画像会显示给其他参赛同学。<a href="team.html">前往寻找队友</a></p></aside></div></main>
-<footer>竞赛信息门户 · 让每一种能力都找到合适的赛场</footer>
+<footer>竞赛信息门户 · 让每一种能力都找到合适的赛场<br><a href="mailto:3352875852@qq.com" style="color:#cbd5e1;text-decoration:underline;text-underline-offset:3px">📧 3352875852@qq.com</a></footer>
 <script src="profile.js"></script><script src="matching-data.js"></script><script src="api-client.js"></script><script src="auth-nav.js"></script>
 <script>
 const form=document.getElementById('profile-form');

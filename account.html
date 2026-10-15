@@ -11,10 +11,10 @@
 </style>
 </head>
 <body>
-<header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="resources.html">资料分享</a><a href="profile.html">个人中心</a></nav></div></header>
+<header><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="profile.html">个人中心</a></nav></div></header>
 <section class="hero"><div class="hero-inner"><h1>进入竞赛组队社区</h1><p>登录后同步竞赛画像、发布招募信息，并与真实队友交流。</p></div></section>
 <main class="container"><section class="panel" aria-label="账号登录和注册"><div class="tabs"><button type="button" id="login-tab" aria-pressed="true">登录</button><button type="button" id="register-tab" aria-pressed="false">注册账号</button></div><form id="account-form"><div class="field"><label for="username">用户名</label><input id="username" name="username" autocomplete="username" minlength="2" maxlength="24" required><p class="help">2–24 位中文、字母、数字、下划线或短横线。</p></div><div class="field"><label for="password">密码</label><input id="password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required><p class="help" id="password-help">至少 8 位。请妥善保管密码。</p></div><div class="field" id="confirm-wrap" hidden><label for="confirm-password">确认密码</label><input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="128"></div><button class="submit" id="submit-button" type="submit">登录</button><p class="status" id="form-status" role="status" aria-live="polite"></p></form><p class="local-note">GitHub Pages 仍提供匿名演示。账号功能只在竞赛站服务器启用。注册后建议到<a href="profile.html">个人中心</a>补充学校、专业和年级。</p></section></main>
-<footer>竞赛信息门户 · 让每一种能力都找到合适的赛场</footer>
+<footer>竞赛信息门户 · 让每一种能力都找到合适的赛场<br><a href="mailto:3352875852@qq.com" style="color:#cbd5e1;text-decoration:underline;text-underline-offset:3px">📧 3352875852@qq.com</a></footer>
 <script src="profile.js"></script><script src="api-client.js"></script><script src="auth-nav.js"></script>
 <script>
 const form=document.getElementById('account-form'),status=document.getElementById('form-status'),submit=document.getElementById('submit-button');

@@ -1,13 +1,13 @@
 # 竞赛信息门户
 
-大学生竞赛一站式平台：竞赛资讯、智能组队匹配、资料分享和个人竞赛画像。
+大学生竞赛一站式平台：竞赛资讯、智能组队匹配和个人竞赛画像。
 
 ## 功能
 
 - 竞赛资讯：首页筛选、竞赛日历与详情卡片，静态运行。
 - 寻找队友：保留 50 位虚构候选人供演示；竞赛站账号可发布真实招募、筛选其他队伍并进行私聊。
 - 个人中心：技能使用统一标签，也可添加自定义标签；登录后资料保存到账号。
-- 资料分享：继续使用当前 Supabase 功能。
+- 资料分享：暂时下线；访问旧地址会返回竞赛资讯，现有资料数据保留。
 - GitHub Pages 保留匿名演示；账号、招募和私聊由独立 Node 服务提供。
 
 ## 本地运行后端
@@ -33,7 +33,7 @@ npm start
 
 ```
 competition/
-├── index.html, team.html, profile.html, resources.html
+├── index.html, team.html, profile.html, resources.html  # resources.html redirects to index.html
 ├── api-client.js, auth-nav.js, team-live.js
 ├── assets/images/
 ├── server/                 # Node API 与 better-sqlite3 依赖
