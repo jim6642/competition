@@ -16,51 +16,30 @@
   function empty(text) { return `<div class="live-empty">${safe(text)}</div>`; }
   function matchScore(post) {
     const self = profile || {};
-    const skills = [...splitProfileList(self.skills), self.role || ''].join(' ');
-    const domainWords = {
-      '算法': /算法|python|c\+\+|java|图论|动态规划|matlab|数学/i,
-      '视觉': /视觉|opencv|图像|识别|人工智能|ros/i,
-      '软件开发': /软件|编程|python|c\+\+|java|开发|数据库|qt/i,
-      '机械结构': /机械|结构|solidworks|三维|建模/i,
-      '三维建模': /三维|solidworks|机械|结构|建模/i,
-      '嵌入式': /嵌入式|stm32|单片机|verilog|fpga|电子|电路/i,
-      '数据分析': /数据|统计|数学|matlab|python|建模/i,
-      '论文写作': /论文|写作|研究|英语|latex/i,
-      '英文写作': /英文|英语|写作|latex/i,
-      '可视化': /可视化|设计|数据|figma|图表/i,
-      '产品设计': /产品|设计|交互|figma|用户/i,
-      '商业分析': /商业|市场|经济|管理|分析/i,
-      '路演表达': /路演|表达|演讲|传播|市场/i,
-      '代码实现': /代码|编程|python|c\+\+|java|软件/i,
-      '测试优化': /测试|优化|调试|软件|机器人/i,
-      '云计算': /云|linux|网络|部署|计算机/i,
-      '网络安全': /网络|安全|linux|密码|信息/i
-    };
-    const gaps = Array.isArray(post.gaps) ? post.gaps : [];
-    const covered = gaps.filter(gap => domainWords[gap]?.test(skills) || skills.toLocaleLowerCase().includes(String(gap).toLocaleLowerCase()));
-    const skill = gaps.length ? Math.round(100 * covered.length / gaps.length) : 40;
-    const related = matchScenarios[self.competition]?.related || [];
-    const direction = self.competition === post.competition ? 100 : related.includes(post.competition) ? 75 : 45;
-    const experience = self.experience && post.profile?.experience ? 90 : self.experience || post.profile?.experience ? 65 : 40;
+    const candidateProfile = post.profile || {};
+    const targetCompetition = competitionSelect.value;
+    const related = matchScenarios[targetCompetition]?.related || [];
+    const direction = targetCompetition === post.competition ? 100 : related.includes(post.competition) ? 75 : 45;
+    const experience = self.experience && candidateProfile.experience ? 90 : self.experience || candidateProfile.experience ? 65 : 40;
     const myMajor = String(self.major || '').trim();
-    const theirMajor = String(post.profile?.major || '').trim();
+    const theirMajor = String(candidateProfile.major || '').trim();
     const major = myMajor && theirMajor && myMajor === theirMajor ? 100 : 65;
-    const score = Math.round(skill * .4 + direction * .25 + experience * .2 + major * .15);
+    const score = Math.round(direction * .4 + experience * .35 + major * .25);
     const reasons = [];
-    if (covered.length) reasons.push(`技能可补充${covered.join('、')}`);
-    if (direction === 100) reasons.push('目标比赛一致');
-    if (experience >= 85) reasons.push('双方都有竞赛经历');
-    if (!reasons.length) reasons.push('比赛方向和当前筛选条件符合');
-    return {score, covered, reasons: reasons.join('；')};
+    if (direction === 100) reasons.push('目标竞赛一致');
+    else if (direction === 75) reasons.push('竞赛方向相近');
+    if (experience === 90) reasons.push('双方都有竞赛经历');
+    else if (experience === 65) reasons.push('有一方具备竞赛经历');
+    if (major === 100) reasons.push('专业背景相同');
+    return {score, reasons: reasons.join('；') || '可以进一步沟通了解分工'};
   }
 
-  function renderPost(post) {
+  function renderPost(post, match = matchScore(post)) {
     const p = post.profile || {};
     const contest = matchScenarios[post.competition]?.label || post.competition;
     const skills = splitProfileList(p.skills);
     const gaps = post.gaps || [];
     const members = Array.isArray(post.team?.members) ? post.team.members : [];
-    const match = matchScore(post);
     const contact = `<button class="chat-button live-contact" type="button" data-post-id="${Number(post.id)}" data-person="${safe(p.name || post.username)}">私聊队长</button>`;
     return `<article class="live-card"><div class="live-card-top"><div><h4>${safe(contest)}</h4><p>${safe(p.name || post.username)} · ${safe(p.school || '学校未填写')}</p></div><span class="live-match">${match.score}% 匹配</span></div><p>${safe(p.major || '专业未填写')} · ${safe(p.grade || '年级未填写')} · 招募 ${Number(post.recruitCount)} 人</p><div><span class="field-label">队伍现有成员</span><p>${members.length ? members.map(item => `${safe(item.name)}（${safe(item.role)}）`).join('、') : '仅公开发起者资料'}</p></div><div><span class="field-label">技能方向</span><div class="chips">${skills.length ? skills.map(tag => `<span class="chip">${safe(tag)}</span>`).join('') : '<span class="candidate-sub">尚未填写</span>'}</div></div><p><strong>竞赛经历：</strong>${safe(p.experience || '尚未填写')}</p><div><span class="field-label">队伍当前缺口</span><div class="chips">${gaps.map(tag => `<span class="gap">${safe(tag)}</span>`).join('')}</div></div><p><strong>推荐理由：</strong>${safe(match.reasons)}</p><div class="live-card-actions"><span class="candidate-sub">发布于 ${safe(new Date(post.createdAt).toLocaleDateString('zh-CN'))}</span>${contact}</div></article>`;
   }
@@ -72,15 +51,13 @@
       const data = await api.request(`/api/team-posts?competition=${encodeURIComponent(competition)}`);
       const major = document.getElementById('search-major').value.trim().toLocaleLowerCase();
       const grade = document.getElementById('search-grade').value;
-      const selectedDomains = domainPicker.getSelected();
-      const eligible = data.posts.filter(post => {
+      const eligible = data.posts.map(post => ({post, match: matchScore(post)})).filter(({post}) => {
         const p = post.profile || {};
         if (major && !String(p.major || '').toLocaleLowerCase().includes(major)) return false;
         if (grade && p.grade !== grade) return false;
-        if (selectedDomains.length && !selectedDomains.some(tag => (post.gaps || []).includes(tag))) return false;
         return true;
-      }).sort((a, b) => matchScore(b).score - matchScore(a).score);
-      postsBox.innerHTML = eligible.length ? eligible.map(renderPost).join('') : empty('还没有符合这些条件的真实招募。可以调整专业、年级或领域筛选。');
+      }).sort((a, b) => b.match.score - a.match.score);
+      postsBox.innerHTML = eligible.length ? eligible.map(({post, match}) => renderPost(post, match)).join('') : empty('暂时没有符合当前比赛、专业和年级条件的有效招募。可清空专业或年级筛选，查看该比赛下的全部招募。');
       const activeOwn = data.own.filter(post => post.active);
       myPostsWrap.hidden = !activeOwn.length;
       myPostsBox.innerHTML = activeOwn.map(post => `<div class="live-my-post"><div><strong>${safe(matchScenarios[post.competition]?.label || post.competition)}</strong><br><span>招募 ${Number(post.recruitCount)} 人 · ${safe((post.gaps || []).join('、'))}</span></div><button class="live-delete" type="button" data-delete-post="${Number(post.id)}">结束招募</button></div>`).join('');
@@ -217,10 +194,9 @@
       account = user;
       const {profile: savedProfile} = await api.profile();
       profile = {...savedProfile, name: savedProfile.name || user.username};
-      if (matchScenarios[profile.competition]) {
-        competitionSelect.value = profile.competition;
-        domainPicker.setSelected(teamFor(competitionSelect.value).gaps);
-      }
+      switchTeamState(user.id);
+      if (matchScenarios[profile.competition]) competitionSelect.value = profile.competition;
+      domainPicker.setSelected(teamFor(competitionSelect.value).gaps);
       try { saveProfile(profile); } catch (_) { /* 登录态和服务器资料不依赖浏览器本地存储。 */ }
       renderProfile();
       render(competitionSelect.value);
