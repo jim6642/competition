@@ -155,7 +155,15 @@
       const {conversationId: id} = await api.request('/api/conversations', {method: 'POST', body: JSON.stringify({postId: Number(button.dataset.postId)})});
       await refreshConversations();
       await openConversation(id, button.dataset.person);
-    } catch (error) { alert(error.message); }
+    } catch (error) {
+      if (error.message === '这条招募信息不可联系。') {
+        await refreshFeed();
+        status.textContent = '这条招募可能已结束，或属于当前登录账号；招募列表已刷新，请选择其他仍有效的队伍。';
+      } else {
+        status.textContent = error.message;
+      }
+      status.classList.add('error');
+    }
     finally { button.disabled = false; }
   });
 
@@ -202,7 +210,7 @@
       render(competitionSelect.value);
       privateBox.hidden = false;
       loginBox.hidden = true;
-      status.textContent = `已登录 ${user.username}。真实用户招募会按比赛、专业、年级和领域筛选。`;
+      status.textContent = `已登录 ${user.username}。真实招募按比赛展示；专业和年级为可选筛选，技能标签仅作展示。`;
       await Promise.all([refreshFeed(), refreshConversations()]);
       setInterval(refreshConversations, 15000);
     } catch (error) {
