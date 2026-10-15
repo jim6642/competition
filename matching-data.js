@@ -35,3 +35,24 @@ const mockCandidates = Object.entries(matchPools).flatMap(([contest, pool], cont
     competitions:[contest,...(index === 3 ? matchScenarios[contest].related.slice(0,1) : [])],
     experience:`${matchScenarios[contest].label}${prize}，负责${role}方向的${skills[0]}与项目协作。`,experienceLevel:level};
 }));
+
+// 个人画像与组队筛选共用固定标签，避免自由输入造成同义词无法匹配。
+const skillTagGroups = {
+  '电子硬件': ['FPGA','Verilog','PCB 设计','模拟电路','STM32','C语言','传感器','单片机','硬件调试'],
+  '编程算法': ['Python','C++','Java','动态规划','图论','搜索算法','控制算法','复杂度分析'],
+  '视觉机器人': ['OpenCV','计算机视觉','ROS','ROS2','目标识别','路径规划','SolidWorks','结构设计','三维建模'],
+  '建模数据': ['MATLAB','数学建模','统计建模','数据分析','数据清洗','数据可视化','LaTeX'],
+  '产品表达': ['Figma','交互原型','用户研究','视觉设计','商业模式','市场调研','论文写作','英文写作','路演表达'],
+  '云网安全': ['Linux','云计算','网络规划','网络安全','数据库']
+};
+const domainTagGroups = {
+  '电子与机器人': ['算法','视觉','软件开发','机械结构','嵌入式','三维建模','测试优化'],
+  '建模与科研': ['数据分析','论文写作','英文写作','可视化'],
+  '创新创业': ['产品设计','商业分析','路演表达'],
+  '编程与 ICT': ['代码实现','云计算','网络安全']
+};
+const commonSkillTags = new Set(Object.values(skillTagGroups).flat());
+skillTagGroups['更多竞赛技能'] = [...new Set(mockCandidates.flatMap(candidate => candidate.skills))]
+  .filter(tag => !commonSkillTags.has(tag)).sort((a,b) => a.localeCompare(b,'zh-CN'));
+const skillTagOptions = Object.values(skillTagGroups).flat();
+const domainTagOptions = Object.values(domainTagGroups).flat();
