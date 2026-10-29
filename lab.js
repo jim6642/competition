@@ -12,11 +12,12 @@
   const summaryLabels = ['组队状态','当前年级','专业方向','感兴趣的方向','已有能力','项目与竞赛经历','目标比赛','每周投入时间','期待的伙伴'];
   function validValue(question,value) {
     const allowed = question.options.map(o=>o.value);
-    return question.multi ? Array.isArray(value)&&value.length>0&&value.length<=question.max&&value.every(v=>allowed.includes(v))&&!(question.key==='skills'&&value.includes('starting')&&value.length>1) : allowed.includes(value);
+    return question.multi ? Array.isArray(value)&&value.length>0&&value.length<=question.max&&value.every(v=>allowed.includes(v))&&!(question.exclusive&&value.includes(question.exclusive)&&value.length>1) : allowed.includes(value);
   }
   function sanitizeAnswers(source) {
     if (!source || typeof source!=='object') return {};
-    return Object.fromEntries(catalog.questions.filter(q=>validValue(q,source[q.key])).map(q=>[q.key,source[q.key]]));
+    const normalized=catalog.normalizeAnswers(source);
+    return Object.fromEntries(catalog.questions.filter(q=>validValue(q,normalized[q.key])).map(q=>[q.key,normalized[q.key]]));
   }
   function loadDraft(key) {try {return JSON.parse(localStorage.getItem(key)) || null;} catch (_) {return null;}}
   function persist() {
@@ -85,9 +86,9 @@
     if(q.multi) {
       let selected=[...(answers[q.key]||[])];
       if(selected.includes(value))selected=selected.filter(v=>v!==value);
-      else if(value==='starting')selected=['starting'];
+      else if(value===q.exclusive)selected=[value];
       else {
-        selected=selected.filter(v=>v!=='starting');
+        selected=selected.filter(v=>v!==q.exclusive);
         if(selected.length>=q.max){$('selection-note').textContent=`最多选择 ${q.max} 项；可先取消一项。`;$('selection-note').classList.add('error');return;}
         selected.push(value);
       }

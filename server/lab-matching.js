@@ -5,6 +5,7 @@ const parse = (text, fallback) => {try {return JSON.parse(text);} catch (_) {ret
 const list = value => String(value || '').split(/[、,，;；\n]+/).map(s=>s.trim()).filter(Boolean);
 function validateAnswers(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw Object.assign(new Error('请完成选择后再查看推荐。'),{status:400});
+  input = catalog.normalizeAnswers(input);
   const answers = {};
   for (const question of catalog.questions) {
     const allowed = new Set(question.options.map(o=>o.value));
@@ -12,7 +13,7 @@ function validateAnswers(input) {
     if (question.multi) {
       if (!Array.isArray(value) || !value.length || value.length > question.max || value.some(v=>typeof v!=='string'||!allowed.has(v))) throw Object.assign(new Error(`请重新选择「${question.title}」。`),{status:400});
       answers[question.key] = [...new Set(value)];
-      if (question.key==='skills' && value.includes('starting') && value.length>1) throw Object.assign(new Error('入门选项与已有能力请分别选择。'),{status:400});
+      if (question.exclusive && value.includes(question.exclusive) && value.length>1) throw Object.assign(new Error(`「${catalog.label(question.key,question.exclusive)}」请单独选择。`),{status:400});
     } else {
       if (typeof value!=='string' || !allowed.has(value)) throw Object.assign(new Error(`请完成「${question.title}」。`),{status:400});
       answers[question.key] = value;
@@ -42,31 +43,36 @@ function candidatePool(db, viewerId) {
   return [...candidates.values()];
 }
 function rankCandidate(answers, candidate) {
-  const other = candidate.answers;
+  answers = catalog.normalizeAnswers(answers);
+  const other = catalog.normalizeAnswers(candidate.answers);
   const p = candidate.profile;
   const skills = other ? other.skills.filter(s=>s!=='starting') : list(p.skills);
   const domains = domainsFor(skills);
   const interests = other?.interests || domains;
-  const goals = [...new Set([...(other && other.competition!=='unsure'?[other.competition]:[]),...candidate.posts.map(p=>p.competition)])];
-  const sameContest = answers.competition!=='unsure' && goals.includes(answers.competition);
+  const goals = [...new Set([...(other?other.competition.filter(c=>c!=='unsure'):[]),...candidate.posts.map(p=>p.competition)])];
+  const sharedContests = answers.competition.filter(c=>c!=='unsure'&&goals.includes(c));
   const shared = answers.interests.filter(v=>interests.includes(v));
   const myDomains = domainsFor(answers.skills);
   const fills = answers.interests.filter(d=>domains.includes(d)&&!myDomains.includes(d));
   const otherExperience = other ? experienceLevels[other.experience] : /获奖|一等奖|二等奖|三等奖|带队/.test(p.experience||'')?4:/竞赛|比赛|省赛|国赛/.test(p.experience||'')?3:/项目/.test(p.experience||'')?2:0;
   const myExperience = experienceLevels[answers.experience];
   const reasons = [];
-  let score = sameContest?35:answers.competition==='unsure'?14:0;
-  if (sameContest) reasons.push(`都关注${catalog.label('competition',answers.competition)}`);
+  let score = sharedContests.length?35:answers.competition.includes('unsure')?14:0;
+  if (sharedContests.length) reasons.push(`共同目标：${sharedContests.map(c=>catalog.label('competition',c)).join('、')}`);
   if (shared.length) {score+=Math.min(25,shared.length*10);reasons.push(`共同兴趣：${shared.map(d=>catalog.label('interests',d)).slice(0,2).join('、')}`);}
-  if (answers.preference==='complement'&&fills.length) {score+=20;reasons.push(`可补充${fills.map(d=>catalog.label('interests',d)).slice(0,2).join('、')}能力`);}
-  if (answers.preference==='similar') score+=Math.min(20,shared.length*8);
-  if (answers.preference==='mentor'&&otherExperience>myExperience) {score+=20;reasons.push('对方拥有更多项目或竞赛经验');}
-  if (answers.preference==='peer'&&Math.abs(otherExperience-myExperience)<=1) {score+=20;reasons.push('经历阶段接近，可以一起积累经验');}
+  let preferenceScore=0;
+  if (answers.preference.includes('complement')&&fills.length) {preferenceScore=20;reasons.push(`可补充${fills.map(d=>catalog.label('interests',d)).slice(0,2).join('、')}能力`);}
+  if (answers.preference.includes('similar')) preferenceScore=Math.max(preferenceScore,Math.min(20,shared.length*8));
+  if (answers.preference.includes('mentor')&&otherExperience>myExperience) {preferenceScore=20;reasons.push('对方拥有更多项目或竞赛经验');}
+  if (answers.preference.includes('peer')&&Math.abs(otherExperience-myExperience)<=1) {preferenceScore=20;reasons.push('经历阶段接近，可以一起积累经验');}
+  // Multiple preferences broaden acceptable partners without multiplying their weight.
+  score+=preferenceScore;
   if (other && (other.availability===answers.availability||other.availability==='flexible'||answers.availability==='flexible')) {score+=10;reasons.push('可投入时间比较合拍');}
-  if (answers.intent==='join'&&(other?.intent==='recruit'||candidate.posts.length)) {score+=10;reasons.push('对方正在寻找队友');}
-  if (answers.intent==='recruit'&&other?.intent==='join') {score+=10;reasons.push('对方希望加入一支队伍');}
+  const recruiting=answers.intent.includes('join')&&(other?.intent.includes('recruit')||candidate.posts.length);
+  const joining=answers.intent.includes('recruit')&&other?.intent.includes('join');
+  if (recruiting||joining) {score+=10;reasons.push(recruiting?'对方正在寻找队友':'对方希望加入一支队伍');}
   if (!reasons.length) reasons.push('正在组队的真实同学，可以先交流具体方向');
-  return {score,userId:candidate.id,name:p.name||candidate.username,school:p.school||'',major:p.major||(other?catalog.label('discipline',other.discipline):''),grade:other&&other.grade!=='other'?other.grade:p.grade||'',skills:skills.slice(0,8),experience:p.experience||(other?catalog.label('experience',other.experience):''),intent:other?.intent||(candidate.posts.length?'recruit':'explore'),competitions:goals,reasons:reasons.slice(0,3),postId:candidate.posts[0]?.id||null};
+  return {score,userId:candidate.id,name:p.name||candidate.username,school:p.school||'',major:p.major||(other?other.discipline.map(d=>catalog.label('discipline',d)).join(' / '):''),grade:other&&other.grade!=='other'?other.grade:p.grade||'',skills:skills.slice(0,8),experience:p.experience||(other?catalog.label('experience',other.experience):''),intent:other?other.intent.map(i=>catalog.label('intent',i)).join(' / '):(candidate.posts.length?'recruit':'explore'),competitions:goals,reasons:reasons.slice(0,3),postId:candidate.posts[0]?.id||null};
 }
 function match(db, userId, answers) {
   const ranked = candidatePool(db,userId).map(c=>rankCandidate(answers,c)).sort((a,b)=>b.score-a.score||a.userId-b.userId);

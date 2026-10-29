@@ -8,7 +8,7 @@ const path = require('node:path');
 const {spawn} = require('node:child_process');
 const {once} = require('node:events');
 const {validateAnswers,rankCandidate} = require('./lab-matching');
-const baseAnswers = () => ({intent:'join',grade:'大二',discipline:'engineering',interests:['hardware','robotics'],skills:['FPGA'],experience:'course',competition:'edc',availability:'steady',preference:'complement'});
+const baseAnswers = () => ({intent:['join'],grade:'大二',discipline:['engineering'],interests:['hardware','robotics'],skills:['FPGA'],experience:'course',competition:['edc'],availability:'steady',preference:['complement']});
 
 test('answers enforce enumerations, limits and exclusive beginner selection',()=>{
   assert.deepEqual(validateAnswers({...baseAnswers(),unexpected:'ignored'}),baseAnswers());
@@ -18,6 +18,25 @@ test('answers enforce enumerations, limits and exclusive beginner selection',()=
   assert.throws(()=>validateAnswers({...baseAnswers(),skills:['starting','Python']}),{status:400});
   assert.throws(()=>validateAnswers({...baseAnswers(),skills:Array(13).fill('Python')}),{status:400});
   assert.deepEqual(validateAnswers({...baseAnswers(),skills:['starting']}).skills,['starting']);
+  assert.throws(()=>validateAnswers({...baseAnswers(),competition:['unsure','edc']}),{status:400});
+  assert.throws(()=>validateAnswers({...baseAnswers(),competition:['edc','invented']}),{status:400});
+  assert.throws(()=>validateAnswers({...baseAnswers(),competition:[]}),{status:400});
+  assert.throws(()=>validateAnswers({...baseAnswers(),discipline:['engineering','science','arts','business']}),{status:400});
+  assert.deepEqual(validateAnswers({...baseAnswers(),competition:['edc','robomaster','edc']}).competition,['edc','robomaster']);
+  const legacy={...baseAnswers(),intent:'join',discipline:'engineering',competition:'edc',preference:'complement'};
+  assert.deepEqual(validateAnswers(legacy),baseAnswers());
+  assert.equal(legacy.competition,'edc');
+});
+test('multiple targets match any shared contest, preserve labels and cap preference weight',()=>{
+  const answers={...baseAnswers(),intent:['join','recruit'],discipline:['engineering','science'],competition:['cumcm','edc'],preference:['complement','similar','mentor','peer']};
+  const candidate={id:2,username:'test',profile:{},answers:{...baseAnswers(),intent:['join','recruit'],competition:['robomaster','edc'],discipline:['engineering','science'],skills:['ROS'],experience:'project'},posts:[]};
+  const result=rankCandidate(answers,candidate);
+  assert.ok(result.reasons.some(s=>s.includes('电子设计竞赛')));
+  assert.deepEqual(result.competitions,['robomaster','edc']);
+  assert.equal(result.major,'工科 / 理科');
+  assert.ok(result.intent.includes('加入')&&result.intent.includes('缺人'));
+  assert.equal(result.score,rankCandidate({...answers,preference:['complement']},candidate).score);
+  assert.ok(result.score>rankCandidate({...answers,competition:['mcm']},candidate).score);
 });
 test('ranking prefers relevant complementary real capabilities but keeps other candidates',()=>{
   const candidate={id:2,username:'test',profile:{name:'test'},answers:{...baseAnswers(),intent:'recruit',skills:['ROS','OpenCV'],experience:'project'},posts:[]};
@@ -54,14 +73,24 @@ test('isolated API: opt-in visibility, private answers, real matching and author
     const save=(user,discoverable,answers=baseAnswers())=>request('/api/lab/profile','PUT',{answers,discoverable},user.cookie);
     assert.equal((await save(a,false)).status,200);
     assert.equal((await save(b,true,{...baseAnswers(),intent:'recruit',skills:['ROS']})).status,200);
+    // Simulate an already-saved v1 profile; migration is read-time and non-destructive.
+    const Database=require('better-sqlite3');
+    const legacyDb=new Database(databasePath);
+    try {
+      legacyDb.prepare('UPDATE lab_profiles SET answers_json=? WHERE user_id=?').run(JSON.stringify({...baseAnswers(),intent:'recruit',discipline:'engineering',competition:'edc',preference:'complement',skills:['ROS']}),b.id);
+    } finally {legacyDb.close();}
     assert.equal((await save(c,false)).status,200);
     assert.equal((await request('/api/lab/profile','PUT',{answers:{...baseAnswers(),skills:['invalid']},discoverable:true},a.cookie)).status,400);
     const published=await request('/api/team-posts','POST',{competition:'edc',recruitCount:1,gaps:['视觉'],members:[]},d.cookie);
     assert.equal(published.status,201);
-    const recommendations=await request('/api/lab/matches','POST',{answers:baseAnswers()},a.cookie);
+    const multiAnswers={...baseAnswers(),competition:['robomaster','edc'],preference:['complement','similar'],intent:['join','recruit']};
+    assert.equal((await save(a,false,multiAnswers)).status,200);
+    assert.deepEqual((await request('/api/lab/profile','GET',undefined,a.cookie)).data.answers.competition,['robomaster','edc']);
+    const recommendations=await request('/api/lab/matches','POST',{answers:multiAnswers},a.cookie);
     assert.equal(recommendations.status,200);
     assert.deepEqual(new Set(recommendations.data.matches.map(p=>p.userId)),new Set([b.id,d.id]));
     assert.ok(recommendations.data.matches.every(p=>!('score' in p)&&!('password_hash' in p)&&!('answers_json' in p)));
+    assert.ok(recommendations.data.matches.find(p=>p.userId===b.id).reasons.some(reason=>reason.includes('电子设计竞赛')));
     assert.equal((await request('/api/profile','GET',undefined,a.cookie)).data.profile.grade,'大三');
     assert.equal((await request('/api/conversations','POST',{labUserId:c.id},a.cookie)).status,404);
     assert.equal((await request('/api/conversations','POST',{labUserId:a.id},a.cookie)).status,404);
