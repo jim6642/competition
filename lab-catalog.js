@@ -22,7 +22,7 @@
     {label:'写作与表达', domain:'writing', skills:['论文写作','英文写作','LaTeX','PPT','路演表达','项目管理']}
   ];
   const questions = [
-    {key:'intent', tag:'从你的当下开始', title:'这次，你想怎样开始？', hint:'可以多选。不同比赛里，可以既想加入队伍，也想招募伙伴。', multi:true,max:3,options:[opt('join','我想加入一支队伍','带上自己的能力，找一个一起做事的团队','01'),opt('recruit','我的队伍还缺人','已有想法或伙伴，想补充新的能力','02'),opt('explore','先认识同方向的人','比赛还没定，想先找到一起成长的伙伴','03')]},
+    {key:'intent', tag:'从你的当下开始', title:'这次，你想怎样开始？', hint:'单选，选择这次最主要的组队意向。不需要先有一支完整队伍。',options:[opt('join','我想加入一支队伍','带上自己的能力，找一个一起做事的团队','01'),opt('recruit','我的队伍还缺人','已有想法或伙伴，想补充新的能力','02'),opt('explore','先认识同方向的人','比赛还没定，想先找到一起成长的伙伴','03')]},
     {key:'grade', tag:'了解你的阶段', title:'你现在是几年级？', hint:'每个阶段都有自己的优势。年级不会成为匹配的门槛。', options:['大一','大二','大三','大四','研一','研二','研三','博士'].map((s,i)=>opt(s,s, ['刚刚开启大学生活','开始探索自己的方向','积累了一些实践经验','准备把经验带进下一站'][i] || '更深入地研究一个方向',String(i+1).padStart(2,'0'))).concat(opt('other','其他 / 暂不填写','也欢迎不同学习阶段的你'))},
     {key:'discipline',tag:'不同背景，都有位置',title:'你的专业涉及哪些方向？',hint:'可以多选，最多 3 个。双学位、跨学科背景也可以一起选。',multi:true,max:3,options:[opt('engineering','工科','计算机、电子、机械、自动化等','E'),opt('science','理科','数学、物理、化学、统计等','S'),opt('humanities','人文与社科','文学、外语、教育、社会学等','H'),opt('business','经济与管理','经济、金融、会计、管理等','B'),opt('arts','艺术与设计','视觉、工业设计、数字媒体等','A'),opt('interdisciplinary','其他方向','医学、农学，或以上未包含的方向','＋')]},
     {key:'interests',tag:'找到让你想动手的事',title:'哪些方向，会让你眼睛一亮？',hint:'可以多选，最多 4 个。选感兴趣的，不必已经擅长。',multi:true,max:4,options:interests},
@@ -38,10 +38,12 @@
   function normalizeAnswers(input) {
     if (!input || typeof input!=='object' || Array.isArray(input)) return input;
     const result={...input};
-    for(const key of ['intent','discipline','competition','preference']) {
+    // v2 allowed multiple intents; retain the first as the primary intent.
+    if(Array.isArray(result.intent)) result.intent=result.intent[0];
+    for(const key of ['discipline','competition','preference']) {
       if(typeof result[key]==='string') result[key]=[result[key]];
     }
     return result;
   }
-  return {version:2,questions,byKey,competitions,interests,skillGroups,label,normalizeAnswers};
+  return {version:3,questions,byKey,competitions,interests,skillGroups,label,normalizeAnswers};
 });

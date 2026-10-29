@@ -68,11 +68,11 @@ function rankCandidate(answers, candidate) {
   // Multiple preferences broaden acceptable partners without multiplying their weight.
   score+=preferenceScore;
   if (other && (other.availability===answers.availability||other.availability==='flexible'||answers.availability==='flexible')) {score+=10;reasons.push('可投入时间比较合拍');}
-  const recruiting=answers.intent.includes('join')&&(other?.intent.includes('recruit')||candidate.posts.length);
-  const joining=answers.intent.includes('recruit')&&other?.intent.includes('join');
+  const recruiting=answers.intent==='join'&&(other?.intent==='recruit'||candidate.posts.length);
+  const joining=answers.intent==='recruit'&&other?.intent==='join';
   if (recruiting||joining) {score+=10;reasons.push(recruiting?'对方正在寻找队友':'对方希望加入一支队伍');}
   if (!reasons.length) reasons.push('正在组队的真实同学，可以先交流具体方向');
-  return {score,userId:candidate.id,name:p.name||candidate.username,school:p.school||'',major:p.major||(other?other.discipline.map(d=>catalog.label('discipline',d)).join(' / '):''),grade:other&&other.grade!=='other'?other.grade:p.grade||'',skills:skills.slice(0,8),experience:p.experience||(other?catalog.label('experience',other.experience):''),intent:other?other.intent.map(i=>catalog.label('intent',i)).join(' / '):(candidate.posts.length?'recruit':'explore'),competitions:goals,reasons:reasons.slice(0,3),postId:candidate.posts[0]?.id||null};
+  return {score,userId:candidate.id,name:p.name||candidate.username,school:p.school||'',major:p.major||(other?other.discipline.map(d=>catalog.label('discipline',d)).join(' / '):''),grade:other&&other.grade!=='other'?other.grade:p.grade||'',skills:skills.slice(0,8),experience:p.experience||(other?catalog.label('experience',other.experience):''),intent:other?.intent||(candidate.posts.length?'recruit':'explore'),competitions:goals,reasons:reasons.slice(0,3),postId:candidate.posts[0]?.id||null};
 }
 function match(db, userId, answers) {
   const ranked = candidatePool(db,userId).map(c=>rankCandidate(answers,c)).sort((a,b)=>b.score-a.score||a.userId-b.userId);

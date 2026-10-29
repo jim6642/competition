@@ -176,6 +176,27 @@
     finally{button.disabled=false;button.innerHTML='查看推荐队友'+arrow;}
   });
   $('edit-answers').addEventListener('click',renderReview);
+  // Available before and after matching, including the guest demonstration path.
+  for(const view of ['review','results']) {
+    const panel=document.createElement('div');panel.className='restart-area';
+    panel.innerHTML=`<button type="button" class="secondary-button" data-restart aria-describedby="${view}-restart-note">重新开始演示 ↻</button><p class="quiet" id="${view}-restart-note">清空本次问答并暂停实验室名片；个人中心、已发布招募和私聊保留。</p>`;
+    $(view).append(panel);
+    panel.querySelector('button').addEventListener('click',async()=>{
+      const buttons=document.querySelectorAll('[data-restart]');
+      buttons.forEach(button=>{button.disabled=true;button.textContent='正在清空…';});
+      try {
+        if(account) await api.request('/api/lab/profile',{method:'DELETE'});
+        clearTimeout(autoAdvanceTimer);clearTimeout(toastTimer);
+        answers={};step=0;discoverable=false;submittedAnswers=null;editing=false;advancing=false;
+        try {localStorage.removeItem(storageKey);sessionStorage.removeItem('competition.lab.pendingLogin');}catch(_){}
+        persist();refreshStart();
+        for(const id of ['answer-summary','match-list','result-tags']) $(id).replaceChildren();
+        $('discoverable').checked=false;$('notice').hidden=true;
+        renderQuestion();
+      } catch(error) {toast('未能清空，请稍后重试：'+error.message,true);}
+      finally {buttons.forEach(button=>{button.disabled=false;button.textContent='重新开始演示 ↻';});}
+    });
+  }
   $('toggle-discovery').addEventListener('click',async()=>{
     if(!account||!submittedAnswers)return;
     const button=$('toggle-discovery');button.disabled=true;

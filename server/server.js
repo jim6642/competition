@@ -319,6 +319,10 @@ async function handleApi(req, res, url) {
     const row = db.prepare('SELECT answers_json,discoverable FROM lab_profiles WHERE user_id=?').get(user.id);
     return json(res,200,{answers:row?safeJson(row.answers_json,{}):null,discoverable:Boolean(row?.discoverable)});
   }
+  if (pathname === '/api/lab/profile' && method === 'DELETE') {
+    db.prepare('DELETE FROM lab_profiles WHERE user_id=?').run(user.id);
+    return json(res,200,{ok:true});
+  }
   if (pathname === '/api/lab/profile' && method === 'PUT') {
     const body = await readBody(req);
     const answers = labMatching.validateAnswers(body.answers);

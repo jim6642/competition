@@ -8,7 +8,7 @@ const path = require('node:path');
 const {spawn} = require('node:child_process');
 const {once} = require('node:events');
 const {validateAnswers,rankCandidate} = require('./lab-matching');
-const baseAnswers = () => ({intent:['join'],grade:'大二',discipline:['engineering'],interests:['hardware','robotics'],skills:['FPGA'],experience:'course',competition:['edc'],availability:'steady',preference:['complement']});
+const baseAnswers = () => ({intent:'join',grade:'大二',discipline:['engineering'],interests:['hardware','robotics'],skills:['FPGA'],experience:'course',competition:['edc'],availability:'steady',preference:['complement']});
 
 test('answers enforce enumerations, limits and exclusive beginner selection',()=>{
   assert.deepEqual(validateAnswers({...baseAnswers(),unexpected:'ignored'}),baseAnswers());
@@ -26,15 +26,16 @@ test('answers enforce enumerations, limits and exclusive beginner selection',()=
   const legacy={...baseAnswers(),intent:'join',discipline:'engineering',competition:'edc',preference:'complement'};
   assert.deepEqual(validateAnswers(legacy),baseAnswers());
   assert.equal(legacy.competition,'edc');
+  assert.equal(validateAnswers({...baseAnswers(),intent:['recruit','join']}).intent,'recruit');
 });
 test('multiple targets match any shared contest, preserve labels and cap preference weight',()=>{
   const answers={...baseAnswers(),intent:['join','recruit'],discipline:['engineering','science'],competition:['cumcm','edc'],preference:['complement','similar','mentor','peer']};
-  const candidate={id:2,username:'test',profile:{},answers:{...baseAnswers(),intent:['join','recruit'],competition:['robomaster','edc'],discipline:['engineering','science'],skills:['ROS'],experience:'project'},posts:[]};
+  const candidate={id:2,username:'test',profile:{},answers:{...baseAnswers(),intent:['recruit','join'],competition:['robomaster','edc'],discipline:['engineering','science'],skills:['ROS'],experience:'project'},posts:[]};
   const result=rankCandidate(answers,candidate);
   assert.ok(result.reasons.some(s=>s.includes('电子设计竞赛')));
   assert.deepEqual(result.competitions,['robomaster','edc']);
   assert.equal(result.major,'工科 / 理科');
-  assert.ok(result.intent.includes('加入')&&result.intent.includes('缺人'));
+  assert.equal(result.intent,'recruit');
   assert.equal(result.score,rankCandidate({...answers,preference:['complement']},candidate).score);
   assert.ok(result.score>rankCandidate({...answers,competition:['mcm']},candidate).score);
 });
@@ -106,6 +107,13 @@ test('isolated API: opt-in visibility, private answers, real matching and author
     assert.equal((await request(`/api/conversations/${chatId}/messages`,'GET',undefined,b.cookie)).status,200);
     const afterPause=await request('/api/lab/matches','POST',{answers:baseAnswers()},a.cookie);
     assert.deepEqual(afterPause.data.matches.map(p=>p.userId),[d.id]);
+    assert.equal((await request('/api/lab/profile','DELETE')).status,401);
+    assert.equal((await request('/api/lab/profile','DELETE',undefined,b.cookie)).status,200);
+    assert.deepEqual((await request('/api/lab/profile','GET',undefined,b.cookie)).data,{answers:null,discoverable:false});
+    assert.ok((await request('/api/lab/profile','GET',undefined,a.cookie)).data.answers);
+    assert.equal((await request('/api/profile','GET',undefined,b.cookie)).data.profile.grade,'大三');
+    assert.equal((await request(`/api/conversations/${chatId}/messages`,'GET',undefined,b.cookie)).data.messages.length,1);
+    assert.equal((await save(b,true)).status,200);
   } finally {
     if(child.exitCode===null){const ended=once(child,'exit');child.kill('SIGTERM');await ended;}
     for(const suffix of ['','-wal','-shm'])fs.rmSync(databasePath+suffix,{force:true});
