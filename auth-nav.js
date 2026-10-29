@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const nav = document.querySelector('.nav-links');
+  if (nav && !nav.querySelector('a[href="lab.html"]')) {
+    const lab = document.createElement('a');
+    lab.href = 'lab.html';
+    lab.textContent = '组队实验室';
+    nav.insertBefore(lab, nav.querySelector('a[href="profile.html"]'));
+  }
   if (!nav || !window.CompetitionAPI?.enabled) return;
   const entry = document.createElement('a');
   entry.href = 'account.html';

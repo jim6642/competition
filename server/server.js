@@ -6,6 +6,7 @@ const http = require('node:http');
 const path = require('node:path');
 const { promisify } = require('node:util');
 const Database = require('better-sqlite3');
+const labMatching = require('./lab-matching');
 
 process.umask(0o077);
 
@@ -75,6 +76,12 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
   );
   CREATE INDEX IF NOT EXISTS messages_conversation ON messages(conversation_id, id);
+  CREATE TABLE IF NOT EXISTS lab_profiles (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    answers_json TEXT NOT NULL,
+    discoverable INTEGER NOT NULL DEFAULT 0 CHECK (discoverable IN (0, 1)),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+  );
 `);
 
 const statements = {
@@ -308,6 +315,23 @@ async function handleApi(req, res, url) {
     statements.updateProfile.run(JSON.stringify(profile), user.id);
     return json(res, 200, {profile});
   }
+  if (pathname === '/api/lab/profile' && method === 'GET') {
+    const row = db.prepare('SELECT answers_json,discoverable FROM lab_profiles WHERE user_id=?').get(user.id);
+    return json(res,200,{answers:row?safeJson(row.answers_json,{}):null,discoverable:Boolean(row?.discoverable)});
+  }
+  if (pathname === '/api/lab/profile' && method === 'PUT') {
+    const body = await readBody(req);
+    const answers = labMatching.validateAnswers(body.answers);
+    if (typeof body.discoverable!=='boolean') return fail(res,400,'请选择是否公开组队名片。');
+    db.prepare(`INSERT INTO lab_profiles(user_id,answers_json,discoverable) VALUES (?,?,?)
+      ON CONFLICT(user_id) DO UPDATE SET answers_json=excluded.answers_json,discoverable=excluded.discoverable,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')`).run(user.id,JSON.stringify(answers),Number(body.discoverable));
+    return json(res,200,{ok:true,discoverable:body.discoverable});
+  }
+  if (pathname === '/api/lab/matches' && method === 'POST') {
+    const body = await readBody(req);
+    const answers = labMatching.validateAnswers(body.answers);
+    return json(res,200,labMatching.match(db,user.id,answers));
+  }
   if (pathname === '/api/team-posts' && method === 'GET') {
     const competition = url.searchParams.get('competition') || '';
     if (!COMPETITIONS.has(competition)) return fail(res, 400, '比赛选项无效。');
@@ -344,11 +368,23 @@ async function handleApi(req, res, url) {
   }
   if (pathname === '/api/conversations' && method === 'POST') {
     const body = await readBody(req);
-    const postId = Number(body.postId);
-    if (!Number.isInteger(postId) || postId < 1) return fail(res, 400, '招募信息无效。');
-    const post = statements.ownPost.get(postId);
-    if (!post || post.user_id === user.id) return fail(res, 404, '这条招募信息不可联系。');
-    const userA = Math.min(user.id, post.user_id), userB = Math.max(user.id, post.user_id);
+    let targetUserId;
+    if (body.labUserId !== undefined) {
+      const id = Number(body.labUserId);
+      if (!Number.isInteger(id)||id<1) return fail(res,400,'队友信息无效。');
+      const target = db.prepare(`SELECT u.id FROM users u WHERE u.id=? AND
+        (EXISTS(SELECT 1 FROM lab_profiles l WHERE l.user_id=u.id AND l.discoverable=1)
+        OR EXISTS(SELECT 1 FROM team_posts p WHERE p.user_id=u.id AND p.active=1))`).get(id);
+      if (!target||target.id===user.id) return fail(res,404,'对方已暂停组队，推荐列表需要更新。');
+      targetUserId=target.id;
+    } else {
+      const postId = Number(body.postId);
+      if (!Number.isInteger(postId) || postId < 1) return fail(res, 400, '招募信息无效。');
+      const post = statements.ownPost.get(postId);
+      if (!post || post.user_id === user.id) return fail(res, 404, '这条招募信息不可联系。');
+      targetUserId=post.user_id;
+    }
+    const userA = Math.min(user.id, targetUserId), userB = Math.max(user.id, targetUserId);
     let conversation = statements.conversation.get(userA, userB);
     if (!conversation) {
       try { statements.insertConversation.run(userA, userB); }
@@ -414,5 +450,5 @@ const server = http.createServer(async (req, res) => {
 
 server.headersTimeout = 15_000;
 server.requestTimeout = 30_000;
-server.listen(PORT, HOST, () => process.stdout.write(`competition-api listening on http://${HOST}:${PORT}\n`));
+server.listen(PORT, HOST, () => process.stdout.write(`competition-api listening on http://${HOST}:${server.address().port}\n`));
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(() => { db.close(); process.exit(0); }));

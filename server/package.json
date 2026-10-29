@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "node --check server.js && node --check ../api-client.js && node --check ../auth-nav.js && node --check ../team-live.js && node --check ../profile.js && node --check ../matching-data.js"
+    "build": "node --check server.js && node --check lab-matching.js && node --check ../lab-catalog.js && node --check ../lab.js && node --check ../api-client.js && node --check ../auth-nav.js && node --check ../team-live.js && node --check ../profile.js && node --check ../matching-data.js",
+    "test:lab": "node --test lab.test.js"
   },
   "engines": {
     "node": ">=22"

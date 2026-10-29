@@ -9,6 +9,7 @@
   const conversationsBox = document.getElementById('live-conversations');
   let account = null;
   let conversationReadStorageKey = null;
+  let recentConversations = [];
   let liveTimer = null;
   let conversationId = null;
   let lastMessageId = 0;
@@ -82,6 +83,7 @@
     if (!api.enabled || !account) return;
     try {
       const {conversations} = await api.request('/api/conversations');
+      recentConversations = conversations;
       const read = readConversationState();
       let unreadCount = 0;
       conversationsBox.innerHTML = conversations.length ? conversations.map(item => {
@@ -239,6 +241,12 @@
       status.textContent = `已登录 ${user.username}。真实招募按比赛展示；专业和年级为可选筛选，技能标签仅作展示。`;
       await Promise.all([refreshFeed(), refreshConversations()]);
       setInterval(refreshConversations, 15000);
+      const requestedChat = Number(new URLSearchParams(window.location.search).get('chat'));
+      const requestedConversation = recentConversations.find(item=>Number(item.id)===requestedChat);
+      if (requestedConversation) {
+        await openConversation(requestedConversation.id, requestedConversation.other_name);
+        history.replaceState(null,'',window.location.pathname);
+      }
     } catch (error) {
       status.textContent = `账号服务暂不可用：${error.message}`;
       loginBox.hidden = false;

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="用几道选择题，发现与你合拍的竞赛伙伴。组队实验室，探索一种更简单的组队方式。">
+  <title>同频 · 组队实验室</title>
+  <link rel="stylesheet" href="lab.css?v=1">
+  <script src="lab-catalog.js?v=1" defer></script>
+  <script src="api-client.js" defer></script>
+  <script src="lab.js?v=1" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+<svg class="svg-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="M20 12H5m6-7-7 7 7 7"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="spark" viewBox="0 0 24 24"><path d="m12 2 2.7 7.3L22 12l-7.3 2.7L12 22l-2.7-7.3L2 12l7.3-2.7Z"/></symbol>
+  <symbol id="people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v3"/></symbol>
+</defs></svg>
+<header class="lab-header">
+  <a class="wordmark" href="lab.html" aria-label="同频，组队实验室首页"><span class="wordmark-symbol">t<span>°</span></span><span>同频<span class="wordmark-caption">TEAM LAB</span></span></a>
+  <nav aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="profile.html">个人中心</a><a class="current" aria-current="page" href="lab.html">组队实验室<span class="nav-dot"></span></a></nav>
+  <a id="lab-account" class="account-link" href="account.html?next=lab.html">登录 / 注册 <span aria-hidden="true">↗</span></a>
+</header>
+<main id="main">
+  <section id="intro" class="intro view">
+    <div class="intro-copy">
+      <div class="eyebrow"><span class="status-dot"></span> A SMALL EXPERIMENT IN TEAMWORK <span class="edition">VOL. 01</span></div>
+      <h1>少填一点。<br>遇见<span class="highlight">合拍</span>的队友。</h1>
+      <p class="intro-description">不必先写一份完美的自我介绍。<br>从几个关于你的选择开始，剩下的，交给我们。</p>
+      <button id="start" class="primary-button"><span id="start-label">开始寻找同频</span><svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
+      <div class="intro-meta"><span>9 组选择</span><span>约 2 分钟</span><span>零经验也欢迎</span></div>
+      <p class="quiet" id="intro-account-note">可以先体验选择题，登录后查看真实队友。</p>
+    </div>
+    <div class="connection-art" aria-label="不同能力相互连接的组队示意图" role="img">
+      <div class="art-top"><span>DIFFERENT SKILLS.<br>SHARED DIRECTION.</span><svg class="icon" aria-hidden="true"><use href="#spark"/></svg></div>
+      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+      <svg class="art-lines" viewBox="0 0 500 500" aria-hidden="true"><path fill="none" d="m130 145 115 100 125-75M245 245l100 125M245 245l-110 95"/><circle cx="245" cy="245" r="6"/></svg>
+      <div class="art-chip chip-one"><span class="chip-mark">&lt;/&gt;</span>把想法写成代码</div>
+      <div class="art-chip chip-two"><span class="chip-mark">Aa</span>把故事讲清楚</div>
+      <div class="art-chip chip-three"><span class="chip-mark">∿</span>让硬件动起来</div>
+      <div class="art-chip chip-four"><span class="chip-mark">↗</span>让设计更好用</div>
+      <div class="art-center"><svg aria-hidden="true"><use href="#people"/></svg><span>刚好，我们可以组队。</span></div>
+      <div class="art-bottom"><span class="status-dot"></span> 你的下一位队友，也许只差一个选择。</div>
+    </div>
+    <div class="intro-bottom"><span>01 / 认识自己</span><span>02 / 发现同频</span><span>03 / 开始一起做事 <span aria-hidden="true">↗</span></span></div>
+  </section>
+  <section id="quiz" class="quiz view" hidden>
+    <aside class="quiz-aside"><div><span class="aside-label">YOUR TEAM DNA</span><div class="aside-number" id="aside-number">01<span>/ 09</span></div><h2>每一个选择，<br>都让我们更懂你。</h2><p>没有标准答案，<br>选最像现在的你。</p></div><div class="live-profile"><span class="aside-label">逐渐清晰的你</span><div id="live-tags" class="live-tags"></div></div><div class="aside-bottom"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg><span>不同的能力，值得相遇。</span></div></aside>
+    <div class="question-panel"><div class="question-progress"><span id="progress-text">认识你的当下</span><span id="question-count">01 / 09</span></div><div id="progress-track" class="progress-track" role="progressbar" aria-label="问答完成进度" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"></div><div class="question-body"><p class="eyebrow" id="question-tag"></p><h1 id="question-title" tabindex="-1"></h1><p id="question-hint" class="question-hint"></p><div id="options" class="options"></div><p id="selection-note" class="selection-note" role="status" aria-live="polite"></p></div><div class="question-actions"><button id="previous" class="text-button"><svg class="icon" aria-hidden="true"><use href="#back"/></svg><span>返回</span></button><span id="choice-mode" class="quiet"></span><button id="next" class="primary-button compact">继续<svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button></div></div>
+  </section>
+  <section id="review" class="review view" hidden><div class="section-eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> YOUR TEAM DNA, READY.</div><h1 tabindex="-1">这就是现在的你。<br><span class="subtle">下一步，认识你的队友。</span></h1><p class="section-description">确认一下这些选择。随时可以返回修改，不用一次就定义好自己。</p><div class="review-layout"><div id="answer-summary" class="answer-summary"></div><aside class="review-card"><span class="eyebrow">READY TO CONNECT</span><h2>让合拍的人，<br>也能找到你。</h2><p id="review-identity"></p><label class="consent"><input type="checkbox" id="discoverable"><span><strong>开启我的组队名片</strong><small>向其他已登录用户展示昵称、学校、专业、年级和所选标签，并允许他们发起私聊。可随时关闭。</small></span></label><p class="quiet">不勾选也能查看推荐。问答单独保存，不会覆盖个人中心。</p><button id="find-matches" class="primary-button">查看推荐队友<svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button><button id="review-back" class="text-button">返回最后一题</button><p id="review-status" class="inline-status" role="status" aria-live="polite"></p></aside></div></section>
+  <section id="results" class="results view" hidden><div class="result-heading"><div><div class="section-eyebrow">PEOPLE, NOT JUST PROFILES.</div><h1 tabindex="-1">你的下一位伙伴，<br><span class="subtle">从这里认识。</span></h1><p id="result-description" class="section-description"></p></div><button id="edit-answers" class="secondary-button">调整我的选择 <span aria-hidden="true">↗</span></button></div><div class="result-tools"><div id="result-tags" class="result-tags"></div><button id="toggle-discovery" class="text-button" hidden></button></div><div id="match-list" class="match-list"></div><p class="result-footnote">标签用于发现共同点，不会成为组队门槛。先聊聊，再决定是否一起出发。</p><div class="result-links"><a href="team.html">去看看全部组队招募 <span aria-hidden="true">↗</span></a><a href="profile.html">完善个人资料 <span aria-hidden="true">↗</span></a></div></section>
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+</main>
+<footer class="lab-footer"><span>同频 / TEAM LAB <span class="footer-divider">—</span> 一种更轻松的组队方式。</span><a href="mailto:3352875852@qq.com">反馈这个实验 <span aria-hidden="true">↗</span></a></footer>
+</body>
+</html>
