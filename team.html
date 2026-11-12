@@ -7,25 +7,50 @@
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="live.css">
-<link rel="stylesheet" href="team-theme.css?v=2">
+<link rel="stylesheet" href="team-theme.css?v=3">
 </head>
 <body>
 <header class="site-header"><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy" aria-hidden="true"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a class="active" aria-current="page" href="team.html">寻找队友</a><a href="profile.html">个人中心</a></nav></div></header>
 <main class="team-page">
-  <div class="page-heading"><div><h1>寻找队友</h1><p>选一场比赛，看看哪些队伍正在招募。</p></div><div class="page-actions"><a href="#conversations-wrap" id="conversations-link" hidden>私聊消息</a><button class="chat-button" id="open-publish" type="button" hidden>＋ 发布招募</button></div></div>
-  <section class="panel search-panel" aria-label="查找比赛招募">
-    <div class="search-field"><label for="competition-select">你想参加哪场比赛？</label><select id="competition-select"><option value="">选择比赛</option></select></div>
-    <details class="more-filters"><summary>更多筛选 <span id="filter-count"></span></summary><div class="filter-fields">
-      <div class="search-field"><label for="search-major">队长专业</label><input id="search-major" maxlength="60" autocomplete="off" placeholder="不限专业"></div>
-      <div class="search-field"><label for="search-grade">队长年级</label><select id="search-grade"><option value="">不限年级</option><option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研一</option><option>研二</option></select></div>
-      <button type="button" class="secondary-button" data-clear-filters>清除筛选</button>
-    </div></details>
+  <div class="page-heading">
+    <h1>寻找队友</h1>
+    <div class="page-actions"><a href="#my-posts-wrap" id="my-posts-link" hidden>我的招募</a><a href="#conversations-wrap" id="conversations-link" hidden>私聊消息</a><button class="chat-button" id="open-publish" type="button" hidden>＋ 发布招募</button></div>
+  </div>
+  <section class="discovery" aria-labelledby="discovery-title">
+    <input type="hidden" id="competition-choice">
+    <div class="discovery-header">
+      <ol class="discovery-steps" aria-label="找队友步骤">
+        <li aria-current="step"><span>1</span> 学科</li>
+        <li><span>2</span> 兴趣</li>
+        <li><span>3</span> 比赛</li>
+      </ol>
+      <button type="button" class="discovery-back" id="discovery-back" hidden>← 上一步</button>
+    </div>
+    <div class="discovery-screen" id="discovery-screen">
+      <h2 id="discovery-title" tabindex="-1">你的专业偏向哪一类？</h2>
+      <p id="discovery-description">从你熟悉的学科出发，看看有哪些比赛值得组队。</p>
+      <div id="discovery-options" class="discovery-options"></div>
+    </div>
+    <p id="discovery-status" class="live-status" role="status"></p>
   </section>
-  <section class="feed" aria-labelledby="live-title">
-    <div class="feed-heading"><h2 id="live-title">正在招募 <span id="live-count"></span></h2><a href="#my-posts-wrap" id="my-posts-link" hidden>我的招募</a></div>
+  <section class="feed" id="recruit-feed" aria-labelledby="live-title" hidden>
+    <div class="feed-heading"><h2 id="live-title" tabindex="-1">正在招募</h2><p id="feed-competition"></p></div>
     <p id="live-status" class="live-status" role="status"></p>
-    <div id="live-login" class="panel live-login" hidden>登录后查看真实招募、发布需求或联系队长。 <a href="account.html">登录 / 注册</a></div>
-    <div id="live-posts" class="live-posts" aria-live="polite" aria-busy="true"><div class="live-empty">正在连接账号服务…</div></div>
+    <div id="real-recruitments" hidden>
+      <div class="feed-subheading"><h3>真实招募 <span id="live-count"></span></h3>
+        <details class="more-filters"><summary>更多筛选 <span id="filter-count"></span></summary><div class="filter-fields">
+          <div class="search-field"><label for="search-major">队长专业</label><input id="search-major" maxlength="60" autocomplete="off" placeholder="不限专业"></div>
+          <div class="search-field"><label for="search-grade">队长年级</label><select id="search-grade"><option value="">不限年级</option><option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研一</option><option>研二</option></select></div>
+          <button type="button" class="secondary-button" data-clear-filters>清除筛选</button>
+        </div></details>
+      </div>
+      <div id="live-posts" class="live-posts" aria-live="polite"></div>
+    </div>
+    <div class="demo-recruitments">
+      <h3>招募示例</h3>
+      <div id="demo-posts" class="demo-grid"></div>
+    </div>
+    <div id="live-login" class="panel live-login" hidden>登录后可查看真实招募、发布需求或联系队长。 <a href="account.html">登录 / 注册</a></div>
   </section>
   <details class="panel utility-panel" id="my-posts-wrap" hidden><summary>我的招募</summary><div id="my-posts"></div></details>
   <details class="panel utility-panel" id="conversations-wrap" hidden><summary class="live-subhead">最近私聊</summary><div id="live-conversations"></div></details>
@@ -52,8 +77,7 @@
 <script src="auth-nav.js"></script>
 <script>
 let profile={};
-const competitionSelect=document.getElementById('competition-select');
-Object.entries(matchScenarios).forEach(([key,scenario])=>competitionSelect.add(new Option(scenario.label,key)));
+const competitionChoice=document.getElementById('competition-choice');
 
 const TEAM_KEY='competition.team.v1';
 let activeTeamStorageKey=TEAM_KEY;
@@ -65,10 +89,10 @@ function teamFor(key){
 }
 function updateTeam(){
   try{localStorage.setItem(activeTeamStorageKey,JSON.stringify(savedTeams));}catch(_){/* 本次访问仍可编辑。 */}
-  renderTeam(competitionSelect.value);
+  renderTeam(competitionChoice.value);
 }
 const domainPicker=createTagPicker(document.getElementById('search-domains'),domainTagGroups,()=>{
-  teamFor(competitionSelect.value).gaps=domainPicker.getSelected();updateTeam();
+  teamFor(competitionChoice.value).gaps=domainPicker.getSelected();updateTeam();
 });
 const customGroup=document.querySelector('#search-domains .tag-group:last-child');
 const customDetails=document.createElement('details');
@@ -90,15 +114,15 @@ const publishDialog=document.getElementById('publish-dialog');
 const publishButton=document.getElementById('open-publish');
 let pendingPublish=false;
 function openPublish(){
-  if(!competitionSelect.value){
+  if(!competitionChoice.value){
     pendingPublish=true;
-    setStatus('先选择要发布招募的比赛。');
-    competitionSelect.focus();
+    document.getElementById('discovery-status').textContent='选好比赛后就可以发布招募。';
+    document.getElementById('discovery-title').focus();
     return;
   }
   pendingPublish=false;
-  renderTeam(competitionSelect.value);
-  const team=teamFor(competitionSelect.value);
+  renderTeam(competitionChoice.value);
+  const team=teamFor(competitionChoice.value);
   domainPicker.setSelected(team.gaps);
   document.getElementById('member-details').open=team.members.length>0;
   document.getElementById('publish-status').textContent='';
@@ -110,23 +134,23 @@ function setStatus(message,isError=false){
   status.classList.toggle('error',isError);
 }
 publishButton.addEventListener('click',openPublish);
-competitionSelect.addEventListener('change',()=>{
-  if(pendingPublish&&competitionSelect.value) openPublish();
+competitionChoice.addEventListener('change',()=>{
+  if(pendingPublish&&competitionChoice.value) openPublish();
 });
 document.getElementById('recruit-count').addEventListener('change',event=>{
-  teamFor(competitionSelect.value).recruitCount=Number(event.target.value);updateTeam();
+  teamFor(competitionChoice.value).recruitCount=Number(event.target.value);updateTeam();
 });
 document.getElementById('add-member-form').addEventListener('submit',event=>{
   event.preventDefault();
   const name=document.getElementById('member-name').value.trim(),role=document.getElementById('member-role').value.trim();
   if(!name||!role)return;
-  const members=teamFor(competitionSelect.value).members;
+  const members=teamFor(competitionChoice.value).members;
   if(members.length>=9){alert('最多添加 9 位其他成员。');return;}
   members.push({name,role});event.target.reset();updateTeam();
 });
 document.getElementById('team-members').addEventListener('click',event=>{
   const button=event.target.closest('.remove-member');if(!button)return;
-  teamFor(competitionSelect.value).members.splice(Number(button.dataset.index),1);updateTeam();
+  teamFor(competitionChoice.value).members.splice(Number(button.dataset.index),1);updateTeam();
 });
 let previousFocus=null;
 function addBubble(message,mine){
@@ -147,14 +171,15 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.g
 document.getElementById('chat-send').addEventListener('click',()=>sendChat(document.getElementById('chat-input').value));
 document.getElementById('chat-input').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();sendChat(event.target.value);}});
 document.getElementById('share-profile').addEventListener('click',()=>{
-  sendChat(`【我的竞赛资料】\n姓名：${profile.name||'未填写'}\n学校 / 专业 / 年级：${[profile.school,profile.major,profile.grade].filter(Boolean).join(' · ')||'未填写'}\n技能：${profile.skills||'未填写'}\n竞赛经历：${profile.experience||'未填写'}\n个人目标比赛：${matchScenarios[profile.competition]?.label||'未填写'}\n本次组队比赛：${(matchScenarios[competitionSelect.value]?.label||'未选择')}\n队伍定位：${profile.role||'未填写'}`);
+  sendChat(`【我的竞赛资料】\n姓名：${profile.name||'未填写'}\n学校 / 专业 / 年级：${[profile.school,profile.major,profile.grade].filter(Boolean).join(' · ')||'未填写'}\n技能：${profile.skills||'未填写'}\n竞赛经历：${profile.experience||'未填写'}\n个人目标比赛：${matchScenarios[profile.competition]?.label||'未填写'}\n本次组队比赛：${(matchScenarios[competitionChoice.value]?.label||'未选择')}\n队伍定位：${profile.role||'未填写'}`);
 });
 document.getElementById('share-team').addEventListener('click',()=>{
-  if(!competitionSelect.value){document.getElementById('chat-send-note').textContent='请先在寻找队友页面选择比赛，再分享队伍状态。';return;}
-  const team=teamFor(competitionSelect.value);
-  sendChat(`【当前队伍需求】\n比赛：${(matchScenarios[competitionSelect.value]?.label||'未选择')}\n我的定位：${profile.role||'未填写'}\n需要补充：${team.gaps.join('、')||'暂未设置'}\n计划招募：${team.recruitCount} 人`);
+  if(!competitionChoice.value){document.getElementById('chat-send-note').textContent='请先在寻找队友页面选择比赛，再分享队伍状态。';return;}
+  const team=teamFor(competitionChoice.value);
+  sendChat(`【当前队伍需求】\n比赛：${(matchScenarios[competitionChoice.value]?.label||'未选择')}\n我的定位：${profile.role||'未填写'}\n需要补充：${team.gaps.join('、')||'暂未设置'}\n计划招募：${team.recruitCount} 人`);
 });
 </script>
-<script src="team-live.js?v=2"></script>
+<script src="team-discovery.js?v=1"></script>
+<script src="team-live.js?v=3"></script>
 </body>
 </html>

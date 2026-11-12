@@ -70,7 +70,7 @@
     const grade = gradeInput.value;
     const filters = Number(Boolean(major)) + Number(Boolean(grade));
     document.getElementById('filter-count').textContent = filters ? `· ${filters} 项` : '';
-    if (feedBusy || !loadedFeed || loadedFeed.competition !== competitionSelect.value) return;
+    if (feedBusy || !loadedFeed || loadedFeed.competition !== competitionChoice.value) return;
     const posts = loadedFeed.posts;
     const eligible = posts.filter(({profile:p = {}}) =>
       (!major || String(p.major || '').toLowerCase().includes(major)) && (!grade || p.grade === grade)
@@ -78,7 +78,7 @@
     count.textContent = `${eligible.length} 条`;
     postsBox.innerHTML = eligible.length ? eligible.map(({post, matches}) => renderPost(post, matches)).join('') :
       posts.length ? '<div class="live-empty"><strong>没有符合当前筛选的招募</strong><button type="button" class="secondary-button" data-clear-filters>清除筛选</button></div>' :
-      '<div class="live-empty"><strong>这场比赛暂时没有其他队伍在招募</strong><div class="empty-actions"><button type="button" class="chat-button" data-open-publish>发布招募</button><button type="button" class="secondary-button" data-choose-competition>看看其他比赛</button></div></div>';
+      '<div class="live-empty"><strong>这场比赛暂无真实招募</strong><div class="empty-actions"><button type="button" class="chat-button" data-open-publish>发布招募</button><button type="button" class="secondary-button" data-choose-competition>看看其他比赛</button></div></div>';
   }
 
   function renderOwn(own) {
@@ -89,7 +89,7 @@
 
   async function refreshFeed() {
     if (!account) return;
-    const competition = competitionSelect.value;
+    const competition = competitionChoice.value;
     const version = ++feedVersion;
     feedBusy = true;
     count.textContent = '';
@@ -197,7 +197,7 @@
   document.getElementById('publish-current').addEventListener('click', async event => {
     const button = event.currentTarget;
     const feedback = document.getElementById('publish-status');
-    const competition = competitionSelect.value;
+    const competition = competitionChoice.value;
     const team = teamFor(competition);
     const gaps = [...team.gaps];
     feedback.classList.add('error');
@@ -222,8 +222,7 @@
   document.getElementById('live-posts').addEventListener('click', async event => {
     if (event.target.closest('[data-open-publish]')) return openPublish();
     if (event.target.closest('[data-choose-competition]')) {
-      competitionSelect.focus();
-      try { competitionSelect.showPicker?.(); } catch (_) { /* focus is sufficient on unsupported browsers */ }
+      document.getElementById('discovery-title').focus();
       return;
     }
     if (event.target.closest('[data-retry-feed]')) return refreshFeed();
@@ -256,7 +255,7 @@
     if (button) openConversation(button.dataset.conversationId, button.dataset.person);
   });
 
-  competitionSelect.addEventListener('change', () => {
+  competitionChoice.addEventListener('change', () => {
     setStatus('');
     refreshFeed();
   });
@@ -271,8 +270,8 @@
 
   async function init() {
     if (!api.enabled) {
-      postsBox.setAttribute('aria-busy', 'false');
-      postsBox.innerHTML = '<div class="live-empty">这是静态展示页。<a href="https://competition.thirdplayer.cn/team.html">前往竞赛站查看真实招募 →</a></div>';
+      loginBox.innerHTML = '想联系真实队伍？<a href="https://competition.thirdplayer.cn/team.html">前往竞赛站 →</a>';
+      loginBox.hidden = false;
       return;
     }
     try {
@@ -283,7 +282,7 @@
       account = user;
       profile = {...savedProfile, name: savedProfile.name || user.username};
       switchTeamState(user.id);
-      if (!competitionSelect.value && matchScenarios[profile.competition]) competitionSelect.value = profile.competition;
+      document.getElementById('real-recruitments').hidden = false;
       publishButton.hidden = false;
       conversationsWrap.hidden = conversationsLink.hidden = false;
       await Promise.all([refreshFeed(), refreshConversations()]);
