@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="live.css">
-<link rel="stylesheet" href="team-theme.css?v=3">
+<link rel="stylesheet" href="team-theme.css?v=4">
 </head>
 <body>
 <header class="site-header"><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy" aria-hidden="true"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a class="active" aria-current="page" href="team.html">寻找队友</a><a href="profile.html">个人中心</a></nav></div></header>
@@ -16,6 +16,15 @@
     <h1>寻找队友</h1>
     <div class="page-actions"><a href="#my-posts-wrap" id="my-posts-link" hidden>我的招募</a><a href="#conversations-wrap" id="conversations-link" hidden>私聊消息</a><button class="chat-button" id="open-publish" type="button" hidden>＋ 发布招募</button></div>
   </div>
+  <form class="panel contest-search" id="contest-search" role="search" aria-label="搜索竞赛">
+    <label for="contest-query">搜索竞赛</label>
+    <div class="contest-search-row">
+      <input id="contest-query" type="search" maxlength="100" autocomplete="off" placeholder="输入比赛名或简称，如电赛、蓝桥杯" aria-controls="contest-search-results">
+      <button type="submit" class="chat-button">搜索</button>
+    </div>
+    <p class="contest-search-status" id="contest-search-status" role="status"></p>
+    <ul class="contest-search-results" id="contest-search-results" aria-label="竞赛搜索结果" hidden></ul>
+  </form>
   <section class="discovery" aria-labelledby="discovery-title">
     <input type="hidden" id="competition-choice">
     <div class="discovery-header">
@@ -179,7 +188,7 @@ document.getElementById('share-team').addEventListener('click',()=>{
   sendChat(`【当前队伍需求】\n比赛：${(matchScenarios[competitionChoice.value]?.label||'未选择')}\n我的定位：${profile.role||'未填写'}\n需要补充：${team.gaps.join('、')||'暂未设置'}\n计划招募：${team.recruitCount} 人`);
 });
 </script>
-<script src="team-discovery.js?v=1"></script>
+<script src="team-discovery.js?v=2"></script>
 <script src="team-live.js?v=3"></script>
 </body>
 </html>

@@ -37,6 +37,19 @@
     ict: {image:'huawei-ict', projects:['云服务实践小组','校园网络安全实践小组']}
   };
 
+  const contestAliases = {
+    edc: ['电赛','电设','NUEDC'],
+    robomaster: ['机甲大师','RM'],
+    cumcm: ['国赛数学建模','国模','数模国赛'],
+    mcm: ['美赛','美模','数模美赛','ICM'],
+    internet: ['互联网+','中国国际大学生创新大赛','双创'],
+    challenge: ['大挑','课外学术科技'],
+    lanqiao: ['蓝桥杯'],
+    icpc: ['ACM','程序设计竞赛'],
+    mechanical: ['机械创新','机械设计'],
+    ict: ['华为','ICT'],
+  };
+
   const root = document.querySelector('.discovery');
   const heading = document.getElementById('discovery-title');
   const description = document.getElementById('discovery-description');
@@ -46,6 +59,10 @@
   const feed = document.getElementById('recruit-feed');
   const feedHeading = document.getElementById('live-title');
   const demoPosts = document.getElementById('demo-posts');
+  const searchForm = document.getElementById('contest-search');
+  const searchInput = document.getElementById('contest-query');
+  const searchResults = document.getElementById('contest-search-results');
+  const searchStatus = document.getElementById('contest-search-status');
   let trackKey = '';
   let interestIndex = null;
 
@@ -106,7 +123,51 @@
     }).join('');
   }
 
+  function normalizeQuery(value) {
+    return value.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}+]/gu, '');
+  }
+
+  const searchEntries = Object.entries(matchScenarios).map(([key, contest]) => ({
+    key,
+    terms: [contest.label, key, ...(contestAliases[key] || [])].map(normalizeQuery)
+  }));
+
+  function renderSearch() {
+    const query = normalizeQuery(searchInput.value);
+    const matches = query ? searchEntries.filter(({terms}) => terms.some(term => term.includes(query))) : [];
+    matches.sort((a, b) => Number(b.terms.includes(query)) - Number(a.terms.includes(query)));
+    searchStatus.textContent = query ? (matches.length ? '找到 ' + matches.length + ' 场比赛' : '没找到相关比赛，试试简称或换个关键词。') : '';
+    searchResults.innerHTML = matches.map(({key}) => '<li><button type="button" data-search-contest="' + key + '"><span>' + escapeHtml(matchScenarios[key].label) + '</span><span>查看招募 →</span></button></li>').join('');
+    searchResults.hidden = !matches.length;
+    return matches;
+  }
+
+  searchInput.addEventListener('input', renderSearch);
+  searchForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const matches = renderSearch();
+    const exact = matches.filter(({terms}) => terms.includes(normalizeQuery(searchInput.value)));
+    if (exact.length === 1) selectContest(exact[0].key);
+    else if (matches.length === 1) selectContest(matches[0].key);
+    else if (matches.length > 1) searchResults.querySelector('button').focus();
+    else searchInput.focus();
+  });
+  searchResults.addEventListener('click', event => {
+    const result = event.target.closest('[data-search-contest]');
+    if (result) selectContest(result.dataset.searchContest);
+  });
+  searchForm.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || searchResults.hidden) return;
+    event.preventDefault();
+    searchResults.hidden = true;
+    searchStatus.textContent = '';
+    searchInput.focus();
+  });
+
   function selectContest(key) {
+    searchInput.value = matchScenarios[key].label;
+    searchStatus.textContent = '';
+    searchResults.hidden = true;
     competitionChoice.value = key;
     options.querySelectorAll('[data-contest]').forEach(button => {
       const selected = button.dataset.contest === key;

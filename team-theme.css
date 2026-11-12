@@ -188,3 +188,15 @@ body {background:#f5f8fc}
 @media(prefers-reduced-motion:reduce) {
   .discovery-option,.contest-option,.option-arrow {transition:none;animation:none}
 }
+.contest-search {margin-bottom:14px;padding:13px 15px;background:#fff}
+.contest-search label {display:block;font-weight:700;font-size:.88rem;margin-bottom:5px}
+.contest-search-row {display:flex;gap:8px}
+.contest-search-row input {flex:1;min-width:0;width:100%;padding:8px 11px;border:1px solid #c8d6e4;border-radius:8px;background:#f8fbff;color:var(--text)}
+.contest-search-status {font-size:.82rem;color:var(--muted);margin:6px 0 0}
+.contest-search-status:empty {display:none}
+.contest-search-results {list-style:none;padding:0;margin:5px 0 0;max-height:260px;overflow:auto}
+.contest-search-results li+li {border-top:1px solid var(--line)}
+.contest-search-results button {display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:0;border-radius:6px;background:#fff;color:var(--text);text-align:left;padding:8px 6px;min-height:44px}
+.contest-search-results button:hover,.contest-search-results button:focus-visible {background:var(--soft)}
+.contest-search-results button:focus-visible {outline-offset:-2px}
+.contest-search-results button span:last-child {color:var(--primary);font-size:.78rem;white-space:nowrap}
