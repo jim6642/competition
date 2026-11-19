@@ -130,7 +130,7 @@
   }
 
   function renderOwn(own) {
-    ownPosts = own.filter(post => post.active);
+    ownPosts = account ? (own || []).filter(post => post.active) : [];
     ownLink.hidden = !ownPosts.length;
     ownLink.textContent = ownPosts.length ? `我的招募 · ${ownPosts.length}` : '我的招募';
     if (!ownPosts.length) {
@@ -155,7 +155,7 @@
   }
 
   async function refreshFeed() {
-    if (!account) return;
+    if (!api.enabled) return;
     const competition = competitionChoice.value || 'all';
     const version = ++feedVersion;
     feedBusy = true;
@@ -297,11 +297,18 @@
   });
 
   document.getElementById('live-posts').addEventListener('click', async event => {
-    if (event.target.closest('[data-open-publish]')) return openPublish(null);
+    if (event.target.closest('[data-open-publish]')) {
+      if (!account) { window.location.href = 'account.html'; return; }
+      return openPublish(null);
+    }
     if (event.target.closest('[data-show-all]')) return window.selectContest?.('all');
     if (event.target.closest('[data-retry-feed]')) return refreshFeed();
     const button = event.target.closest('.live-contact');
     if (!button) return;
+    if (!account) {
+      window.location.href = 'account.html';
+      return;
+    }
     button.disabled = true;
     try {
       const {conversationId: id} = await api.request('/api/conversations', {method: 'POST', body: JSON.stringify({postId: Number(button.dataset.postId)})});
@@ -363,15 +370,20 @@
       loginBox.hidden = false;
       return;
     }
+    document.getElementById('real-recruitments').hidden = false;
     try {
       const {user} = await api.me();
-      if (!user) { loginBox.hidden = false; return; }
+      if (!user) {
+        loginBox.innerHTML = '当前为浏览模式；登录后可发布招募或与队长私聊。 <a href="account.html">登录 / 注册</a>';
+        loginBox.hidden = false;
+        await refreshFeed();
+        return;
+      }
       conversationReadStorageKey = `competition.chat.read.v1.account.${user.id}`;
       const {profile: savedProfile} = await api.profile();
       account = user;
       profile = {...savedProfile, name: savedProfile.name || user.username};
       switchTeamState(user.id);
-      document.getElementById('real-recruitments').hidden = false;
       publishButton.hidden = false;
       conversationsLink.hidden = false;
       await Promise.all([refreshFeed(), refreshConversations()]);
@@ -386,7 +398,6 @@
       setStatus(`账号服务暂不可用：${error.message}`, true);
       loginBox.hidden = false;
     } finally {
-      if (!account || publishButton.hidden) postsBox.replaceChildren();
       postsBox.setAttribute('aria-busy', 'false');
     }
   }
