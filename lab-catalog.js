@@ -9,7 +9,10 @@
     opt('robomaster', 'RoboMaster'), opt('cumcm', '全国大学生数学建模竞赛'),
     opt('mcm', '美国大学生数学建模竞赛'), opt('internet', '互联网＋创新创业'),
     opt('challenge', '挑战杯'), opt('lanqiao', '蓝桥杯'), opt('icpc', 'ACM / ICPC'),
-    opt('mechanical', '机械创新设计'), opt('ict', '华为 ICT')
+    opt('mechanical', '机械创新设计'), opt('ict', '华为 ICT'),
+    opt('jsjds', '中国大学生计算机设计大赛'), opt('fwwb', '服务外包创新创业大赛'),
+    opt('shidiao', '市场调查与分析大赛'), opt('jieneng', '节能减排社会实践与科技竞赛'),
+    opt('daguangsai', '全国大学生广告艺术大赛'), opt('ciciec', '集成电路创新创业大赛')
   ];
   const interests = [opt('software','编程与算法','把想法写成能运行的程序','01'),opt('hardware','电子与硬件','从电路到一块能工作的板子','02'),opt('robotics','机器人与自动化','让机器感知、决策和行动','03'),opt('data','数学建模与数据','用模型和数据回答问题','04'),opt('design','设计与产品','让作品更好用，也更好看','05'),opt('business','创新创业','验证一个有价值的新想法','06'),opt('research','科研与社会调研','提出问题，再找到证据','07'),opt('writing','写作与表达','把复杂的想法讲清楚','08')];
   const skillGroups = [

@@ -17,7 +17,7 @@ const HOST = process.env.HOST || '127.0.0.1';
 const DB_PATH = path.resolve(process.env.COMPETITION_DB_PATH || path.join(__dirname, 'data.sqlite'));
 const SESSION_DAYS = 30;
 const MAX_BODY_BYTES = 64 * 1024;
-const COMPETITIONS = new Set(['edc', 'robomaster', 'cumcm', 'mcm', 'internet', 'challenge', 'lanqiao', 'icpc', 'mechanical', 'ict']);
+const COMPETITIONS = new Set(['edc', 'robomaster', 'cumcm', 'mcm', 'internet', 'challenge', 'lanqiao', 'icpc', 'mechanical', 'ict', 'jsjds', 'fwwb', 'shidiao', 'jieneng', 'daguangsai', 'ciciec']);
 const GRADES = new Set(['大一', '大二', '大三', '大四', '研一', '研二', '研三', '博士']);
 const PROFILE_LIMITS = {name: 30, school: 60, major: 60, grade: 12, skills: 1200, experience: 1000, competition: 40, role: 80, wanted: 1200};
 const MIME = {
@@ -97,8 +97,18 @@ const statements = {
       u.username, u.profile_json
     FROM team_posts p JOIN users u ON u.id = p.user_id
     WHERE p.active = 1 AND p.competition = ? ORDER BY p.created_at DESC LIMIT 100`),
+  listAllPosts: db.prepare(`SELECT p.id, p.user_id, p.competition, p.recruit_count, p.gaps_json, p.team_json, p.created_at, p.updated_at,
+      u.username, u.profile_json
+    FROM team_posts p JOIN users u ON u.id = p.user_id
+    WHERE p.active = 1 ORDER BY p.created_at DESC LIMIT 120`),
+  postCounts: db.prepare('SELECT competition, COUNT(*) AS count FROM team_posts WHERE active = 1 AND user_id != ? GROUP BY competition'),
+  postById: db.prepare(`SELECT p.id, p.user_id, p.competition, p.recruit_count, p.gaps_json, p.team_json, p.created_at, p.updated_at,
+      u.username, u.profile_json
+    FROM team_posts p JOIN users u ON u.id = p.user_id
+    WHERE p.id = ? AND p.active = 1`),
   myPosts: db.prepare('SELECT id, competition, recruit_count, gaps_json, team_json, active, created_at FROM team_posts WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'),
   ownPost: db.prepare('SELECT id, user_id, competition FROM team_posts WHERE id = ? AND active = 1'),
+  updatePost: db.prepare("UPDATE team_posts SET competition = ?, recruit_count = ?, gaps_json = ?, team_json = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ? AND user_id = ? AND active = 1"),
   deactivatePost: db.prepare("UPDATE team_posts SET active = 0, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ? AND user_id = ?"),
   conversation: db.prepare('SELECT id FROM conversations WHERE user_a = ? AND user_b = ?'),
   insertConversation: db.prepare('INSERT INTO conversations(user_a, user_b) VALUES (?, ?)'),
@@ -337,12 +347,14 @@ async function handleApi(req, res, url) {
     return json(res,200,labMatching.match(db,user.id,answers));
   }
   if (pathname === '/api/team-posts' && method === 'GET') {
-    const competition = url.searchParams.get('competition') || '';
-    if (!COMPETITIONS.has(competition)) return fail(res, 400, '比赛选项无效。');
+    const competition = url.searchParams.get('competition') || 'all';
+    if (competition !== 'all' && !COMPETITIONS.has(competition)) return fail(res, 400, '比赛选项无效。');
     const viewerId = user ? user.id : 0;
-    const posts = statements.listPosts.all(competition).filter(row => !user || row.user_id !== user.id).map(row => publicPost(row, viewerId));
+    const rawPosts = competition === 'all' ? statements.listAllPosts.all() : statements.listPosts.all(competition);
+    const posts = rawPosts.filter(row => !user || row.user_id !== user.id).map(row => publicPost(row, viewerId));
     const own = user ? statements.myPosts.all(user.id).map(row => ({id: row.id, competition: row.competition, recruitCount: row.recruit_count, gaps: safeJson(row.gaps_json, []), team: safeJson(row.team_json, {}), active: Boolean(row.active), createdAt: row.created_at})) : [];
-    return json(res, 200, {posts, own});
+    const counts = Object.fromEntries(statements.postCounts.all(viewerId).map(row => [row.competition, row.count]));
+    return json(res, 200, {posts, own, counts});
   }
   if (pathname === '/api/team-posts' && method === 'POST') {
     const body = await readBody(req);
@@ -355,12 +367,32 @@ async function handleApi(req, res, url) {
     const profile = cleanProfile(user.profile, user.username);
     if (!profile.school || !profile.major || !profile.grade) return fail(res, 400, '请先在个人中心完善学校、专业和年级。');
     const members = Array.isArray(body.members) ? body.members.slice(0, 9).map(item => ({name: cleanText(item.name, 30, '成员姓名'), role: cleanText(item.role, 40, '成员分工')})) : [];
-    const team = {profile, members};
+    const note = cleanText(body.note, 120, '招募说明', false);
+    const team = {profile, members, ...(note ? {note} : {})};
     const result = statements.addPost.run(user.id, competition, recruitCount, JSON.stringify(gaps), JSON.stringify(team));
-    const row = {...statements.listPosts.all(competition).find(item => item.id === Number(result.lastInsertRowid)), user_id: user.id, username: user.username, profile_json: JSON.stringify(profile)};
+    const row = statements.postById.get(Number(result.lastInsertRowid));
     return json(res, 201, {post: publicPost(row, user.id)});
   }
   const postMatch = pathname.match(/^\/api\/team-posts\/(\d+)$/);
+  if (postMatch && method === 'PUT') {
+    const id = Number(postMatch[1]);
+    const body = await readBody(req);
+    const competition = cleanText(body.competition, 40, '比赛', true);
+    if (!COMPETITIONS.has(competition)) return fail(res, 400, '比赛选项无效。');
+    const recruitCount = Number(body.recruitCount);
+    if (!Number.isInteger(recruitCount) || recruitCount < 1 || recruitCount > 5) return fail(res, 400, '招募人数需为 1–5 人。');
+    const gaps = cleanTags(body.gaps, '能力缺口', 20);
+    if (!gaps.length) return fail(res, 400, '请至少选择一个需要补充的领域。');
+    const profile = cleanProfile(user.profile, user.username);
+    if (!profile.school || !profile.major || !profile.grade) return fail(res, 400, '请先在个人中心完善学校、专业和年级。');
+    const members = Array.isArray(body.members) ? body.members.slice(0, 9).map(item => ({name: cleanText(item.name, 30, '成员姓名'), role: cleanText(item.role, 40, '成员分工')})) : [];
+    const note = cleanText(body.note, 120, '招募说明', false);
+    const team = {profile, members, ...(note ? {note} : {})};
+    const result = statements.updatePost.run(competition, recruitCount, JSON.stringify(gaps), JSON.stringify(team), id, user.id);
+    if (!result.changes) return fail(res, 404, '招募信息不存在或你没有权限修改。');
+    const row = statements.postById.get(id);
+    return json(res, 200, {post: publicPost(row, user.id)});
+  }
   if (postMatch && method === 'DELETE') {
     const id = Number(postMatch[1]);
     const result = statements.deactivatePost.run(id, user.id);

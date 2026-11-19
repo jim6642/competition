@@ -128,6 +128,9 @@ header{
   font-weight: 600; background: var(--primary); color: #fff;
 }
 .card-footer .btn:hover{background: var(--primary-dark)}
+.card-footer-actions{display: flex; align-items: center; gap: 6px}
+.card-footer .btn-team{padding: 0.4rem 0.75rem; border-radius: 7px; font-size: 0.78rem; font-weight: 600; background: #eef2ff; color: var(--primary)}
+.card-footer .btn-team:hover{background: #e0e7ff}
 
 /* Sidebar Calendar */
 .sidebar-widget{
@@ -428,6 +431,12 @@ function renderDeadlines() {
   document.getElementById('deadlineList').innerHTML = html || '<p style="font-size:.78rem;color:var(--text-muted)">暂无即将报名截止的竞赛</p>';
 }
 
+const teamContestById = {
+  1:'internet', 2:'challenge', 4:'cumcm', 5:'mcm', 6:'lanqiao', 7:'icpc',
+  8:'fwwb', 9:'edc', 10:'mechanical', 13:'daguangsai', 15:'jieneng',
+  17:'jsjds', 19:'shidiao', 20:'robomaster', 21:'ict', 27:'ciciec'
+};
+
 function renderCard(c) {
   var nowDate = new Date();
   var regStart = c.regStart ? new Date(c.regStart) : null;
@@ -465,7 +474,9 @@ function renderCard(c) {
   const bgStyle = c.image ? 'background:linear-gradient(0deg, rgba(0,0,0,.3), rgba(0,0,0,.05)), url('+c.image+') center/cover no-repeat, url(assets/images/default.jpg) center/cover no-repeat' : 'background:'+(bannerColors[c.level]||bannerColors['校级']);
   const iconHTML = c.image ? '' : '<i class="fas '+icon+'" style="position:absolute;font-size:2.5rem;opacity:.3;bottom:8px;right:14px"></i>';
 
-  return '<div class="card"><div class="card-banner" style="'+bgStyle+'"><span class="level-badge '+levelClass+'">'+c.level+'</span>'+(phase ? '<span class="phase-badge" style="position:absolute;top:10px;right:10px;padding:3px 8px;border-radius:5px;font-size:0.7rem;font-weight:600;background:'+(phase==='已结束'?'#f1f5f9;color:#94a3b8':phase==='比赛中'?'#dbeafe;color:#1d4ed8':phase==='备赛冲刺'?'#fef3c7;color:#b45309':phase==='报名中'?'#dcfce7;color:#16a34a':'#f0fdf4;color:#16a34a')+'">'+phaseIcon+' '+phase+'</span>' : '') +iconHTML+'</div><div class="card-body"><h3>'+c.name+'</h3><p class="org"><i class="far fa-building"></i> '+c.organizer+'</p><div class="date-row"><div class="date-item"><i class="far fa-calendar-check"></i><span class="date-label">报名</span>'+c.regDate+'</div><div class="date-item"><i class="fas fa-flag-checkered"></i><span class="date-label">比赛</span>'+c.compDate+'</div></div><div class="tags"><span class="tag">'+c.type+'</span>'+(c.subtype?' <span class="tag">'+c.subtype+'</span>':'')+'</div></div><div class="card-footer"><div class="deadline">'+countdownHTML+'</div><a href="'+(c.url||'#')+'" target="_blank" class="btn">查看详情 <i class="fas fa-external-link-alt" style="font-size:.7rem"></i></a></div></div>';
+  const teamKey = teamContestById[c.id];
+  const teamLink = teamKey ? '<a href="team.html?contest='+teamKey+'" class="btn-team">找队友</a>' : '';
+  return '<div class="card"><div class="card-banner" style="'+bgStyle+'"><span class="level-badge '+levelClass+'">'+c.level+'</span>'+(phase ? '<span class="phase-badge" style="position:absolute;top:10px;right:10px;padding:3px 8px;border-radius:5px;font-size:0.7rem;font-weight:600;background:'+(phase==='已结束'?'#f1f5f9;color:#94a3b8':phase==='比赛中'?'#dbeafe;color:#1d4ed8':phase==='备赛冲刺'?'#fef3c7;color:#b45309':phase==='报名中'?'#dcfce7;color:#16a34a':'#f0fdf4;color:#16a34a')+'">'+phaseIcon+' '+phase+'</span>' : '') +iconHTML+'</div><div class="card-body"><h3>'+c.name+'</h3><p class="org"><i class="far fa-building"></i> '+c.organizer+'</p><div class="date-row"><div class="date-item"><i class="far fa-calendar-check"></i><span class="date-label">报名</span>'+c.regDate+'</div><div class="date-item"><i class="fas fa-flag-checkered"></i><span class="date-label">比赛</span>'+c.compDate+'</div></div><div class="tags"><span class="tag">'+c.type+'</span>'+(c.subtype?' <span class="tag">'+c.subtype+'</span>':'')+'</div></div><div class="card-footer"><div class="deadline">'+countdownHTML+'</div><div class="card-footer-actions">'+teamLink+'<a href="'+(c.url||'#')+'" target="_blank" class="btn">查看详情 <i class="fas fa-external-link-alt" style="font-size:.7rem"></i></a></div></div></div>';
 }
 
 function renderCards() {
@@ -503,14 +514,14 @@ function updateStats() {
 
 function refreshAll() { renderCards(); renderCalendar(); renderDeadlines(); updateStats(); }
 
-document.getElementById('searchInput').addEventListener('input', function(e){ searchQuery = e.target.value.trim(); refreshAll(); });
+document.getElementById('searchInput').addEventListener('input', function(e){ searchQuery = e.target.value.trim(); renderCards(); });
 document.querySelectorAll('#levelFilters .chip').forEach(function(chip){ chip.addEventListener('click', function(){
   document.querySelectorAll('#levelFilters .chip').forEach(function(c){c.classList.remove('active');});
-  chip.classList.add('active'); currentLevel = chip.dataset.level; refreshAll();
+  chip.classList.add('active'); currentLevel = chip.dataset.level; renderCards();
 });});
 document.querySelectorAll('#typeFilters .chip').forEach(function(chip){ chip.addEventListener('click', function(){
   document.querySelectorAll('#typeFilters .chip').forEach(function(c){c.classList.remove('active');});
-  chip.classList.add('active'); currentType = chip.dataset.type; refreshAll();
+  chip.classList.add('active'); currentType = chip.dataset.type; renderCards();
 });});
 
 var now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth() + 1;

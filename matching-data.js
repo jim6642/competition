@@ -1,15 +1,21 @@
 // 所有人物均为虚构演示资料；每项比赛有五种不同能力方向，共 50 位候选人。
 const matchScenarios = {
-  edc: {label:'全国大学生电子设计竞赛',name:'电子设计 · 智能感知项目组',description:'制作可感知、可控制、可交互的作品原型。',members:['硬件设计','嵌入式'],gaps:['算法','视觉','软件开发'],related:['robomaster','ict']},
-  robomaster: {label:'RoboMaster机甲大师赛',name:'RoboMaster · 机器人战队',description:'完善机器人感知、决策与机械执行能力。',members:['硬件设计','嵌入式'],gaps:['算法','视觉','软件开发','机械结构'],related:['edc','mechanical']},
-  cumcm: {label:'全国大学生数学建模竞赛',name:'数学建模 · 数据决策小组',description:'围绕现实问题完成建模、求解与论文表达。',members:['数学建模','数据整理'],gaps:['算法','数据分析','论文写作'],related:['mcm','icpc']},
-  mcm: {label:'美国大学生数学建模竞赛',name:'美赛 · 跨学科建模小组',description:'在限时赛制下完成模型、编程与英文论文。',members:['数学建模','算法'],gaps:['数据分析','英文写作','可视化'],related:['cumcm','icpc']},
-  internet: {label:'“互联网+”大学生创新创业大赛',name:'创新创业 · 校园服务项目组',description:'打磨产品原型、商业验证与答辩材料。',members:['产品策划','技术开发'],gaps:['产品设计','商业分析','路演表达'],related:['challenge']},
-  challenge: {label:'“挑战杯”课外学术科技作品竞赛',name:'挑战杯 · 科创实践小组',description:'推进科研原型、调研分析与作品呈现。',members:['项目研究','技术开发'],gaps:['数据分析','产品设计','论文写作'],related:['internet','cumcm']},
-  lanqiao: {label:'蓝桥杯全国软件和信息技术专业人才大赛',name:'蓝桥杯 · 编程训练小组',description:'一起训练算法题、复盘解法并冲击省国赛。',members:['基础编程','题目整理'],gaps:['算法','代码实现','测试优化'],related:['icpc','cumcm']},
-  icpc: {label:'ACM-ICPC国际大学生程序设计竞赛',name:'ICPC · 程序设计小队',description:'分工覆盖图论、数据结构与赛时调试。',members:['数据结构','基础算法'],gaps:['算法','代码实现','测试优化'],related:['lanqiao','cumcm']},
-  mechanical: {label:'全国大学生机械创新设计大赛',name:'机械创新 · 智能装置项目组',description:'从结构方案到控制原型完成工程验证。',members:['机械结构','需求分析'],gaps:['三维建模','嵌入式','测试优化'],related:['robomaster','edc']},
-  ict: {label:'华为ICT大赛',name:'ICT · 云网应用小组',description:'完成网络方案、云服务与安全实践。',members:['网络基础','系统部署'],gaps:['云计算','网络安全','软件开发'],related:['lanqiao','edc']}
+  edc: {short:'电赛',label:'全国大学生电子设计竞赛',name:'电子设计 · 智能感知项目组',description:'制作可感知、可控制、可交互的作品原型。',members:['硬件设计','嵌入式'],gaps:['算法','视觉','软件开发'],related:['robomaster','ict','ciciec']},
+  robomaster: {short:'RoboMaster',label:'RoboMaster机甲大师赛',name:'RoboMaster · 机器人战队',description:'完善机器人感知、决策与机械执行能力。',members:['硬件设计','嵌入式'],gaps:['算法','视觉','软件开发','机械结构'],related:['edc','mechanical']},
+  cumcm: {short:'数模国赛',label:'全国大学生数学建模竞赛',name:'数学建模 · 数据决策小组',description:'围绕现实问题完成建模、求解与论文表达。',members:['数学建模','数据整理'],gaps:['算法','数据分析','论文写作'],related:['mcm','icpc','shidiao']},
+  mcm: {short:'美赛',label:'美国大学生数学建模竞赛',name:'美赛 · 跨学科建模小组',description:'在限时赛制下完成模型、编程与英文论文。',members:['数学建模','算法'],gaps:['数据分析','英文写作','可视化'],related:['cumcm','icpc']},
+  internet: {short:'互联网+',label:'“互联网+”大学生创新创业大赛',name:'创新创业 · 校园服务项目组',description:'打磨产品原型、商业验证与答辩材料。',members:['产品策划','技术开发'],gaps:['产品设计','商业分析','路演表达'],related:['challenge','fwwb']},
+  challenge: {short:'挑战杯',label:'“挑战杯”课外学术科技作品竞赛',name:'挑战杯 · 科创实践小组',description:'推进科研原型、调研分析与作品呈现。',members:['项目研究','技术开发'],gaps:['数据分析','产品设计','论文写作'],related:['internet','cumcm','jieneng']},
+  lanqiao: {short:'蓝桥杯',label:'蓝桥杯全国软件和信息技术专业人才大赛',name:'蓝桥杯 · 编程训练小组',description:'一起训练算法题、复盘解法并冲击省国赛。',members:['基础编程','题目整理'],gaps:['算法','代码实现','测试优化'],related:['icpc','cumcm']},
+  icpc: {short:'ACM/ICPC',label:'ACM-ICPC国际大学生程序设计竞赛',name:'ICPC · 程序设计小队',description:'分工覆盖图论、数据结构与赛时调试。',members:['数据结构','基础算法'],gaps:['算法','代码实现','测试优化'],related:['lanqiao','cumcm']},
+  mechanical: {short:'机械创新',label:'全国大学生机械创新设计大赛',name:'机械创新 · 智能装置项目组',description:'从结构方案到控制原型完成工程验证。',members:['机械结构','需求分析'],gaps:['三维建模','嵌入式','测试优化'],related:['robomaster','edc']},
+  ict: {short:'华为ICT',label:'华为ICT大赛',name:'ICT · 云网应用小组',description:'完成网络方案、云服务与安全实践。',members:['网络基础','系统部署'],gaps:['云计算','网络安全','软件开发'],related:['lanqiao','edc']},
+  jsjds: {short:'计算机设计',label:'中国大学生计算机设计大赛',name:'计算机设计 · 软件与数字媒体组',description:'合作开发软件应用、人工智能或数字媒体作品。',members:['产品策划','前端开发'],gaps:['软件开发','产品设计','算法'],related:['fwwb','internet']},
+  fwwb: {short:'服创大赛',label:'中国大学生服务外包创新创业大赛',name:'服创大赛 · 企业命题开发组',description:'围绕企业真实需求完成系统研发与商业方案。',members:['后端开发','需求分析'],gaps:['软件开发','产品设计','商业分析'],related:['internet','jsjds']},
+  shidiao: {short:'市调大赛',label:'全国大学生市场调查与分析大赛',name:'市调大赛 · 调研与统计小组',description:'完成抽样设计、问卷调研、统计建模与报告撰写。',members:['问卷设计','数据整理'],gaps:['数据分析','论文写作','可视化'],related:['cumcm','challenge']},
+  jieneng: {short:'节能减排',label:'全国大学生节能减排社会实践与科技竞赛',name:'节能减排 · 绿色科技实践组',description:'推进低碳环保装置研发或社会实践调研。',members:['方案设计','文献调研'],gaps:['嵌入式','数据分析','论文写作'],related:['challenge','mechanical']},
+  daguangsai: {short:'大广赛',label:'全国大学生广告艺术大赛',name:'大广赛 · 创意视觉制作组',description:'围绕品牌命题完成平面、视频或互动广告创作。',members:['创意策划','文案'],gaps:['产品设计','可视化','路演表达'],related:['jsjds','internet']},
+  ciciec: {short:'集创赛',label:'全国大学生集成电路创新创业大赛',name:'集创赛 · 芯片与 FPGA 项目组',description:'合作完成芯片设计、FPGA 验证与系统测试。',members:['数字电路','Verilog'],gaps:['嵌入式','算法','测试优化'],related:['edc','ict']}
 };
 const matchPools = {
   edc:[['视觉算法','计算机科学与技术',['算法','视觉'],['Python','OpenCV','目标识别']],['软件开发','软件工程',['软件开发'],['C++','Qt','数据可视化']],['控制算法','自动化',['算法'],['MATLAB','控制算法','仿真']],['视觉与软件','人工智能',['视觉','软件开发'],['ROS','计算机视觉','C++']],['嵌入式开发','电子信息工程',['软件开发'],['STM32','C语言','通信协议']]],

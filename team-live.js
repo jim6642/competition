@@ -5,15 +5,40 @@
   const myPostsBox = document.getElementById('my-posts');
   const myPostsWrap = document.getElementById('my-posts-wrap');
   const conversationsBox = document.getElementById('live-conversations');
+  const majorInput = document.getElementById('search-major');
+  const gradeInput = document.getElementById('search-grade');
+  const matchedInput = document.getElementById('filter-matched');
+  const count = document.getElementById('live-count');
+  const ownLink = document.getElementById('my-posts-link');
+  const conversationsLink = document.getElementById('conversations-link');
+  const conversationsWrap = document.getElementById('conversations-wrap');
+
   let account = null;
   let conversationReadStorageKey = null;
   let recentConversations = [];
+  let ownPosts = [];
   let liveTimer = null;
   let conversationId = null;
   let lastMessageId = 0;
+  let feedVersion = 0;
+  let loadedFeed = null;
+  let feedBusy = false;
 
   function safe(value) { return escapeHtml(value == null ? '' : value); }
   function empty(text) { return `<div class="live-empty">${safe(text)}</div>`; }
+
+  function togglePanel(panel, trigger, forceOpen = null) {
+    const willOpen = forceOpen === null ? panel.hidden : forceOpen;
+    [myPostsWrap, conversationsWrap].forEach(item => {
+      if (item !== panel) item.hidden = true;
+    });
+    [ownLink, conversationsLink].forEach(btn => {
+      if (btn !== trigger) btn.setAttribute('aria-expanded', 'false');
+    });
+    panel.hidden = !willOpen;
+    trigger.setAttribute('aria-expanded', String(willOpen));
+  }
+
   function readConversationState() {
     if (!conversationReadStorageKey) return {};
     try {
@@ -25,17 +50,8 @@
     if (!conversationReadStorageKey || !Number(messageId)) return;
     const read = readConversationState();
     read[id] = Math.max(Number(read[id]) || 0, Number(messageId) || 0);
-    try { localStorage.setItem(conversationReadStorageKey, JSON.stringify(read)); } catch (_) { /* unread badge remains best-effort */ }
+    try { localStorage.setItem(conversationReadStorageKey, JSON.stringify(read)); } catch (_) {}
   }
-  const majorInput = document.getElementById('search-major');
-  const gradeInput = document.getElementById('search-grade');
-  const count = document.getElementById('live-count');
-  const ownLink = document.getElementById('my-posts-link');
-  const conversationsLink = document.getElementById('conversations-link');
-  const conversationsWrap = document.getElementById('conversations-wrap');
-  let feedVersion = 0;
-  let loadedFeed = null;
-  let feedBusy = false;
 
   function matchingSkills(post) {
     const skills = new Map(splitProfileList(profile.skills).map(skill => [skill.toLowerCase(), skill]));
@@ -44,63 +60,114 @@
 
   function renderPost(post, matches) {
     const p = post.profile || {};
-    const contest = matchScenarios[post.competition]?.label || post.competition;
+    const scenario = matchScenarios[post.competition];
+    const contestShort = scenario?.short || scenario?.label || post.competition;
     const skills = splitProfileList(p.skills);
     const gaps = post.gaps || [];
+    const matchSet = new Set(matches.map(item => item.toLowerCase()));
     const members = Array.isArray(post.team?.members) ? post.team.members : [];
+    const note = typeof post.team?.note === 'string' ? post.team.note.trim() : '';
     const leader = p.name || post.username;
-    const tags = gaps.map(tag => `<span class="chip">${safe(tag)}</span>`).join('');
+    const meta = [p.school, p.major, p.grade].filter(Boolean).join(' · ');
+    const tags = gaps.map(tag => {
+      const matched = matchSet.has(tag.toLowerCase());
+      return `<span class="chip${matched ? ' chip-match' : ''}">${matched ? '✓ ' : ''}${safe(tag)}</span>`;
+    }).join('');
     return `<article class="live-card">
-      <div class="live-card-top"><div><h3>${safe(contest)}</h3><p>${safe([leader, p.school].filter(Boolean).join(' · '))}</p></div><strong class="recruit-badge">还缺 ${Number(post.recruitCount)} 人</strong></div>
-      <div class="chips"><span class="muted">想找</span>${tags || '<span>可私聊了解分工</span>'}</div>
-      ${matches.length ? `<p class="match-note">你的技能「${safe(matches.join('、'))}」符合这支队伍的招募需求。</p>` : ''}
-      <details class="post-details"><summary>查看详情</summary><dl>
-        <dt>队长背景</dt><dd>${safe([p.major, p.grade, p.role].filter(Boolean).join(' · ') || '未填写')}</dd>
-        <dt>队伍现有成员</dt><dd>${members.length+1} 人（含队长）${members.length ? ` · ${members.map(item => `${safe(item.name)}（${safe(item.role)}）`).join('、')}` : ''}</dd>
-        <dt>队长技能</dt><dd>${safe(skills.join('、') || '未填写')}</dd>
-        <dt>竞赛经历</dt><dd>${safe(p.experience || '未填写')}</dd>
-        <dt>发布时间</dt><dd>${safe(new Date(post.createdAt).toLocaleDateString('zh-CN'))}</dd>
-      </dl></details>
-      <button class="chat-button live-contact" type="button" data-post-id="${Number(post.id)}" data-person="${safe(leader)}">私聊队长</button>
+      <div class="live-card-top">
+        <div class="card-identity">
+          <span class="contest-tag">${safe(contestShort)}</span>
+          <strong>${safe(leader)}</strong>
+          ${meta ? `<span class="card-meta">${safe(meta)}</span>` : ''}
+        </div>
+        <strong class="recruit-badge">缺 ${Number(post.recruitCount)} 人</strong>
+      </div>
+      ${note ? `<p class="card-note">${safe(note)}</p>` : ''}
+      <div class="chips"><span class="muted">想找</span>${tags || '<span class="muted">可私聊了解分工</span>'}</div>
+      <div class="live-card-bottom">
+        <details class="post-details"><summary>查看详情</summary><dl>
+          <dt>目标比赛</dt><dd>${safe(scenario?.label || post.competition)}</dd>
+          <dt>队长定位</dt><dd>${safe(p.role || '未填写')}</dd>
+          <dt>现有成员</dt><dd>${members.length + 1} 人（含队长）${members.length ? ` · ${members.map(item => `${safe(item.name)}（${safe(item.role)}）`).join('、')}` : ''}</dd>
+          <dt>队长技能</dt><dd>${safe(skills.join('、') || '未填写')}</dd>
+          <dt>竞赛经历</dt><dd>${safe(p.experience || '未填写')}</dd>
+          <dt>发布时间</dt><dd>${safe(new Date(post.createdAt).toLocaleDateString('zh-CN'))}</dd>
+        </dl></details>
+        <button class="chat-button live-contact" type="button" data-post-id="${Number(post.id)}" data-person="${safe(leader)}">私聊队长</button>
+      </div>
     </article>`;
   }
 
   function renderFeed() {
     const major = majorInput.value.trim().toLowerCase();
     const grade = gradeInput.value;
-    const filters = Number(Boolean(major)) + Number(Boolean(grade));
+    const onlyMatched = matchedInput.checked;
+    const filters = Number(Boolean(major)) + Number(Boolean(grade)) + Number(onlyMatched);
     document.getElementById('filter-count').textContent = filters ? `· ${filters} 项` : '';
-    if (feedBusy || !loadedFeed || loadedFeed.competition !== competitionChoice.value) return;
+    const activeCompetition = competitionChoice.value || 'all';
+    if (feedBusy || !loadedFeed || loadedFeed.competition !== activeCompetition) return;
     const posts = loadedFeed.posts;
-    const eligible = posts.filter(({profile:p = {}}) =>
-      (!major || String(p.major || '').toLowerCase().includes(major)) && (!grade || p.grade === grade)
-    ).map(post => ({post, matches: matchingSkills(post)})).sort((a, b) => b.matches.length - a.matches.length);
+    const eligible = posts
+      .map(post => ({post, matches: matchingSkills(post)}))
+      .filter(({post: {profile: p = {}}, matches}) =>
+        (!major || String(p.major || '').toLowerCase().includes(major)) &&
+        (!grade || p.grade === grade) &&
+        (!onlyMatched || matches.length > 0)
+      )
+      .sort((a, b) => b.matches.length - a.matches.length);
     count.textContent = `${eligible.length} 条`;
-    postsBox.innerHTML = eligible.length ? eligible.map(({post, matches}) => renderPost(post, matches)).join('') :
-      posts.length ? '<div class="live-empty"><strong>没有符合当前筛选的招募</strong><button type="button" class="secondary-button" data-clear-filters>清除筛选</button></div>' :
-      '<div class="live-empty"><strong>这场比赛暂无真实招募</strong><div class="empty-actions"><button type="button" class="chat-button" data-open-publish>发布招募</button><button type="button" class="secondary-button" data-choose-competition>看看其他比赛</button></div></div>';
+    if (eligible.length) {
+      postsBox.innerHTML = eligible.map(({post, matches}) => renderPost(post, matches)).join('');
+      return;
+    }
+    if (posts.length) {
+      postsBox.innerHTML = '<div class="live-empty"><strong>没有符合当前筛选的招募</strong><button type="button" class="secondary-button" data-clear-filters>清除筛选</button></div>';
+      return;
+    }
+    postsBox.innerHTML = activeCompetition === 'all'
+      ? '<div class="live-empty"><strong>暂时还没有其他同学发布招募</strong><div class="empty-actions"><button type="button" class="chat-button" data-open-publish>＋ 发布第一条招募</button></div></div>'
+      : '<div class="live-empty"><strong>这场比赛暂时还没有招募</strong><div class="empty-actions"><button type="button" class="chat-button" data-open-publish>＋ 发布招募</button><button type="button" class="secondary-button" data-show-all>查看全部比赛</button></div></div>';
   }
 
   function renderOwn(own) {
-    const activeOwn = own.filter(post => post.active);
-    myPostsWrap.hidden = ownLink.hidden = !activeOwn.length;
-    myPostsBox.innerHTML = activeOwn.map(post => `<div class="live-my-post"><div><strong>${safe(matchScenarios[post.competition]?.label || post.competition)}</strong><br><span>招募 ${Number(post.recruitCount)} 人 · ${safe((post.gaps || []).join('、'))}</span></div><button class="live-delete" type="button" data-delete-post="${Number(post.id)}">结束招募</button></div>`).join('');
+    ownPosts = own.filter(post => post.active);
+    ownLink.hidden = !ownPosts.length;
+    ownLink.textContent = ownPosts.length ? `我的招募 · ${ownPosts.length}` : '我的招募';
+    if (!ownPosts.length) {
+      myPostsWrap.hidden = true;
+      ownLink.setAttribute('aria-expanded', 'false');
+    }
+    myPostsBox.innerHTML = ownPosts.map(post => {
+      const scenario = matchScenarios[post.competition];
+      const title = scenario?.short || scenario?.label || post.competition;
+      const note = post.team?.note ? ` · ${post.team.note}` : '';
+      return `<div class="live-my-post">
+        <div class="my-post-info">
+          <div class="my-post-title"><span class="contest-tag">${safe(title)}</span><strong>缺 ${Number(post.recruitCount)} 人</strong></div>
+          <span class="my-post-meta">想找：${safe((post.gaps || []).join('、'))}${safe(note)}</span>
+        </div>
+        <div class="my-post-actions">
+          <button class="secondary-button compact-btn" type="button" data-edit-post="${Number(post.id)}">编辑</button>
+          <button class="live-delete" type="button" data-delete-post="${Number(post.id)}">结束招募</button>
+        </div>
+      </div>`;
+    }).join('');
   }
 
   async function refreshFeed() {
     if (!account) return;
-    const competition = competitionChoice.value;
+    const competition = competitionChoice.value || 'all';
     const version = ++feedVersion;
     feedBusy = true;
     count.textContent = '';
     postsBox.setAttribute('aria-busy', 'true');
-    postsBox.innerHTML = empty(competition ? '正在加载招募…' : '选一场比赛，即可查看正在招募的队伍。');
+    postsBox.innerHTML = empty('正在加载招募…');
     try {
-      // The API also returns all of this account's own posts, even before choosing a contest.
-      const data = await api.request(`/api/team-posts?competition=${encodeURIComponent(competition || Object.keys(matchScenarios)[0])}`);
+      const data = await api.request(`/api/team-posts?competition=${encodeURIComponent(competition)}`);
       if (version !== feedVersion) return;
       renderOwn(data.own);
-      loadedFeed = competition ? {competition, posts:data.posts} : null;
+      window.updateContestCounts?.(data.counts || {});
+      loadedFeed = {competition, posts: data.posts};
       feedBusy = false;
       renderFeed();
     } catch (error) {
@@ -125,9 +192,10 @@
       conversationsBox.innerHTML = conversations.length ? conversations.map(item => {
         const unread = Number(item.last_sender_id) !== Number(account.id) && Number(item.last_message_id) > (Number(read[item.id]) || 0);
         if (unread) unreadCount += 1;
-        return `<button class="live-conversation" type="button" data-conversation-id="${Number(item.id)}" data-person="${safe(item.other_name)}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${safe(item.other_name)}</strong>${unread ? '<span style="display:inline-flex;flex:none;padding:2px 7px;border-radius:999px;background:#fef2f2;color:#b91c1c;font-size:.65rem;font-weight:700">新消息</span>' : ''}</div><span>${safe(item.last_message || '会话已建立，发一条消息开始交流')}</span></button>`;
+        return `<button class="live-conversation" type="button" data-conversation-id="${Number(item.id)}" data-person="${safe(item.other_name)}"><div class="conv-top"><strong>${safe(item.other_name)}</strong>${unread ? '<span class="unread-badge">新消息</span>' : ''}</div><span>${safe(item.last_message || '会话已建立，发一条消息开始交流')}</span></button>`;
       }).join('') : empty('还没有私聊。可从招募卡片联系队长。');
-      conversationsLink.textContent = unreadCount ? '私聊消息 · ' + unreadCount : '私聊消息';
+      conversationsLink.textContent = unreadCount ? `私聊消息 · ${unreadCount}` : '私聊消息';
+      conversationsLink.classList.toggle('has-unread', unreadCount > 0);
       conversationsWrap.querySelector('.live-subhead').textContent = unreadCount ? `最近私聊 · ${unreadCount} 个会话有新消息` : '最近私聊';
     } catch (error) { conversationsBox.innerHTML = empty(error.message); }
   }
@@ -197,9 +265,10 @@
   document.getElementById('publish-current').addEventListener('click', async event => {
     const button = event.currentTarget;
     const feedback = document.getElementById('publish-status');
-    const competition = competitionChoice.value;
+    const competition = activeDraftKey();
     const team = teamFor(competition);
     const gaps = [...team.gaps];
+    const note = (publishNoteInput.value || '').trim();
     feedback.classList.add('error');
     if (!gaps.length) { feedback.textContent = '请至少选择一个需要补充的领域。'; return; }
     if (!profile.school || !profile.major || !profile.grade) {
@@ -208,23 +277,28 @@
     }
     button.disabled = true;
     feedback.classList.remove('error');
-    feedback.textContent = '正在发布…';
+    feedback.textContent = editingPostId ? '正在保存…' : '正在发布…';
     try {
       const members = team.members.map(item => ({name: item.name, role: item.role}));
-      await api.request('/api/team-posts', {method: 'POST', body: JSON.stringify({competition, recruitCount: team.recruitCount || 1, gaps, members})});
-      publishDialog.close();
-      setStatus('招募已发布，可在「我的招募」查看。');
+      const payload = {competition, recruitCount: team.recruitCount || 1, gaps, members, note};
+      if (editingPostId) {
+        await api.request(`/api/team-posts/${editingPostId}`, {method: 'PUT', body: JSON.stringify(payload)});
+        publishDialog.close();
+        setStatus('招募已更新。');
+      } else {
+        await api.request('/api/team-posts', {method: 'POST', body: JSON.stringify(payload)});
+        publishDialog.close();
+        setStatus('招募已发布，可在「我的招募」查看或编辑。');
+      }
+      editingPostId = null;
       await refreshFeed();
     } catch (error) { feedback.textContent = error.message; feedback.classList.add('error'); }
     finally { button.disabled = false; }
   });
 
   document.getElementById('live-posts').addEventListener('click', async event => {
-    if (event.target.closest('[data-open-publish]')) return openPublish();
-    if (event.target.closest('[data-choose-competition]')) {
-      document.getElementById('discovery-title').focus();
-      return;
-    }
+    if (event.target.closest('[data-open-publish]')) return openPublish(null);
+    if (event.target.closest('[data-show-all]')) return window.selectContest?.('all');
     if (event.target.closest('[data-retry-feed]')) return refreshFeed();
     const button = event.target.closest('.live-contact');
     if (!button) return;
@@ -243,6 +317,12 @@
   });
 
   document.getElementById('my-posts').addEventListener('click', async event => {
+    const editBtn = event.target.closest('[data-edit-post]');
+    if (editBtn) {
+      const target = ownPosts.find(item => Number(item.id) === Number(editBtn.dataset.editPost));
+      if (target) openPublish(target);
+      return;
+    }
     const button = event.target.closest('[data-delete-post]');
     if (!button || !confirm('结束这条招募？其他同学将不再看到，也不能从招募列表新建私聊。')) return;
     button.disabled = true;
@@ -260,13 +340,22 @@
     refreshFeed();
   });
   [majorInput, gradeInput].forEach(field => field.addEventListener('input', renderFeed));
+  matchedInput.addEventListener('change', renderFeed);
   document.querySelector('.team-page').addEventListener('click', event => {
+    const closeBtn = event.target.closest('[data-close-panel]');
+    if (closeBtn) {
+      const panel = document.getElementById(closeBtn.dataset.closePanel);
+      const trigger = closeBtn.dataset.closePanel === 'my-posts-wrap' ? ownLink : conversationsLink;
+      if (panel && trigger) togglePanel(panel, trigger, false);
+      return;
+    }
     if (!event.target.closest('[data-clear-filters]')) return;
     majorInput.value = gradeInput.value = '';
+    matchedInput.checked = false;
     renderFeed();
   });
-  ownLink.addEventListener('click', () => { myPostsWrap.open = true; });
-  conversationsLink.addEventListener('click', () => { conversationsWrap.open = true; });
+  ownLink.addEventListener('click', () => togglePanel(myPostsWrap, ownLink));
+  conversationsLink.addEventListener('click', () => togglePanel(conversationsWrap, conversationsLink));
 
   async function init() {
     if (!api.enabled) {
@@ -284,14 +373,14 @@
       switchTeamState(user.id);
       document.getElementById('real-recruitments').hidden = false;
       publishButton.hidden = false;
-      conversationsWrap.hidden = conversationsLink.hidden = false;
+      conversationsLink.hidden = false;
       await Promise.all([refreshFeed(), refreshConversations()]);
       setInterval(refreshConversations, 15000);
       const requestedChat = Number(new URLSearchParams(window.location.search).get('chat'));
-      const requestedConversation = recentConversations.find(item=>Number(item.id)===requestedChat);
+      const requestedConversation = recentConversations.find(item => Number(item.id) === requestedChat);
       if (requestedConversation) {
         await openConversation(requestedConversation.id, requestedConversation.other_name);
-        history.replaceState(null,'',window.location.pathname);
+        history.replaceState(null, '', window.location.pathname);
       }
     } catch (error) {
       setStatus(`账号服务暂不可用：${error.message}`, true);
