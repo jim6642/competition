@@ -356,7 +356,7 @@
       const img = new Image();
       img.onload = () => resolve(img);
       img.onerror = () => resolve(null);
-      img.src = `assets/images/persona-${id}.jpg`;
+      img.src = `assets/images/persona-${id}.jpg?v=2`;
     });
     imageCache.set(id, promise);
     return promise;
@@ -613,7 +613,7 @@
   function openGallery() {
     $('gallery-grid').innerHTML = PERSONAS.map(p => `
       <button type="button" class="gallery-item" data-persona-id="${p.id}">
-        <img class="gallery-thumb" src="assets/images/persona-${p.id}.jpg" alt="${p.title}" loading="lazy">
+        <img class="gallery-thumb" src="assets/images/persona-${p.id}.jpg?v=2" alt="${p.title}" loading="lazy">
         <div class="gallery-body">
           <div class="gallery-item-top">
             <strong>${p.emoji} ${p.title}</strong>
