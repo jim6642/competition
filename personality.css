@@ -255,11 +255,15 @@ h1, h2, h3, p { margin: 0; }
 }
 .res-desc { margin-top: 14px; color: var(--muted); font-size: .92rem; line-height: 1.75; }
 
-.stats-card, .match-card {
+.stats-card, .match-card, .basis-card {
   margin-top: 20px; padding: 18px 20px; border-radius: 18px;
   background: #fff; border: 1px solid #e7edf7;
 }
-.stats-card h3 { font-size: .92rem; font-weight: 800; margin-bottom: 12px; }
+.stats-card h3, .basis-card h3 { font-size: .92rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.stats-sub { font-size: .74rem; font-weight: 600; color: var(--muted); }
+.basis-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.basis-list li { font-size: .85rem; color: #334155; display: flex; align-items: flex-start; gap: 8px; line-height: 1.55; }
+.basis-list li::before { content: '•'; color: #7c3aed; font-weight: 900; }
 .stat-bars { display: grid; gap: 11px; }
 .stat-row { display: grid; gap: 5px; }
 .stat-head { display: flex; justify-content: space-between; font-size: .82rem; font-weight: 650; }

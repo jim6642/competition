@@ -7,7 +7,7 @@
 <meta name="description" content="8 道趣味情景题，40 秒测出你的大学生竞赛人格，生成专属 MBTI 风格高清海报。">
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="auth.css">
-<link rel="stylesheet" href="personality.css?v=1">
+<link rel="stylesheet" href="personality.css?v=2">
 </head>
 <body>
 <header class="site-header">
@@ -103,8 +103,13 @@
         <p id="res-desc" class="res-desc"></p>
 
         <div class="stats-card">
-          <h3>四维竞赛指数</h3>
+          <h3>四维竞赛指数 <span class="stats-sub" id="res-stats-mode">根据你的 8 道选择实时计算</span></h3>
           <div id="res-stats" class="stat-bars"></div>
+        </div>
+
+        <div class="basis-card" id="res-basis-wrap" hidden>
+          <h3>🔍 你的答题画像依据</h3>
+          <ul id="res-basis" class="basis-list"></ul>
         </div>
 
         <div class="match-card">
@@ -152,6 +157,6 @@
 <script src="matching-data.js"></script>
 <script src="api-client.js"></script>
 <script src="auth-nav.js"></script>
-<script src="personality.js?v=1"></script>
+<script src="personality.js?v=2"></script>
 </body>
 </html>
