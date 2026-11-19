@@ -349,7 +349,20 @@
     return lines;
   }
 
-  function drawPoster(persona, nickname, statsToDraw) {
+  const imageCache = new Map();
+  function loadPersonaImage(id) {
+    if (imageCache.has(id)) return imageCache.get(id);
+    const promise = new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = `assets/images/persona-${id}.jpg`;
+    });
+    imageCache.set(id, promise);
+    return promise;
+  }
+
+  async function drawPoster(persona, nickname, statsToDraw) {
     const canvas = $('poster-canvas');
     const ctx = canvas.getContext('2d');
     const W = canvas.width;
@@ -357,6 +370,7 @@
     const c = persona.colors;
     const stats = statsToDraw || persona.stats;
     const fontBase = '"PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif';
+    const artImg = await loadPersonaImage(persona.id);
 
     // 1. Vibrant dopamine gradient background
     const bg = ctx.createLinearGradient(0, 0, W, H);
@@ -377,110 +391,123 @@
       ctx.fill();
     };
     drawOrb(110, 120, 260, 0.28);
-    drawOrb(670, 240, 240, 0.22);
-    drawOrb(620, 1080, 280, 0.22);
-
-    // Subtle grid dots on top
-    ctx.fillStyle = 'rgba(255,255,255,0.18)';
-    for (let gx = 48; gx < W - 40; gx += 32) {
-      for (let gy = 48; gy < 200; gy += 32) {
-        ctx.beginPath();
-        ctx.arc(gx, gy, 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
+    drawOrb(670, 260, 240, 0.22);
+    drawOrb(620, 1180, 280, 0.22);
 
     // 2. Top Brand Strip
     ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    ctx.font = `700 24px ${fontBase}`;
-    ctx.fillText('COMPETITION PERSONALITY · 2026', 48, 76);
+    ctx.font = `700 22px ${fontBase}`;
+    ctx.fillText('COMPETITION PERSONALITY · 2026', 44, 62);
 
     // Code pill on top right
-    roundRect(ctx, W - 208, 44, 160, 44, 22);
+    roundRect(ctx, W - 196, 32, 152, 42, 21);
     ctx.fillStyle = 'rgba(255,255,255,0.24)';
     ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.65)';
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.fillStyle = '#ffffff';
-    ctx.font = `800 22px ${fontBase}`;
+    ctx.font = `800 21px ${fontBase}`;
     ctx.textAlign = 'center';
-    ctx.fillText(persona.code, W - 128, 74);
+    ctx.fillText(persona.code, W - 120, 60);
+
+    // Nickname centered subtitle
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.font = `700 25px ${fontBase}`;
+    ctx.fillText(`${nickname} 的专属竞赛人格`, W / 2, 110);
     ctx.textAlign = 'left';
 
-    // 3. Nickname & Persona Hero Title
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    ctx.font = `700 26px ${fontBase}`;
-    ctx.fillText(`${nickname} 的专属竞赛人格是`, 48, 146);
+    // 3. Collectible Character Illustration Frame (centered 384x384)
+    const artSize = 384;
+    const artX = (W - artSize) / 2;
+    const artY = 132;
 
-    // Emoji badge circle
-    roundRect(ctx, 48, 174, 114, 114, 32);
-    ctx.fillStyle = 'rgba(255,255,255,0.24)';
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.font = `62px ${fontBase}`;
-    ctx.textAlign = 'center';
-    ctx.fillText(persona.emoji, 105, 252);
-    ctx.textAlign = 'left';
-
-    // Title text
+    ctx.save();
+    ctx.shadowColor = 'rgba(20, 27, 45, 0.26)';
+    ctx.shadowBlur = 32;
+    ctx.shadowOffsetY = 14;
+    roundRect(ctx, artX, artY, artSize, artSize, 38);
     ctx.fillStyle = '#ffffff';
-    const titleSize = persona.title.length > 7 ? 50 : 62;
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    roundRect(ctx, artX + 7, artY + 7, artSize - 14, artSize - 14, 32);
+    ctx.clip();
+    if (artImg) {
+      ctx.drawImage(artImg, artX + 7, artY + 7, artSize - 14, artSize - 14);
+    } else {
+      ctx.fillStyle = c.light;
+      ctx.fillRect(artX + 7, artY + 7, artSize - 14, artSize - 14);
+      ctx.font = `120px ${fontBase}`;
+      ctx.textAlign = 'center';
+      ctx.fillText(persona.emoji, W / 2, artY + 235);
+      ctx.textAlign = 'left';
+    }
+    ctx.restore();
+
+    // 4. Centered Big Bold Title + Rarity Pill
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    const titleSize = persona.title.length > 7 ? 46 : 54;
     ctx.font = `900 ${titleSize}px ${fontBase}`;
-    ctx.fillText(persona.title, 184, 236);
+    ctx.fillText(`${persona.emoji} ${persona.title}`, W / 2, 578);
 
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.font = `600 22px ${fontBase}`;
-    ctx.fillText(persona.rarity, 184, 276);
+    ctx.font = `700 20px ${fontBase}`;
+    const rarityW = Math.min(W - 100, ctx.measureText(persona.rarity).width + 44);
+    roundRect(ctx, (W - rarityW) / 2, 596, rarityW, 38, 19);
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(persona.rarity, W / 2, 622);
+    ctx.textAlign = 'left';
 
-    // 4. Main White Floating Card
-    roundRect(ctx, 42, 322, W - 84, 790, 34);
+    // 5. Main White Floating Card
+    roundRect(ctx, 40, 654, W - 80, 608, 32);
     ctx.fillStyle = 'rgba(255,255,255,0.96)';
     ctx.fill();
 
     // Quote box inside white card
-    roundRect(ctx, 74, 354, W - 148, 118, 22);
+    roundRect(ctx, 70, 680, W - 140, 96, 20);
     ctx.fillStyle = c.light;
     ctx.fill();
     ctx.fillStyle = c.accent;
-    roundRect(ctx, 74, 354, 10, 118, 5);
+    roundRect(ctx, 70, 680, 9, 96, 5);
     ctx.fill();
 
     ctx.fillStyle = '#1e2438';
-    ctx.font = `700 25px ${fontBase}`;
-    const quoteLines = wrapLines(ctx, persona.quote, W - 210, 2);
+    ctx.font = `700 23px ${fontBase}`;
+    const quoteLines = wrapLines(ctx, persona.quote, W - 196, 2);
     quoteLines.forEach((line, i) => {
-      ctx.fillText(line, 104, 402 + i * 38);
+      ctx.fillText(line, 98, 720 + i * 34);
     });
 
-    // 5. Four Stat Bars
+    // 6. Four Dynamic Stat Bars
     ctx.fillStyle = '#141b2d';
-    ctx.font = `800 24px ${fontBase}`;
-    ctx.fillText('四维竞赛能量条', 76, 526);
+    ctx.font = `800 22px ${fontBase}`;
+    ctx.fillText('四维竞赛能量条', 72, 814);
 
     stats.forEach((st, idx) => {
-      const y = 566 + idx * 68;
+      const y = 850 + idx * 54;
       ctx.fillStyle = '#3b465c';
-      ctx.font = `700 21px ${fontBase}`;
-      ctx.fillText(st.label, 76, y);
+      ctx.font = `700 19px ${fontBase}`;
+      ctx.fillText(st.label, 72, y);
 
       ctx.fillStyle = c.accent;
-      ctx.font = `800 22px ${fontBase}`;
+      ctx.font = `800 20px ${fontBase}`;
       ctx.textAlign = 'right';
-      ctx.fillText(`${st.value}%`, W - 76, y);
+      ctx.fillText(`${st.value}%`, W - 72, y);
       ctx.textAlign = 'left';
 
-      const barW = W - 152;
-      roundRect(ctx, 76, y + 12, barW, 18, 9);
+      const barW = W - 144;
+      roundRect(ctx, 72, y + 10, barW, 15, 8);
       ctx.fillStyle = '#edf1f9';
       ctx.fill();
 
-      const fillG = ctx.createLinearGradient(76, 0, 76 + barW, 0);
+      const fillG = ctx.createLinearGradient(72, 0, 72 + barW, 0);
       fillG.addColorStop(0, c.bg1);
       fillG.addColorStop(1, c.bg3);
-      roundRect(ctx, 76, y + 12, Math.max(24, barW * (st.value / 100)), 18, 9);
+      roundRect(ctx, 72, y + 10, Math.max(20, barW * (st.value / 100)), 15, 8);
       ctx.fillStyle = fillG;
       ctx.fill();
     });
@@ -489,52 +516,52 @@
     ctx.strokeStyle = '#e7edf7';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(76, 848);
-    ctx.lineTo(W - 76, 848);
+    ctx.moveTo(72, 1068);
+    ctx.lineTo(W - 72, 1068);
     ctx.stroke();
 
-    // 6. Recommended Contests Pills
+    // 7. Recommended Contests Pills
     ctx.fillStyle = '#5a657d';
-    ctx.font = `700 20px ${fontBase}`;
-    ctx.fillText('🎯 本命推荐赛事', 76, 892);
+    ctx.font = `700 19px ${fontBase}`;
+    ctx.fillText('🎯 本命推荐赛事', 72, 1102);
 
-    let px = 76;
-    const py = 912;
-    ctx.font = `700 21px ${fontBase}`;
+    let px = 72;
+    const py = 1118;
+    ctx.font = `700 19px ${fontBase}`;
     persona.contests.slice(0, 4).forEach(key => {
       const label = (window.matchScenarios && matchScenarios[key]?.short) || key;
-      const tw = ctx.measureText(label).width + 34;
-      if (px + tw > W - 70) return;
-      roundRect(ctx, px, py, tw, 44, 22);
+      const tw = ctx.measureText(label).width + 30;
+      if (px + tw > W - 68) return;
+      roundRect(ctx, px, py, tw, 38, 19);
       ctx.fillStyle = c.light;
       ctx.fill();
       ctx.strokeStyle = c.accent;
       ctx.lineWidth = 1.5;
       ctx.stroke();
       ctx.fillStyle = c.accent;
-      ctx.fillText(label, px + 17, py + 29);
-      px += tw + 12;
+      ctx.fillText(label, px + 15, py + 26);
+      px += tw + 10;
     });
 
-    // 7. Best Partner
+    // 8. Best Partner
     ctx.fillStyle = '#5a657d';
-    ctx.font = `700 20px ${fontBase}`;
-    ctx.fillText('💘 天选绝配队友', 76, 1000);
+    ctx.font = `700 19px ${fontBase}`;
+    ctx.fillText('💘 天选绝配队友', 72, 1192);
     ctx.fillStyle = '#1e293b';
-    ctx.font = `600 21px ${fontBase}`;
-    const partnerLines = wrapLines(ctx, persona.partner, W - 152, 2);
+    ctx.font = `600 19px ${fontBase}`;
+    const partnerLines = wrapLines(ctx, persona.partner, W - 144, 2);
     partnerLines.forEach((line, i) => {
-      ctx.fillText(line, 76, 1036 + i * 32);
+      ctx.fillText(line, 72, 1222 + i * 26);
     });
 
-    // 8. Footer Brand
+    // 9. Footer Brand
     ctx.fillStyle = 'rgba(255,255,255,0.95)';
-    ctx.font = `800 22px ${fontBase}`;
-    ctx.fillText('🏆 竞赛信息门户 · competition.thirdplayer.cn', 48, 1172);
+    ctx.font = `800 21px ${fontBase}`;
+    ctx.fillText('🏆 竞赛信息门户 · competition.thirdplayer.cn', 44, 1308);
     ctx.textAlign = 'right';
-    ctx.font = `600 20px ${fontBase}`;
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.fillText('测测你的竞赛人格 →', W - 48, 1172);
+    ctx.font = `600 19px ${fontBase}`;
+    ctx.fillStyle = 'rgba(255,255,255,0.88)';
+    ctx.fillText('测测你的竞赛人格 →', W - 44, 1308);
     ctx.textAlign = 'left';
 
     $('poster-image').src = canvas.toDataURL('image/png');
@@ -586,11 +613,14 @@
   function openGallery() {
     $('gallery-grid').innerHTML = PERSONAS.map(p => `
       <button type="button" class="gallery-item" data-persona-id="${p.id}">
-        <div class="gallery-item-top">
-          <strong>${p.emoji} ${p.title}</strong>
-          <span class="gallery-code" style="background:linear-gradient(125deg,${p.colors.bg1},${p.colors.bg3})">${p.code}</span>
+        <img class="gallery-thumb" src="assets/images/persona-${p.id}.jpg" alt="${p.title}" loading="lazy">
+        <div class="gallery-body">
+          <div class="gallery-item-top">
+            <strong>${p.emoji} ${p.title}</strong>
+            <span class="gallery-code" style="background:linear-gradient(125deg,${p.colors.bg1},${p.colors.bg3})">${p.code}</span>
+          </div>
+          <small>${p.quote}</small>
         </div>
-        <small>${p.quote}</small>
       </button>
     `).join('');
     $('gallery-dialog').showModal();

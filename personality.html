@@ -7,7 +7,7 @@
 <meta name="description" content="8 道趣味情景题，40 秒测出你的大学生竞赛人格，生成专属 MBTI 风格高清海报。">
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="auth.css">
-<link rel="stylesheet" href="personality.css?v=2">
+<link rel="stylesheet" href="personality.css?v=3">
 </head>
 <body>
 <header class="site-header">
@@ -35,13 +35,15 @@
     <h1 class="hero-title">测测你是哪种<br><span class="gradient-text">竞赛人格</span>？</h1>
     <p class="hero-desc">保研冲奖卷王、DDL 极限战神，还是快乐参赛体验家？<br>回答 8 道扎心又真实的比赛情景题，生成你的专属海报！</p>
 
-    <div class="preview-strip" aria-hidden="true">
-      <span class="mini-tag tag-coral">🚀 国奖推土机</span>
-      <span class="mini-tag tag-indigo">⚡ 凌晨三点写代码的神</span>
-      <span class="mini-tag tag-mint">🛠️ 硬核极客工匠</span>
-      <span class="mini-tag tag-amber">🎤 天选路演嘴替</span>
-      <span class="mini-tag tag-sky">📊 稳健数据精算师</span>
-      <span class="mini-tag tag-rose">🧋 全队定海神针</span>
+    <div class="preview-avatars" aria-hidden="true">
+      <img src="assets/images/persona-bulldozer.jpg" alt="" loading="lazy">
+      <img src="assets/images/persona-nightcoder.jpg" alt="" loading="lazy">
+      <img src="assets/images/persona-artisan.jpg" alt="" loading="lazy">
+      <img src="assets/images/persona-pitcher.jpg" alt="" loading="lazy">
+      <img src="assets/images/persona-visionary.jpg" alt="" loading="lazy">
+      <img src="assets/images/persona-actuary.jpg" alt="" loading="lazy">
+      <img src="assets/images/persona-anchor.jpg" alt="" loading="lazy">
+      <img src="assets/images/persona-chill.jpg" alt="" loading="lazy">
     </div>
 
     <div class="nickname-box">
@@ -88,7 +90,7 @@
       <div class="poster-col">
         <div class="poster-frame">
           <img id="poster-image" alt="你的专属竞赛人格海报">
-          <canvas id="poster-canvas" width="750" height="1220" hidden></canvas>
+          <canvas id="poster-canvas" width="750" height="1340" hidden></canvas>
         </div>
         <p class="poster-hint"><i class="fas fa-download" aria-hidden="true"></i> 电脑可点击下方保存，手机可长按图片直接存图发朋友圈</p>
       </div>
@@ -157,6 +159,6 @@
 <script src="matching-data.js"></script>
 <script src="api-client.js"></script>
 <script src="auth-nav.js"></script>
-<script src="personality.js?v=2"></script>
+<script src="personality.js?v=3"></script>
 </body>
 </html>
