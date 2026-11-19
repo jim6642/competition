@@ -112,16 +112,18 @@ const statements = {
   deactivatePost: db.prepare("UPDATE team_posts SET active = 0, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ? AND user_id = ?"),
   conversation: db.prepare('SELECT id FROM conversations WHERE user_a = ? AND user_b = ?'),
   insertConversation: db.prepare('INSERT INTO conversations(user_a, user_b) VALUES (?, ?)'),
-  conversationForUser: db.prepare('SELECT id FROM conversations WHERE id = ? AND (user_a = ? OR user_b = ?)'),
+  conversationForUser: db.prepare('SELECT id, user_a, user_b FROM conversations WHERE id = ? AND (user_a = ? OR user_b = ?)'),
   conversations: db.prepare(`SELECT c.id, c.created_at,
       CASE WHEN c.user_a = @uid THEN ub.id ELSE ua.id END AS other_id,
-      CASE WHEN c.user_a = @uid THEN ub.username ELSE ua.username END AS other_name,
+      CASE WHEN c.user_a = @uid THEN ub.username ELSE ua.username END AS other_username,
+      CASE WHEN c.user_a = @uid THEN ub.profile_json ELSE ua.profile_json END AS other_profile_json,
       (SELECT m.id FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_message_id,
       (SELECT m.sender_id FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_sender_id,
       (SELECT body FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_message,
       (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS last_at
     FROM conversations c JOIN users ua ON ua.id = c.user_a JOIN users ub ON ub.id = c.user_b
     WHERE c.user_a = @uid OR c.user_b = @uid ORDER BY COALESCE(last_at, c.created_at) DESC LIMIT 100`),
+  messageCount: db.prepare('SELECT COUNT(*) AS count FROM messages WHERE conversation_id = ? AND sender_id = ?'),
   messagesAfter: db.prepare(`SELECT m.id, m.sender_id, u.username AS sender_name, m.body, m.created_at
     FROM messages m JOIN users u ON u.id = m.sender_id
     WHERE m.conversation_id = ? AND m.id > ? ORDER BY m.id ASC LIMIT 200`),
@@ -400,7 +402,11 @@ async function handleApi(req, res, url) {
     return json(res, 200, {ok: true});
   }
   if (pathname === '/api/conversations' && method === 'GET') {
-    return json(res, 200, {conversations: statements.conversations.all({uid: user.id})});
+    const list = statements.conversations.all({uid: user.id}).map(({other_username, other_profile_json, ...rest}) => {
+      const otherProfile = safeJson(other_profile_json, {});
+      return {...rest, other_name: otherProfile.name || other_username};
+    });
+    return json(res, 200, {conversations: list});
   }
   if (pathname === '/api/conversations' && method === 'POST') {
     const body = await readBody(req);
@@ -432,7 +438,8 @@ async function handleApi(req, res, url) {
   const messagesMatch = pathname.match(/^\/api\/conversations\/(\d+)\/messages$/);
   if (messagesMatch) {
     const conversationId = Number(messagesMatch[1]);
-    if (!statements.conversationForUser.get(conversationId, user.id, user.id)) return fail(res, 404, '私聊不存在或你没有权限访问。');
+    const conv = statements.conversationForUser.get(conversationId, user.id, user.id);
+    if (!conv) return fail(res, 404, '私聊不存在或你没有权限访问。');
     if (method === 'GET') {
       const after = Math.max(0, Number(url.searchParams.get('after')) || 0);
       const messages = after ? statements.messagesAfter.all(conversationId, after) : statements.latestMessages.all(conversationId).reverse();
@@ -443,6 +450,27 @@ async function handleApi(req, res, url) {
       const body = await readBody(req);
       const message = cleanText(body.message, 1000, '消息', true);
       const result = statements.insertMessage.run(conversationId, user.id, message);
+      const otherId = conv.user_a === user.id ? conv.user_b : conv.user_a;
+      const otherUser = statements.userById.get(otherId);
+      if (otherUser && otherUser.username.toLocaleLowerCase().startsWith('demo_')) {
+        const otherProfile = safeJson(otherUser.profile_json, {});
+        const replyCount = statements.messageCount.get(conversationId, otherId)?.count || 0;
+        let reply;
+        if (message.includes('【我的竞赛资料】')) {
+          reply = `收到你的资料啦！看你的背景和我们队伍方向很契合，我目前负责${otherProfile.role || '项目推进'}，你平时每周大概能投入多少时间？`;
+        } else if (message.includes('【当前队伍需求】')) {
+          reply = `了解你们这边的队伍需求了！我们可以先约个时间简单聊下分工和备赛节奏。`;
+        } else if (replyCount === 0) {
+          reply = `你好！我是${otherProfile.name || otherUser.username}（${[otherProfile.school, otherProfile.major].filter(Boolean).join(' · ')}）。很高兴认识你，方便介绍一下你擅长的方向或者想负责的部分吗？`;
+        } else if (replyCount === 1) {
+          reply = `太好了，听起来挺合适！我们目前计划这周末先开一次简短的线上碰头会，确认下选题细节和分工，你方便参加吗？`;
+        } else {
+          reply = `没问题，那就先这么定下来！后续有进展或资料我随时在这里发你。`;
+        }
+        setTimeout(() => {
+          try { statements.insertMessage.run(conversationId, otherId, reply); } catch (_) {}
+        }, 1200).unref();
+      }
       return json(res, 201, {message: {id: result.lastInsertRowid, sender_id: user.id, sender_name: user.username, body: message, created_at: new Date().toISOString()}});
     }
   }
