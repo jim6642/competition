@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞赛人格测试 — 竞赛信息门户</title>
+<meta name="description" content="8 道趣味情景题，40 秒测出你的大学生竞赛人格，生成专属 MBTI 风格高清海报。">
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="personality.css?v=1">
+</head>
+<body>
+<header class="site-header">
+  <div class="nav">
+    <a class="logo" href="index.html"><i class="fas fa-trophy" aria-hidden="true"></i>竞赛信息门户</a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">竞赛资讯</a>
+      <a href="team.html">寻找队友</a>
+      <a class="active" aria-current="page" href="personality.html">竞赛人格</a>
+      <a href="profile.html">个人中心</a>
+    </nav>
+  </div>
+</header>
+
+<div class="aura-bg" aria-hidden="true">
+  <span class="aura aura-1"></span>
+  <span class="aura aura-2"></span>
+  <span class="aura aura-3"></span>
+</div>
+
+<main class="quiz-shell">
+  <!-- Intro View -->
+  <section id="view-intro" class="card-stage intro-stage">
+    <div class="pill-eyebrow">✨ 2026 大学生竞赛人格测评 · 8 大隐藏原型</div>
+    <h1 class="hero-title">测测你是哪种<br><span class="gradient-text">竞赛人格</span>？</h1>
+    <p class="hero-desc">保研冲奖卷王、DDL 极限战神，还是快乐参赛体验家？<br>回答 8 道扎心又真实的比赛情景题，生成你的专属海报！</p>
+
+    <div class="preview-strip" aria-hidden="true">
+      <span class="mini-tag tag-coral">🚀 国奖推土机</span>
+      <span class="mini-tag tag-indigo">⚡ 凌晨三点写代码的神</span>
+      <span class="mini-tag tag-mint">🛠️ 硬核极客工匠</span>
+      <span class="mini-tag tag-amber">🎤 天选路演嘴替</span>
+      <span class="mini-tag tag-sky">📊 稳健数据精算师</span>
+      <span class="mini-tag tag-rose">🧋 全队定海神针</span>
+    </div>
+
+    <div class="nickname-box">
+      <label for="poster-nickname">海报署名（选填，将印在你的专属人格图上）</label>
+      <input id="poster-nickname" type="text" maxlength="16" autocomplete="off" placeholder="输入昵称，留空显示「竞赛选手」">
+    </div>
+
+    <div class="intro-actions">
+      <button id="btn-start" type="button" class="btn-dopamine">开始测试 <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+      <button id="btn-gallery-intro" type="button" class="btn-ghost">偷看全部 8 种人格</button>
+    </div>
+
+    <div class="meta-row">
+      <span><i class="far fa-clock" aria-hidden="true"></i> 约 40 秒</span>
+      <span><i class="fas fa-image" aria-hidden="true"></i> 生成高清 PNG 海报</span>
+      <span><i class="fas fa-unlock" aria-hidden="true"></i> 无需登录即可游玩</span>
+    </div>
+  </section>
+
+  <!-- Quiz View -->
+  <section id="view-quiz" class="card-stage quiz-stage" hidden>
+    <div class="quiz-top">
+      <button id="btn-prev" type="button" class="btn-back"><i class="fas fa-arrow-left" aria-hidden="true"></i> 上一题</button>
+      <span id="quiz-counter" class="quiz-counter">01 / 08</span>
+    </div>
+    <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" id="quiz-progressbar">
+      <div class="progress-fill" id="quiz-progress-fill"></div>
+    </div>
+    <div class="question-meta" id="question-tag"></div>
+    <h2 class="question-title" id="question-title" tabindex="-1"></h2>
+    <div class="option-list" id="option-list"></div>
+  </section>
+
+  <!-- Loading View -->
+  <section id="view-loading" class="card-stage loading-stage" hidden>
+    <div class="spinner-orb" aria-hidden="true"><span>✨</span></div>
+    <h2>正在解析你的竞赛基因…</h2>
+    <p id="loading-tip">正在计算保研渴望度、熬夜耐受值与天选队友雷达…</p>
+  </section>
+
+  <!-- Result View -->
+  <section id="view-result" class="result-stage" hidden>
+    <div class="result-grid">
+      <div class="poster-col">
+        <div class="poster-frame">
+          <img id="poster-image" alt="你的专属竞赛人格海报">
+          <canvas id="poster-canvas" width="750" height="1220" hidden></canvas>
+        </div>
+        <p class="poster-hint"><i class="fas fa-download" aria-hidden="true"></i> 电脑可点击下方保存，手机可长按图片直接存图发朋友圈</p>
+      </div>
+
+      <div class="info-col">
+        <div class="result-badge-row">
+          <span id="res-code" class="res-code"></span>
+          <span id="res-rarity" class="res-rarity"></span>
+        </div>
+        <h2 id="res-title" class="res-title" tabindex="-1"></h2>
+        <p id="res-quote" class="res-quote"></p>
+        <p id="res-desc" class="res-desc"></p>
+
+        <div class="stats-card">
+          <h3>四维竞赛指数</h3>
+          <div id="res-stats" class="stat-bars"></div>
+        </div>
+
+        <div class="match-card">
+          <div class="match-block">
+            <span class="match-label">🎯 最适合你的比赛（点击直达招募）</span>
+            <div id="res-contests" class="contest-links"></div>
+          </div>
+          <div class="match-block">
+            <span class="match-label">💘 天选绝配队友</span>
+            <p id="res-partner"></p>
+          </div>
+          <div class="match-block">
+            <span class="match-label">⚠️ 组队避雷提示</span>
+            <p id="res-pitfall"></p>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button id="btn-download" type="button" class="btn-dopamine"><i class="fas fa-download" aria-hidden="true"></i> 保存高清人格海报 (PNG)</button>
+          <a id="btn-find-team" href="team.html" class="btn-outline">去找天选队友 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="result-sub-actions">
+          <button id="btn-restart" type="button" class="btn-text"><i class="fas fa-rotate-right" aria-hidden="true"></i> 再测一次</button>
+          <button id="btn-gallery-result" type="button" class="btn-text"><i class="fas fa-th-large" aria-hidden="true"></i> 查看全部 8 种人格</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- All 8 Personas Gallery Dialog -->
+<dialog id="gallery-dialog" aria-labelledby="gallery-title">
+  <div class="gallery-head">
+    <div>
+      <h2 id="gallery-title">全部 8 种竞赛人格图鉴</h2>
+      <p>点击任意人格可直接预览它的专属海报风格</p>
+    </div>
+    <form method="dialog"><button type="submit" class="btn-close-dialog" aria-label="关闭">×</button></form>
+  </div>
+  <div id="gallery-grid" class="gallery-grid"></div>
+</dialog>
+
+<footer class="site-footer">竞赛信息门户 · 测测你的竞赛人格 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
+
+<script src="matching-data.js"></script>
+<script src="api-client.js"></script>
+<script src="auth-nav.js"></script>
+<script src="personality.js?v=1"></script>
+</body>
+</html>

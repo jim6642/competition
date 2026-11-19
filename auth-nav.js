@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     lab.textContent = '组队实验室';
     nav.insertBefore(lab, nav.querySelector('a[href="profile.html"]'));
   }
+  if (nav && !nav.querySelector('a[href="personality.html"]')) {
+    const quiz = document.createElement('a');
+    quiz.href = 'personality.html';
+    quiz.textContent = '竞赛人格';
+    nav.insertBefore(quiz, nav.querySelector('a[href="profile.html"]'));
+  }
   if (!nav || !window.CompetitionAPI?.enabled) return;
   const entry = document.createElement('a');
   entry.href = 'account.html';
