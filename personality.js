@@ -12,10 +12,10 @@
       desc: '目标感拉满、行动力爆表。你报比赛绝不凑数，从选题到甘特图再到答辩排练全都安排得明明白白，是队伍里最靠谱的节奏引擎。',
       colors: { bg1: '#ff4e7a', bg2: '#ff8a3d', bg3: '#7c3aed', accent: '#ff3b6b', light: '#fff1f4' },
       stats: [
-        { label: '保研 / 冲奖渴望度', value: 96 },
-        { label: '推进与规划力', value: 94 },
-        { label: '肝度耐受值', value: 88 },
-        { label: '带飞统筹指数', value: 92 }
+        { label: '冲奖驱动力', value: 95 },
+        { label: '爆肝投入度', value: 86 },
+        { label: '规划节奏感', value: 91 },
+        { label: '统筹表达力', value: 88 }
       ],
       contests: ['internet', 'challenge', 'edc'],
       partner: '🛠️ 硬核极客工匠 —— 你定方向控节奏，TA 把技术原型做到惊艳全场。',
@@ -31,10 +31,10 @@
       desc: '平时看起来云淡风轻，一到 DDL 前 48 小时战斗力直接翻倍。你擅长在高压下啃下最硬的技术骨头，经常在天亮前交出全队膜拜的绝杀版本。',
       colors: { bg1: '#4338ca', bg2: '#7c3aed', bg3: '#06b6d4', accent: '#5b4bff', light: '#f0f2ff' },
       stats: [
-        { label: 'DDL 极限爆发力', value: 98 },
-        { label: '技术硬核度', value: 93 },
-        { label: '熬夜抗压值', value: 95 },
-        { label: '提前规划指数', value: 42 }
+        { label: '冲奖驱动力', value: 78 },
+        { label: '爆肝投入度', value: 96 },
+        { label: '规划节奏感', value: 31 },
+        { label: '统筹表达力', value: 44 }
       ],
       contests: ['icpc', 'lanqiao', 'robomaster', 'ciciec'],
       partner: '🧋 全队定海神针 —— TA 负责提前催进度和整理提交材料，让你安心输出神级代码。',
@@ -50,10 +50,10 @@
       desc: '你是真正享受“把想法做成实物”的技术派。比起花哨的包装，你更在乎底层原理、指标精度和工程落地，有你在的队伍技术底座稳如泰山。',
       colors: { bg1: '#059669', bg2: '#10b981', bg3: '#0284c7', accent: '#059669', light: '#ecfdf5' },
       stats: [
-        { label: '工程技术深度', value: 97 },
-        { label: '好奇与钻研欲', value: 94 },
-        { label: '稳定产出能力', value: 90 },
-        { label: '路演包装兴趣', value: 48 }
+        { label: '冲奖驱动力', value: 58 },
+        { label: '爆肝投入度', value: 89 },
+        { label: '规划节奏感', value: 76 },
+        { label: '统筹表达力', value: 39 }
       ],
       contests: ['edc', 'robomaster', 'mechanical', 'ciciec'],
       partner: '🎤 天选路演嘴替 —— 你做出硬核作品，TA 帮你讲出让评委拍案叫绝的故事。',
@@ -69,10 +69,10 @@
       desc: '思维敏锐、表达极强、审美在线。你天生懂得评委想听什么，能把复杂晦涩的技术亮点翻译成打动人心的商业价值与答辩金句。',
       colors: { bg1: '#f59e0b', bg2: '#ff4d79', bg3: '#ec4899', accent: '#e11d48', light: '#fff4f6' },
       stats: [
-        { label: '答辩感染力', value: 98 },
-        { label: '商业与叙事思维', value: 94 },
-        { label: '临场应变值', value: 95 },
-        { label: '写代码耐心度', value: 45 }
+        { label: '冲奖驱动力', value: 84 },
+        { label: '爆肝投入度', value: 63 },
+        { label: '规划节奏感', value: 55 },
+        { label: '统筹表达力', value: 97 }
       ],
       contests: ['internet', 'fwwb', 'daguangsai', 'shidiao'],
       partner: '🛠️ 硬核极客工匠 / 📊 稳健数据精算师 —— 有扎实的数据和原型撑腰，你的路演就是降维打击。',
@@ -88,10 +88,10 @@
       desc: '你不喜欢千篇一律的模板选题，总能把冷门痛点、交互设计和新技术玩出花来。你给队伍带来独特的差异化竞争力，是破局的灵感泉眼。',
       colors: { bg1: '#84cc16', bg2: '#14b8a6', bg3: '#2563eb', accent: '#0d9488', light: '#f0fdfa' },
       stats: [
-        { label: '脑洞与创意值', value: 98 },
-        { label: '跨学科融合力', value: 92 },
-        { label: '颜值审美敏锐度', value: 91 },
-        { label: '按部就班指数', value: 52 }
+        { label: '冲奖驱动力', value: 52 },
+        { label: '爆肝投入度', value: 74 },
+        { label: '规划节奏感', value: 38 },
+        { label: '统筹表达力', value: 81 }
       ],
       contests: ['jsjds', 'daguangsai', 'challenge', 'jieneng'],
       partner: '🚀 国奖推土机 —— TA 帮你把天马行空的灵感收敛成能落地、能拿奖的完整方案。',
@@ -107,10 +107,10 @@
       desc: '冷静、理性、讲究方法论。你不盲目拼熬夜时长，而是擅长拆解评分标准、用严谨的逻辑和可视化图表稳扎稳打拿到高性价比成果。',
       colors: { bg1: '#0284c7', bg2: '#4f46e5', bg3: '#0ea5e9', accent: '#2563eb', light: '#eff6ff' },
       stats: [
-        { label: '逻辑与建模力', value: 96 },
-        { label: '时间性价比', value: 95 },
-        { label: '文档规范度', value: 92 },
-        { label: '通宵内卷意愿', value: 46 }
+        { label: '冲奖驱动力', value: 82 },
+        { label: '爆肝投入度', value: 54 },
+        { label: '规划节奏感', value: 94 },
+        { label: '统筹表达力', value: 61 }
       ],
       contests: ['cumcm', 'mcm', 'shidiao', 'jieneng'],
       partner: '🎤 天选路演嘴替 / 🎨 跨界脑洞整活家 —— 让你的严谨模型既有亮点又有绝佳呈现。',
@@ -126,10 +126,10 @@
       desc: '情绪稳定、沟通丝滑、极其靠谱。你能接住各种杂活与收尾工作，在队友焦虑时稳住军心，是每支夺奖队伍背后不可或缺的“粘合剂”。',
       colors: { bg1: '#ec4899', bg2: '#f97316', bg3: '#8b5cf6', accent: '#db2777', light: '#fdf2f8' },
       stats: [
-        { label: '团队协作与情商', value: 97 },
-        { label: '细节兜底能力', value: 94 },
-        { label: '情绪稳定值', value: 96 },
-        { label: '独狼单干倾向', value: 32 }
+        { label: '冲奖驱动力', value: 64 },
+        { label: '爆肝投入度', value: 61 },
+        { label: '规划节奏感', value: 85 },
+        { label: '统筹表达力', value: 89 }
       ],
       contests: ['challenge', 'shidiao', 'internet', 'fwwb'],
       partner: '⚡ 凌晨三点写代码的神 —— 你稳住节奏与交付，TA 负责攻克最难的技术关卡。',
@@ -145,10 +145,10 @@
       desc: '心态松弛、边界清晰。你把比赛当成拓展视野、认识有趣伙伴和练手的游乐场，不盲目焦虑，反而常常在轻松状态下发挥出意外惊喜。',
       colors: { bg1: '#06b6d4', bg2: '#38bdf8', bg3: '#a855f7', accent: '#0891b2', light: '#ecfeff' },
       stats: [
-        { label: '心态松弛度', value: 99 },
-        { label: '好奇探索欲', value: 89 },
-        { label: '社交破冰力', value: 86 },
-        { label: '卷王熬夜指数', value: 30 }
+        { label: '冲奖驱动力', value: 29 },
+        { label: '爆肝投入度', value: 34 },
+        { label: '规划节奏感', value: 57 },
+        { label: '统筹表达力', value: 66 }
       ],
       contests: ['lanqiao', 'jsjds', 'daguangsai', 'jieneng'],
       partner: '🧋 全队定海神针 / 📊 稳健数据精算师 —— 节奏舒服不互卷，还能稳稳把作品做完。',
