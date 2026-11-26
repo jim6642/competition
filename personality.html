@@ -8,7 +8,7 @@
 <meta name="description" content="8 道趣味情景题，40 秒测出你的大学生竞赛人格，生成专属 MBTI 风格高清海报。">
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="auth.css">
-<link rel="stylesheet" href="personality.css?v=3">
+<link rel="stylesheet" href="personality.css?v=4">
 <link rel="stylesheet" href="site.css?v=3">
 </head>
 <body>
@@ -101,6 +101,7 @@
         <h2 id="res-title" class="res-title" tabindex="-1"></h2>
         <p id="res-quote" class="res-quote"></p>
         <p id="res-desc" class="res-desc"></p>
+        <p id="res-sync-note" class="sync-note" hidden></p>
 
         <div class="stats-card">
           <h3>四维竞赛指数 <span class="stats-sub" id="res-stats-mode">根据你的 8 道选择实时计算</span></h3>
@@ -114,8 +115,8 @@
 
         <div class="match-card">
           <div class="match-block">
-            <span class="match-label">🎯 最适合你的比赛（点击直达招募）</span>
-            <div id="res-contests" class="contest-links"></div>
+            <span class="match-label">🤝 与你最合拍的正在招募队伍（点击直达私聊）</span>
+            <div id="res-teams" class="matched-teams"><p class="teams-loading">正在为你匹配合拍队伍…</p></div>
           </div>
           <div class="match-block">
             <span class="match-label">💘 天选绝配队友</span>
@@ -155,8 +156,9 @@
 <footer class="site-footer">竞赛信息门户 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
 
 <script src="matching-data.js"></script>
+<script src="personality-meta.js"></script>
 <script src="api-client.js"></script>
 <script src="auth-nav.js?v=4"></script>
-<script src="personality.js?v=5"></script>
+<script src="personality.js?v=6"></script>
 </body>
 </html>

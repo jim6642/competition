@@ -8,6 +8,8 @@
   const majorInput = document.getElementById('search-major');
   const gradeInput = document.getElementById('search-grade');
   const matchedInput = document.getElementById('filter-matched');
+  const personaInput = document.getElementById('filter-persona');
+  const myPersonaLink = document.getElementById('my-persona-link');
   const count = document.getElementById('live-count');
   const ownLink = document.getElementById('my-posts-link');
   const conversationsLink = document.getElementById('conversations-link');
@@ -53,12 +55,30 @@
     try { localStorage.setItem(conversationReadStorageKey, JSON.stringify(read)); } catch (_) {}
   }
 
+  const requestedPostId = Number(new URLSearchParams(window.location.search).get('post')) || 0;
+  let highlightedPostDone = false;
+
+  function myPersonalityId() {
+    return profile.personality || (window.getLocalPersonality ? getLocalPersonality() : '');
+  }
+
+  function updateMyPersonaLink() {
+    if (!myPersonaLink) return;
+    const meta = window.COMPETITION_PERSONALITIES?.[myPersonalityId()];
+    if (meta) {
+      myPersonaLink.textContent = `我的人格：${meta.emoji} ${meta.title}`;
+      myPersonaLink.title = '点击查看或重测竞赛人格';
+    } else {
+      myPersonaLink.textContent = '✨ 测测你的竞赛人格';
+    }
+  }
+
   function matchingSkills(post) {
     const skills = new Map(splitProfileList(profile.skills).map(skill => [skill.toLowerCase(), skill]));
     return [...new Set((post.gaps || []).map(tag => skills.get(tag.toLowerCase())).filter(Boolean))];
   }
 
-  function renderPost(post, matches) {
+  function renderPost(post, matches, fit) {
     const p = post.profile || {};
     const scenario = matchScenarios[post.competition];
     const contestShort = scenario?.short || scenario?.label || post.competition;
@@ -69,24 +89,35 @@
     const note = typeof post.team?.note === 'string' ? post.team.note.trim() : '';
     const leader = p.name || post.username;
     const meta = [p.school, p.major, p.grade].filter(Boolean).join(' · ');
+    const pMeta = window.COMPETITION_PERSONALITIES?.[p.personality];
+    const personaBadge = pMeta
+      ? `<span class="persona-badge" style="background:${pMeta.bg};color:${pMeta.color};border-color:${pMeta.border}" title="${safe(pMeta.role)}">${pMeta.emoji} ${safe(pMeta.title)}</span>`
+      : '';
+    const fitBanner = fit && fit.badge
+      ? `<div class="fit-banner fit-${fit.level}"><strong>${safe(fit.badge)}</strong><span>${safe(fit.reason)}</span></div>`
+      : '';
     const tags = gaps.map(tag => {
       const matched = matchSet.has(tag.toLowerCase());
       return `<span class="chip${matched ? ' chip-match' : ''}">${matched ? '✓ ' : ''}${safe(tag)}</span>`;
     }).join('');
-    return `<article class="live-card">
+    const highlighted = requestedPostId && Number(post.id) === requestedPostId;
+    return `<article class="live-card${highlighted ? ' post-highlight' : ''}" data-card-post-id="${Number(post.id)}">
       <div class="live-card-top">
         <div class="card-identity">
           <span class="contest-tag">${safe(contestShort)}</span>
           <strong>${safe(leader)}</strong>
+          ${personaBadge}
           ${meta ? `<span class="card-meta">${safe(meta)}</span>` : ''}
         </div>
         <strong class="recruit-badge">缺 ${Number(post.recruitCount)} 人</strong>
       </div>
+      ${fitBanner}
       ${note ? `<p class="card-note">${safe(note)}</p>` : ''}
       <div class="chips"><span class="muted">想找</span>${tags || '<span class="muted">可私聊了解分工</span>'}</div>
       <div class="live-card-bottom">
         <details class="post-details"><summary>查看详情</summary><dl>
           <dt>目标比赛</dt><dd>${safe(scenario?.label || post.competition)}</dd>
+          ${pMeta ? `<dt>队长人格</dt><dd>${pMeta.emoji} ${safe(pMeta.title)} · ${safe(pMeta.role)}</dd>` : ''}
           <dt>队长定位</dt><dd>${safe(p.role || '未填写')}</dd>
           <dt>现有成员</dt><dd>${members.length + 1} 人（含队长）${members.length ? ` · ${members.map(item => `${safe(item.name)}（${safe(item.role)}）`).join('、')}` : ''}</dd>
           <dt>队长技能</dt><dd>${safe(skills.join('、') || '未填写')}</dd>
@@ -99,29 +130,47 @@
   }
 
   function renderFeed() {
+    updateMyPersonaLink();
     const major = majorInput.value.trim().toLowerCase();
     const grade = gradeInput.value;
     const onlyMatched = matchedInput.checked;
-    const filters = Number(Boolean(major)) + Number(Boolean(grade)) + Number(onlyMatched);
+    const onlyPersona = Boolean(personaInput && personaInput.checked);
+    const filters = Number(Boolean(major)) + Number(Boolean(grade)) + Number(onlyMatched) + Number(onlyPersona);
     document.getElementById('filter-count').textContent = filters ? `· ${filters} 项` : '';
     const activeCompetition = competitionChoice.value || 'all';
     if (feedBusy || !loadedFeed || loadedFeed.competition !== activeCompetition) return;
+    const myPersona = myPersonalityId();
     const posts = loadedFeed.posts;
     const eligible = posts
-      .map(post => ({post, matches: matchingSkills(post)}))
-      .filter(({post: {profile: p = {}}, matches}) =>
+      .map(post => ({
+        post,
+        matches: matchingSkills(post),
+        fit: myPersona && window.getPersonalityFit ? getPersonalityFit(myPersona, post.profile?.personality) : null
+      }))
+      .filter(({post: {profile: p = {}}, matches, fit}) =>
         (!major || String(p.major || '').toLowerCase().includes(major)) &&
         (!grade || p.grade === grade) &&
-        (!onlyMatched || matches.length > 0)
+        (!onlyMatched || matches.length > 0) &&
+        (!onlyPersona || (fit && (fit.level === 'best' || fit.level === 'good')))
       )
-      .sort((a, b) => b.matches.length - a.matches.length);
+      .sort((a, b) => ((b.fit?.score || 0) * 10 + b.matches.length) - ((a.fit?.score || 0) * 10 + a.matches.length));
     count.textContent = `${eligible.length} 条`;
     if (eligible.length) {
-      postsBox.innerHTML = eligible.map(({post, matches}) => renderPost(post, matches)).join('');
+      postsBox.innerHTML = eligible.map(({post, matches, fit}) => renderPost(post, matches, fit)).join('');
+      if (requestedPostId && !highlightedPostDone) {
+        const targetCard = postsBox.querySelector(`[data-card-post-id="${requestedPostId}"]`);
+        if (targetCard) {
+          highlightedPostDone = true;
+          targetCard.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+      }
       return;
     }
     if (posts.length) {
-      postsBox.innerHTML = '<div class="live-empty"><strong>没有符合当前筛选的招募</strong><button type="button" class="secondary-button" data-clear-filters>清除筛选</button></div>';
+      const hint = onlyPersona && !myPersona
+        ? '你还没有测过竞赛人格。<a href="personality.html">去测测竞赛人格 →</a>'
+        : '没有符合当前筛选的招募';
+      postsBox.innerHTML = `<div class="live-empty"><strong>${hint}</strong><button type="button" class="secondary-button" data-clear-filters>清除筛选</button></div>`;
       return;
     }
     postsBox.innerHTML = activeCompetition === 'all'
@@ -348,6 +397,7 @@
   });
   [majorInput, gradeInput].forEach(field => field.addEventListener('input', renderFeed));
   matchedInput.addEventListener('change', renderFeed);
+  if (personaInput) personaInput.addEventListener('change', renderFeed);
   document.querySelector('.team-page').addEventListener('click', event => {
     const closeBtn = event.target.closest('[data-close-panel]');
     if (closeBtn) {
@@ -359,6 +409,7 @@
     if (!event.target.closest('[data-clear-filters]')) return;
     majorInput.value = gradeInput.value = '';
     matchedInput.checked = false;
+    if (personaInput) personaInput.checked = false;
     renderFeed();
   });
   ownLink.addEventListener('click', () => togglePanel(myPostsWrap, ownLink));

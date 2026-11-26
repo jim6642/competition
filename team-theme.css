@@ -63,6 +63,14 @@ summary:hover {color:var(--primary)}
 .skill-match-toggle input {width:16px;height:16px;accent-color:var(--primary)}
 .lab-link {font-size:.83rem;padding:4px 0;white-space:nowrap;text-decoration:none}
 .lab-link:hover {text-decoration:underline}
+.filter-bar-links {display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.persona-badge {display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:.75rem;font-weight:700;border:1px solid transparent;white-space:nowrap}
+.fit-banner {display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 11px;border-radius:10px;font-size:.81rem;line-height:1.45}
+.fit-banner strong {white-space:nowrap}
+.fit-banner.fit-best {background:#fff0f6;color:#be185d;border:1px solid #fbcfe8}
+.fit-banner.fit-good {background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.fit-banner.fit-caution {background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.live-card.post-highlight {border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,0.16)}
 
 .feed-heading {margin-bottom:10px}
 .feed-heading h2 {font-size:1.12rem}

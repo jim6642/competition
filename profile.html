@@ -33,31 +33,35 @@
 <div class="field"><label for="role">在队伍中的定位</label><input id="role" name="role" maxlength="80" placeholder="如：算法负责人"></div>
 <div class="field wide"><span class="field-title" id="wanted-title">希望寻找的队友类型 / 所需领域</span><div class="tag-picker" id="wanted-tags" role="group" aria-labelledby="wanted-title"></div><small>与寻找队友页使用同一套领域标签；自定义领域若没有对应候选人能力，演示版可能无法匹配。</small></div>
 </div><div class="actions"><button class="primary" type="submit">保存个人资料</button><button class="secondary" type="button" id="reset-profile">恢复虚构示例</button><span class="status" id="save-status" role="status" aria-live="polite"></span></div></form></section>
-<aside class="panel preview" aria-labelledby="preview-title"><h2 id="preview-title">画像预览</h2><div class="identity"><div class="avatar" id="preview-avatar" aria-hidden="true"></div><div><strong id="preview-name"></strong><span id="preview-identity"></span></div></div><dl><dt>技能方向</dt><dd id="preview-skills"></dd><dt>竞赛经历</dt><dd id="preview-experience"></dd><dt>目标比赛</dt><dd id="preview-competition"></dd><dt>队伍定位</dt><dd id="preview-role"></dd><dt>希望寻找</dt><dd id="preview-wanted"></dd></dl><p class="note">未登录时资料只保存在当前浏览器。登录后保存会同步到账号；发布招募时，你主动公开的竞赛画像会显示给其他参赛同学。<a href="team.html">前往寻找队友</a></p></aside></div></main>
+<aside class="panel preview" aria-labelledby="preview-title"><h2 id="preview-title">画像预览</h2><div class="identity"><div class="avatar" id="preview-avatar" aria-hidden="true"></div><div><strong id="preview-name"></strong><span id="preview-identity"></span></div></div><dl><dt>竞赛人格</dt><dd id="preview-personality"></dd><dt>技能方向</dt><dd id="preview-skills"></dd><dt>竞赛经历</dt><dd id="preview-experience"></dd><dt>目标比赛</dt><dd id="preview-competition"></dd><dt>队伍定位</dt><dd id="preview-role"></dd><dt>希望寻找</dt><dd id="preview-wanted"></dd></dl><p class="note">未登录时资料只保存在当前浏览器。登录后保存会同步到账号；发布招募时，你主动公开的竞赛画像会显示给其他参赛同学。<a href="team.html">前往寻找队友</a></p></aside></div></main>
 <footer class="site-footer">竞赛信息门户 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
-<script src="profile.js"></script><script src="matching-data.js"></script><script src="api-client.js"></script><script src="auth-nav.js?v=4"></script>
+<script src="profile.js"></script><script src="matching-data.js"></script><script src="personality-meta.js"></script><script src="api-client.js"></script><script src="auth-nav.js?v=4"></script>
 <script>
 const form=document.getElementById('profile-form');
 const status=document.getElementById('save-status');
 let accountUser=null;
-const fields=Object.keys(DEFAULT_PROFILE).filter(key=>key!=='skills'&&key!=='wanted');
+let currentPersonality='';
+const fields=Object.keys(DEFAULT_PROFILE).filter(key=>key!=='skills'&&key!=='wanted'&&key!=='personality');
 Object.entries(matchScenarios).forEach(([key,scenario])=>form.elements.competition.add(new Option(scenario.label,key)));
 const markUnsaved=()=>{preview();status.textContent='尚未保存';status.classList.remove('error');};
 const skillsPicker=createTagPicker(document.getElementById('skills-tags'),skillTagGroups,markUnsaved);
 const wantedPicker=createTagPicker(document.getElementById('wanted-tags'),domainTagGroups,markUnsaved);
 function fill(profile){
   fields.forEach(key=>{form.elements[key].value=profile[key]||'';});
+  currentPersonality=profile.personality||(window.getLocalPersonality?getLocalPersonality():'');
   const oldSkills=splitProfileList(profile.skills),oldWanted=splitProfileList(profile.wanted);
   skillsPicker.setSelected(oldSkills);wantedPicker.setSelected(oldWanted);
   preview();
 }
-function current(){return {...Object.fromEntries(fields.map(key=>[key,form.elements[key].value.trim()])),skills:skillsPicker.getSelected().join('、'),wanted:wantedPicker.getSelected().join('、')};}
+function current(){return {...Object.fromEntries(fields.map(key=>[key,form.elements[key].value.trim()])),skills:skillsPicker.getSelected().join('、'),wanted:wantedPicker.getSelected().join('、'),personality:currentPersonality};}
 function preview(){
   const value=current();
   const show=(id,text)=>document.getElementById(id).textContent=text||'未填写';
   show('preview-avatar',(value.name||'我').slice(0,1));show('preview-name',value.name);show('preview-identity',[value.school,value.major,value.grade].filter(Boolean).join(' · '));
   ['skills','experience','role','wanted'].forEach(key=>show('preview-'+key,value[key]));
   show('preview-competition',matchScenarios[value.competition]?.label);
+  const meta=window.COMPETITION_PERSONALITIES?.[value.personality];
+  document.getElementById('preview-personality').innerHTML=meta?`<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:.8rem;font-weight:700;background:${meta.bg};color:${meta.color};border:1px solid ${meta.border}">${meta.emoji} ${meta.title}</span> <a href="personality.html" style="font-size:.76rem;color:var(--primary);margin-left:6px">重测</a>`:'<a href="personality.html" style="color:var(--primary);font-weight:700">还没测过？去测测竞赛人格 →</a>';
 }
 form.addEventListener('input',markUnsaved);
 form.addEventListener('change',preview);

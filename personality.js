@@ -520,16 +520,16 @@
     ctx.lineTo(W - 72, 1068);
     ctx.stroke();
 
-    // 7. Recommended Contests Pills
+    // 7. Role Pills (focused on teamwork instead of arbitrary contests)
     ctx.fillStyle = '#5a657d';
     ctx.font = `700 19px ${fontBase}`;
-    ctx.fillText('🎯 本命推荐赛事', 72, 1102);
+    ctx.fillText('🎯 队内天选定位', 72, 1102);
 
+    const roleTags = (window.COMPETITION_PERSONALITIES?.[persona.id]?.role || '核心协作者 · 组队搭档').split(' · ');
     let px = 72;
     const py = 1118;
     ctx.font = `700 19px ${fontBase}`;
-    persona.contests.slice(0, 4).forEach(key => {
-      const label = (window.matchScenarios && matchScenarios[key]?.short) || key;
+    roleTags.forEach(label => {
       const tw = ctx.measureText(label).width + 30;
       if (px + tw > W - 68) return;
       roundRect(ctx, px, py, tw, 38, 19);
@@ -567,6 +567,81 @@
     $('poster-image').src = canvas.toDataURL('image/png');
   }
 
+  function escapeHtml(v) {
+    return String(v ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+
+  async function syncPersonalityToAccount(personaId) {
+    window.setLocalPersonality?.(personaId);
+    const note = $('res-sync-note');
+    note.hidden = false;
+    note.textContent = '✓ 已记住你的人格，去「寻找队友」会自动标出与你合拍的队伍';
+    if (!window.CompetitionAPI?.enabled) return;
+    try {
+      const { user } = await CompetitionAPI.me();
+      if (!user) return;
+      const { profile: current } = await CompetitionAPI.profile();
+      await CompetitionAPI.saveProfile({ ...current, personality: personaId });
+      note.textContent = '✓ 已同步为你的账号组队人格徽章，其他同学也能看到你的人格';
+    } catch (_) { /* local storage fallback remains active */ }
+  }
+
+  async function renderMatchedTeams(personaId) {
+    const box = $('res-teams');
+    if (!window.CompetitionAPI?.enabled) {
+      box.innerHTML = '<p class="teams-loading">前往竞赛站即可查看与你人格合拍的真实招募队伍。</p>';
+      return;
+    }
+    box.innerHTML = '<p class="teams-loading">正在为你匹配最合拍的正在招募队伍…</p>';
+    try {
+      const { posts } = await CompetitionAPI.request('/api/team-posts?competition=all');
+      const ranked = (posts || [])
+        .map(post => ({
+          post,
+          fit: window.getPersonalityFit ? getPersonalityFit(personaId, post.profile?.personality) : null
+        }))
+        .filter(item => !item.fit || item.fit.level !== 'caution')
+        .sort((a, b) => (b.fit?.score || 0) - (a.fit?.score || 0))
+        .slice(0, 3);
+      if (!ranked.length) {
+        box.innerHTML = '<p class="teams-loading">暂时还没有正在招募的队伍，去广场发起第一条招募吧！</p>';
+        return;
+      }
+      box.innerHTML = ranked.map(({ post, fit }) => {
+        const p = post.profile || {};
+        const leader = p.name || post.username;
+        const contestShort = (window.matchScenarios && (matchScenarios[post.competition]?.short || matchScenarios[post.competition]?.label)) || post.competition;
+        const pMeta = window.COMPETITION_PERSONALITIES?.[p.personality];
+        const personaPill = pMeta
+          ? `<span class="matched-persona-pill" style="background:${pMeta.bg};color:${pMeta.color};border-color:${pMeta.border}">${pMeta.emoji} ${escapeHtml(pMeta.title)}</span>`
+          : '';
+        const fitTag = fit && fit.badge
+          ? `<span class="matched-fit-tag${fit.level === 'good' ? ' good' : ''}">${escapeHtml(fit.badge)}</span>`
+          : '';
+        const note = post.team?.note ? `<div class="matched-team-note">${escapeHtml(post.team.note)}</div>` : '';
+        const gaps = (post.gaps || []).slice(0, 3).join('、');
+        return `<a class="matched-team-item" href="team.html?contest=${encodeURIComponent(post.competition)}&post=${Number(post.id)}">
+          <div class="matched-team-top">
+            <div class="matched-team-left">
+              <span class="matched-contest">${escapeHtml(contestShort)}</span>
+              <strong>${escapeHtml(leader)}</strong>
+              ${personaPill}
+            </div>
+            ${fitTag}
+          </div>
+          ${fit?.reason ? `<div class="matched-team-reason">${escapeHtml(fit.reason)}</div>` : ''}
+          ${note}
+          <div class="matched-team-foot">
+            <span>缺 ${Number(post.recruitCount)} 人${gaps ? ` · 想找 ${escapeHtml(gaps)}` : ''}</span>
+            <span class="matched-team-cta">去查看并私聊 →</span>
+          </div>
+        </a>`;
+      }).join('');
+    } catch (_) {
+      box.innerHTML = '<p class="teams-loading">暂时无法加载招募列表，请直接前往「寻找队友」广场查看。</p>';
+    }
+  }
+
   function showResult(persona, customStats = null, basis = null) {
     activePersona = persona;
     const nickname = getNickname();
@@ -581,6 +656,12 @@
     $('res-quote').style.borderLeftColor = persona.colors.accent;
     $('res-desc').textContent = persona.desc;
     $('res-stats-mode').textContent = customStats ? '根据你的 8 道选择实时计算' : '人格图鉴参考数值';
+
+    if (customStats) {
+      syncPersonalityToAccount(persona.id);
+    } else {
+      $('res-sync-note').hidden = true;
+    }
 
     $('res-stats').innerHTML = stats.map(st => `
       <div class="stat-row">
@@ -597,15 +678,11 @@
       basisWrap.hidden = true;
     }
 
-    $('res-contests').innerHTML = persona.contests.map(key => {
-      const label = (window.matchScenarios && (matchScenarios[key]?.short || matchScenarios[key]?.label)) || key;
-      return `<a class="contest-jump" href="team.html?contest=${encodeURIComponent(key)}">${label} <span>→</span></a>`;
-    }).join('');
-
     $('res-partner').textContent = persona.partner;
     $('res-pitfall').textContent = persona.pitfall;
-    $('btn-find-team').href = `team.html?contest=${encodeURIComponent(persona.contests[0] || 'all')}`;
+    $('btn-find-team').href = 'team.html';
 
+    renderMatchedTeams(persona.id);
     showView('view-result');
     $('res-title').focus();
   }

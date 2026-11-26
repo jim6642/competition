@@ -17,7 +17,7 @@ const DEMO_SEEDS = [
       name: '林嘉宁', school: '电子科技大学', major: '自动化', grade: '大三',
       skills: 'ROS2、OpenCV、C++、控制算法',
       experience: '上赛季 RoboMaster 区域赛视觉组核心，负责目标识别与自瞄联调。',
-      competition: 'robomaster', role: '视觉组负责人', wanted: '视觉、算法、软件开发'
+      competition: 'robomaster', role: '视觉组负责人', wanted: '视觉、算法、软件开发', personality: 'artisan'
     },
     post: {
       competition: 'robomaster', recruitCount: 2,
@@ -38,7 +38,7 @@ const DEMO_SEEDS = [
       name: '周昱辰', school: '哈尔滨工业大学', major: '数学与应用数学', grade: '大三',
       skills: '数学建模、MATLAB、Python、统计分析',
       experience: '校级数模一等奖，熟悉规划模型、机器学习预测与灵敏度分析。',
-      competition: 'cumcm', role: '建模负责人', wanted: '论文写作、可视化'
+      competition: 'cumcm', role: '建模负责人', wanted: '论文写作、可视化', personality: 'actuary'
     },
     post: {
       competition: 'cumcm', recruitCount: 1,
@@ -59,7 +59,7 @@ const DEMO_SEEDS = [
       name: '陈思远', school: '华南理工大学', major: '计算机科学与技术', grade: '大二',
       skills: 'Python、前端开发、后端开发、数据库',
       experience: '参与校级大创项目，独立完成全栈原型开发与线上部署。',
-      competition: 'internet', role: '技术负责人', wanted: '产品设计、商业分析、路演表达'
+      competition: 'internet', role: '技术负责人', wanted: '产品设计、商业分析、路演表达', personality: 'bulldozer'
     },
     post: {
       competition: 'internet', recruitCount: 2,
@@ -80,7 +80,7 @@ const DEMO_SEEDS = [
       name: '赵若溪', school: '同济大学', major: '工业设计', grade: '大三',
       skills: 'Figma、交互原型、用户研究、视觉设计',
       experience: '曾获省赛设计类二等奖，擅长用户调研、原型设计与答辩视觉呈现。',
-      competition: 'challenge', role: '产品与调研负责人', wanted: '数据分析、软件开发'
+      competition: 'challenge', role: '产品与调研负责人', wanted: '数据分析、软件开发', personality: 'visionary'
     },
     post: {
       competition: 'challenge', recruitCount: 1,
@@ -101,7 +101,7 @@ const DEMO_SEEDS = [
       name: '吴景行', school: '西安电子科技大学', major: '微电子科学与工程', grade: '大三',
       skills: 'FPGA、Verilog、硬件调试、PCB 设计',
       experience: '电赛省一成员，做过基于 FPGA 的高速信号采集与图像预处理系统。',
-      competition: 'ciciec', role: 'FPGA 架构负责人', wanted: '算法、嵌入式、测试优化'
+      competition: 'ciciec', role: 'FPGA 架构负责人', wanted: '算法、嵌入式、测试优化', personality: 'nightcoder'
     },
     post: {
       competition: 'ciciec', recruitCount: 2,
@@ -122,7 +122,7 @@ const DEMO_SEEDS = [
       name: '郑可欣', school: '浙江工业大学', major: '软件工程', grade: '大二',
       skills: 'JavaScript、前端开发、Git、数据可视化',
       experience: '做过校园二手交易与课表工具 Web 应用，熟悉前后端联调。',
-      competition: 'jsjds', role: '前端与项目统筹', wanted: '产品设计、可视化'
+      competition: 'jsjds', role: '前端与项目统筹', wanted: '产品设计、可视化', personality: 'anchor'
     },
     post: {
       competition: 'jsjds', recruitCount: 1,
@@ -143,7 +143,7 @@ const DEMO_SEEDS = [
       name: '王子墨', school: '重庆大学', major: '统计学', grade: '大三',
       skills: 'Python、数据分析、数据可视化、机器学习',
       experience: '国赛数模省二，擅长数据清洗、特征工程与可视化图表制作。',
-      competition: 'mcm', role: '数据分析与建模', wanted: '英文写作、算法'
+      competition: 'mcm', role: '数据分析与建模', wanted: '英文写作、算法', personality: 'actuary'
     },
     post: {
       competition: 'mcm', recruitCount: 1,
@@ -164,7 +164,7 @@ const DEMO_SEEDS = [
       name: '孙语桐', school: '武汉理工大学', major: '经济统计学', grade: '大二',
       skills: '市场调研、问卷设计、SPSS、PPT',
       experience: '参与过两项社会实践调研并获校级优秀报告，擅长访谈与问卷设计。',
-      competition: 'shidiao', role: '调研与选题负责人', wanted: '数据分析、论文写作、可视化'
+      competition: 'shidiao', role: '调研与选题负责人', wanted: '数据分析、论文写作、可视化', personality: 'pitcher'
     },
     post: {
       competition: 'shidiao', recruitCount: 2,
@@ -185,7 +185,7 @@ const DEMO_SEEDS = [
       name: '何明哲', school: '北京理工大学', major: '计算机科学与技术', grade: '大二',
       skills: 'C++、算法与数据结构、Python、Git',
       experience: '校赛程序设计三等奖，每周坚持刷题，擅长图论与动态规划基础题。',
-      competition: 'lanqiao', role: '算法训练发起人', wanted: '算法、代码实现、测试优化'
+      competition: 'lanqiao', role: '算法训练发起人', wanted: '算法、代码实现、测试优化', personality: 'chill'
     },
     post: {
       competition: 'lanqiao', recruitCount: 2,
@@ -206,7 +206,7 @@ const DEMO_SEEDS = [
       name: '许安然', school: '南京航空航天大学', major: '机械工程', grade: '大三',
       skills: 'SolidWorks、三维建模、CAD、实验设计',
       experience: '机械创新校赛一等奖，负责整机结构设计、运动仿真与 3D 打印加工。',
-      competition: 'mechanical', role: '机械结构负责人', wanted: '嵌入式、测试优化'
+      competition: 'mechanical', role: '机械结构负责人', wanted: '嵌入式、测试优化', personality: 'artisan'
     },
     post: {
       competition: 'mechanical', recruitCount: 1,
@@ -232,6 +232,7 @@ async function main() {
 
   const userByName = db.prepare('SELECT id FROM users WHERE username_key = ?');
   const insertUser = db.prepare('INSERT INTO users(username, username_key, password_salt, password_hash, profile_json) VALUES (?, ?, ?, ?, ?)');
+  const updateUserProfile = db.prepare('UPDATE users SET profile_json = ? WHERE id = ?');
   const activePostByUser = db.prepare('SELECT id FROM team_posts WHERE user_id = ? AND competition = ? AND active = 1');
   const insertPost = db.prepare('INSERT INTO team_posts(user_id, competition, recruit_count, gaps_json, team_json) VALUES (?, ?, ?, ?, ?)');
   const upsertLab = db.prepare(`INSERT INTO lab_profiles(user_id, answers_json, discoverable) VALUES (?, ?, 1)
@@ -246,6 +247,7 @@ async function main() {
     let userId;
     if (existing) {
       userId = existing.id;
+      updateUserProfile.run(JSON.stringify(item.profile), userId);
     } else {
       const salt = crypto.randomBytes(16);
       const randomSecret = crypto.randomBytes(24).toString('hex');

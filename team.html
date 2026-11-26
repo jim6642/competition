@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="live.css">
-<link rel="stylesheet" href="team-theme.css?v=5">
+<link rel="stylesheet" href="team-theme.css?v=6">
 <link rel="stylesheet" href="site.css?v=3">
 </head>
 <body>
@@ -50,9 +50,10 @@
         <div class="search-field"><label for="search-major">队长专业</label><input id="search-major" maxlength="60" autocomplete="off" placeholder="不限专业"></div>
         <div class="search-field"><label for="search-grade">队长年级</label><select id="search-grade"><option value="">不限年级</option><option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研一</option><option>研二</option><option>研三</option><option>博士</option></select></div>
         <label class="skill-match-toggle"><input type="checkbox" id="filter-matched"> 只看与我技能匹配</label>
+        <label class="skill-match-toggle"><input type="checkbox" id="filter-persona"> 只看与我人格合拍</label>
         <button type="button" class="secondary-button" data-clear-filters>清除筛选</button>
       </div></details>
-      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><a class="lab-link" href="personality.html">✨ 测测你的竞赛人格</a></div>
+      <div class="filter-bar-links"><a class="lab-link" id="my-persona-link" href="personality.html">✨ 测测你的竞赛人格</a></div>
     </div>
   </section>
 
@@ -89,6 +90,7 @@
 <div class="chat-overlay" id="chat-overlay" hidden><section class="chat-dialog" role="dialog" aria-modal="true" aria-labelledby="chat-title"><div class="chat-header"><div><h2 id="chat-title"></h2><p id="chat-mode-note">消息仅对会话参与者可见</p></div><button type="button" class="chat-close" id="chat-close" aria-label="关闭私聊">×</button></div><div class="chat-log" id="chat-log" role="log" aria-live="polite"></div><div class="chat-compose"><div class="chat-shortcuts"><button type="button" id="share-profile">发送我的竞赛资料</button><button type="button" id="share-team">发送当前队伍状态</button></div><textarea id="chat-input" maxlength="1000" placeholder="输入想对这位同学说的话……"></textarea><div class="chat-compose-row"><span id="chat-send-note"></span><button class="chat-button" type="button" id="chat-send">发送消息</button></div></div></section></div>
 <script src="profile.js"></script>
 <script src="matching-data.js"></script>
+<script src="personality-meta.js"></script>
 <script src="api-client.js"></script>
 <script src="auth-nav.js?v=4"></script>
 <script>
@@ -214,7 +216,9 @@ document.getElementById('chat-send').addEventListener('click',()=>sendChat(docum
 document.getElementById('chat-input').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();sendChat(event.target.value);}});
 document.getElementById('share-profile').addEventListener('click',()=>{
   const activeKey=matchScenarios[competitionChoice.value]?competitionChoice.value:profile.competition;
-  sendChat(`【我的竞赛资料】\n姓名：${profile.name||'未填写'}\n学校 / 专业 / 年级：${[profile.school,profile.major,profile.grade].filter(Boolean).join(' · ')||'未填写'}\n技能：${profile.skills||'未填写'}\n竞赛经历：${profile.experience||'未填写'}\n目标比赛：${matchScenarios[activeKey]?.label||'未填写'}\n队伍定位：${profile.role||'未填写'}`);
+  const pId=profile.personality||(window.getLocalPersonality?getLocalPersonality():'');
+  const pMeta=window.COMPETITION_PERSONALITIES?.[pId];
+  sendChat(`【我的竞赛资料】\n姓名：${profile.name||'未填写'}${pMeta?`\n竞赛人格：${pMeta.emoji} ${pMeta.title}（${pMeta.role}）`:''}\n学校 / 专业 / 年级：${[profile.school,profile.major,profile.grade].filter(Boolean).join(' · ')||'未填写'}\n技能：${profile.skills||'未填写'}\n竞赛经历：${profile.experience||'未填写'}\n目标比赛：${matchScenarios[activeKey]?.label||'未填写'}\n队伍定位：${profile.role||'未填写'}`);
 });
 document.getElementById('share-team').addEventListener('click',()=>{
   const activeKey=matchScenarios[competitionChoice.value]?competitionChoice.value:profile.competition;
@@ -224,6 +228,6 @@ document.getElementById('share-team').addEventListener('click',()=>{
 });
 </script>
 <script src="team-discovery.js?v=3"></script>
-<script src="team-live.js?v=5"></script>
+<script src="team-live.js?v=6"></script>
 </body>
 </html>

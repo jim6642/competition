@@ -19,7 +19,8 @@ const SESSION_DAYS = 30;
 const MAX_BODY_BYTES = 64 * 1024;
 const COMPETITIONS = new Set(['edc', 'robomaster', 'cumcm', 'mcm', 'internet', 'challenge', 'lanqiao', 'icpc', 'mechanical', 'ict', 'jsjds', 'fwwb', 'shidiao', 'jieneng', 'daguangsai', 'ciciec']);
 const GRADES = new Set(['大一', '大二', '大三', '大四', '研一', '研二', '研三', '博士']);
-const PROFILE_LIMITS = {name: 30, school: 60, major: 60, grade: 12, skills: 1200, experience: 1000, competition: 40, role: 80, wanted: 1200};
+const PERSONALITIES = new Set(['bulldozer', 'nightcoder', 'artisan', 'pitcher', 'visionary', 'actuary', 'anchor', 'chill']);
+const PROFILE_LIMITS = {name: 30, school: 60, major: 60, grade: 12, skills: 1200, experience: 1000, competition: 40, role: 80, wanted: 1200, personality: 24};
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
@@ -221,6 +222,7 @@ function cleanProfile(input, username = '') {
   if (!profile.name) profile.name = username;
   if (profile.grade && !GRADES.has(profile.grade)) throw Object.assign(new Error('年级选项无效。'), {status: 400});
   if (profile.competition && !COMPETITIONS.has(profile.competition)) throw Object.assign(new Error('目标比赛选项无效。'), {status: 400});
+  if (profile.personality && !PERSONALITIES.has(profile.personality)) profile.personality = '';
   profile.skills = cleanTags(Array.isArray(source.skills) ? source.skills : String(source.skills || '').split(/[、,，;；\n]+/), '技能方向', 40).join('、');
   profile.wanted = cleanTags(Array.isArray(source.wanted) ? source.wanted : String(source.wanted || '').split(/[、,，;；\n]+/), '希望寻找的队友类型', 40).join('、');
   return profile;

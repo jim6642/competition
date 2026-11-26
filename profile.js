@@ -4,7 +4,8 @@ const DEFAULT_PROFILE = Object.freeze({
   name: '张同学', school: '电子科技大学', major: '微电子科学与工程', grade: '大三',
   skills: 'FPGA、Verilog、PCB 设计、模拟电路',
   experience: '参与校级电子设计项目，负责电路搭建与 FPGA 模块调试。',
-  competition: 'edc', role: '硬件设计负责人', wanted: '算法、视觉、软件开发'
+  competition: 'edc', role: '硬件设计负责人', wanted: '算法、视觉、软件开发',
+  personality: ''
 });
 function loadProfile() {
   try {
