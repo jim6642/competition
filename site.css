@@ -1,0 +1,193 @@
+/* Shared visual tokens and page frame. Keep this after page-specific CSS. */
+:root {
+  --primary: #0969cf;
+  --primary-light: #6ba9ed;
+  --primary-dark: #0758b2;
+  --soft: #eaf5ff;
+  --bg: #f5f8fc;
+  --card: #fff;
+  --surface: #fff;
+  --text: #172b43;
+  --muted: #52667d;
+  --text-muted: #52667d;
+  --line: #dce6f0;
+  --border: #dce6f0;
+  --radius: 16px;
+  --site-width: 1200px;
+  --shadow: 0 3px 12px #173a6010;
+}
+html {scrollbar-gutter: stable}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+[hidden] {display: none !important}
+button, input, select, textarea {font-family: inherit}
+:focus-visible {outline: 2px solid var(--primary); outline-offset: 3px}
+
+/* Static markup reserves both navigation and account space before authentication. */
+.site-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 100;
+  width: 100%;
+  height: 73px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.site-header .nav {
+  width: 100%;
+  max-width: var(--site-width);
+  height: 72px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 400px 160px;
+  gap: 24px;
+  align-items: center;
+}
+.site-header .logo {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  color: var(--text);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.site-header .logo img {display: block; width: 28px; height: 28px; flex: none}
+.site-header .nav-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 4px;
+  width: 400px;
+  margin: 0;
+  overflow: visible;
+}
+.site-header .nav-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  margin: 0;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.site-header .nav-links a:hover,
+.site-header .nav-links a.active {
+  color: var(--primary);
+  background: var(--soft);
+  font-weight: 600;
+}
+.site-header .nav-account {display: grid; grid-template-columns: 104px 48px; align-items: center; gap: 8px; width: 160px}
+.site-header .account-entry {
+  display: block;
+  padding: 10px 2px;
+  color: var(--primary);
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+.site-header .account-logout {
+  width: 48px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Shared headings, surfaces and controls. */
+.main-layout, .team-page, .quiz-shell {max-width: var(--site-width); width: 100%}
+.team-page, .quiz-shell {padding: 32px 24px 44px}
+.hero {
+  background: linear-gradient(115deg, #e3f3ff, #f3f8ff 70%, #edf4ff);
+  color: var(--text);
+}
+.hero h1 {color: var(--text)}
+.hero p {color: var(--muted); opacity: 1}
+.hero .stats small {color: var(--muted); opacity: 1}
+.hero-inner {max-width: var(--site-width); margin: auto; padding: 36px 24px 66px}
+.hero-inner h1, .page-heading h1 {font-size: clamp(1.8rem, 4vw, 2.35rem); line-height: 1.25; font-weight: 800}
+.hero-inner p, .page-sub {font-size: .94rem; line-height: 1.7}
+body > .container {max-width: var(--site-width)}
+.panel, .card, .sidebar-card, .card-stage {
+  border-color: var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.panel, .card-stage {background: #fff}
+.aura-bg {display: none}
+.btn-dopamine {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: none;
+}
+.btn-dopamine:hover {background: var(--primary-dark); box-shadow: none}
+.gradient-text {background: none; color: var(--primary); -webkit-text-fill-color: currentColor}
+.pill-eyebrow {background: var(--soft); color: var(--primary); border-color: var(--line)}
+.primary:hover, .submit:hover {background: var(--primary-dark)}
+.field input:focus, .field select:focus, .field textarea:focus {outline-color: var(--primary-light)}
+.site-footer {
+  margin: 0;
+  padding: 28px 24px;
+  background: var(--bg);
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.site-footer a {color: var(--primary); text-decoration: underline; text-underline-offset: 3px}
+@media(max-width: 960px) {
+  .site-header {height: 117px}
+  .site-header .nav {
+    height: 116px;
+    grid-template-columns: minmax(0, 1fr) 160px;
+    grid-template-rows: 52px 48px;
+    gap: 0 12px;
+    padding: 8px 20px;
+  }
+  .site-header .nav-links {grid-column: 1 / -1; grid-row: 2; width: 100%}
+  .site-header .nav-account {grid-column: 2; grid-row: 1}
+  .site-header .logo {font-size: 18px}
+  .preview {top: 132px}
+}
+@media(max-width: 480px) {
+  .site-header .nav {padding-inline: 12px; grid-template-columns: minmax(0, 1fr) 132px; gap: 0 8px}
+  .site-header .logo {font-size: 16px; gap: 6px}
+  .site-header .logo img {width: 24px; height: 24px}
+  .site-header .nav-account {grid-template-columns: 84px 42px; width: 132px; gap: 6px}
+  .site-header .account-entry {font-size: 12px}
+  .site-header .account-logout {width: 42px}
+  .site-header .nav-links a {padding: 0 4px; font-size: 13px}
+  .team-page, .quiz-shell {padding: 24px 14px 36px}
+  .hero-inner {padding-inline: 14px}
+}
+@supports not (scrollbar-gutter: stable) {html {overflow-y: scroll}}

@@ -9,17 +9,14 @@
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="personality.css?v=3">
+<link rel="stylesheet" href="site.css?v=1">
 </head>
 <body>
 <header class="site-header">
   <div class="nav">
-    <a class="logo" href="index.html"><i class="fas fa-trophy" aria-hidden="true"></i>竞赛信息门户</a>
-    <nav class="nav-links" aria-label="主导航">
-      <a href="index.html">竞赛资讯</a>
-      <a href="team.html">寻找队友</a>
-      <a class="active" aria-current="page" href="personality.html">竞赛人格</a>
-      <a href="profile.html">个人中心</a>
-    </nav>
+    <a class="logo" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">竞赛信息门户</a>
+    <nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html">寻找队友</a><a href="personality.html" class="active" aria-current="page">竞赛人格</a><a href="profile.html">个人中心</a></nav>
+    <div class="nav-account"><a class="account-entry" href="account.html">登录 / 注册</a><button class="account-logout" type="button" hidden>退出</button></div>
   </div>
 </header>
 
@@ -155,11 +152,11 @@
   <div id="gallery-grid" class="gallery-grid"></div>
 </dialog>
 
-<footer class="site-footer">竞赛信息门户 · 测测你的竞赛人格 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
+<footer class="site-footer">竞赛信息门户 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
 
 <script src="matching-data.js"></script>
 <script src="api-client.js"></script>
-<script src="auth-nav.js"></script>
+<script src="auth-nav.js?v=2"></script>
 <script src="personality.js?v=5"></script>
 </body>
 </html>

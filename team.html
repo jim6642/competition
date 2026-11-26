@@ -9,9 +9,16 @@
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="live.css">
 <link rel="stylesheet" href="team-theme.css?v=5">
+<link rel="stylesheet" href="site.css?v=1">
 </head>
 <body>
-<header class="site-header"><div class="nav"><a class="logo" href="index.html"><i class="fas fa-trophy" aria-hidden="true"></i>竞赛信息门户</a><nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a class="active" aria-current="page" href="team.html">寻找队友</a><a href="profile.html">个人中心</a></nav></div></header>
+<header class="site-header">
+  <div class="nav">
+    <a class="logo" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">竞赛信息门户</a>
+    <nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html" class="active" aria-current="page">寻找队友</a><a href="personality.html">竞赛人格</a><a href="profile.html">个人中心</a></nav>
+    <div class="nav-account"><a class="account-entry" href="account.html">登录 / 注册</a><button class="account-logout" type="button" hidden>退出</button></div>
+  </div>
+</header>
 <main class="team-page">
   <div class="page-heading">
     <div>
@@ -45,7 +52,7 @@
         <label class="skill-match-toggle"><input type="checkbox" id="filter-matched"> 只看与我技能匹配</label>
         <button type="button" class="secondary-button" data-clear-filters>清除筛选</button>
       </div></details>
-      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><a class="lab-link" href="personality.html">✨ 测测你的竞赛人格</a><a class="lab-link" href="lab.html">还没定比赛？去组队实验室 →</a></div>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><a class="lab-link" href="personality.html">✨ 测测你的竞赛人格</a></div>
     </div>
   </section>
 
@@ -61,7 +68,7 @@
     </div>
   </section>
 </main>
-<footer>竞赛信息门户 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
+<footer class="site-footer">竞赛信息门户 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
 
 <dialog id="publish-dialog" aria-labelledby="publish-title">
   <div class="publish-head"><div><h2 id="publish-title">发布招募</h2><p id="publish-contest" class="muted">选好比赛和缺口即可发布</p></div><form method="dialog"><button type="submit" class="secondary-button">关闭</button></form></div>
@@ -83,7 +90,7 @@
 <script src="profile.js"></script>
 <script src="matching-data.js"></script>
 <script src="api-client.js"></script>
-<script src="auth-nav.js"></script>
+<script src="auth-nav.js?v=2"></script>
 <script>
 let profile={};
 const competitionChoice=document.getElementById('competition-choice');

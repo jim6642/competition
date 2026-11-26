@@ -206,17 +206,15 @@ footer a{color: #cbd5e1}
   .nav-links{width:100%;overflow-x:auto}
 }
 </style>
+<link rel="stylesheet" href="site.css?v=1">
 </head>
 <body>
 
-<header>
+<header class="site-header">
   <div class="nav">
-    <a href="index.html" class="logo"><i class="fas fa-trophy"></i>竞赛信息门户</a>
-    <nav class="nav-links" aria-label="主导航">
-      <a href="index.html" class="active">竞赛资讯</a>
-      <a href="team.html">寻找队友</a>
-      <a href="profile.html">个人中心</a>
-    </nav>
+    <a class="logo" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">竞赛信息门户</a>
+    <nav class="nav-links" aria-label="主导航"><a href="index.html" class="active" aria-current="page">竞赛资讯</a><a href="team.html">寻找队友</a><a href="personality.html">竞赛人格</a><a href="profile.html">个人中心</a></nav>
+    <div class="nav-account"><a class="account-entry" href="account.html">登录 / 注册</a><button class="account-logout" type="button" hidden>退出</button></div>
   </div>
 </header>
 
@@ -284,12 +282,7 @@ footer a{color: #cbd5e1}
 </aside>
 </div>
 
-<footer>
-  <p><strong>竞赛信息门户</strong> — 大学生竞赛一站式信息平台</p>
-  <p style="font-size:.82rem;margin-top:.5rem">数据来源各竞赛官网 · 如有出入以官网为准</p>
-  <p style="font-size:.75rem;margin-top:.8rem">© 2026 Competition Portal</p>
-  <p style="font-size:.82rem;margin-top:.5rem"><a href="mailto:3352875852@qq.com">📧 3352875852@qq.com</a></p>
-</footer>
+<footer class="site-footer">竞赛信息门户 · <a href="mailto:3352875852@qq.com">3352875852@qq.com</a></footer>
 
 <script src="data.js"></script>
 <script>
@@ -527,7 +520,7 @@ document.querySelectorAll('#typeFilters .chip').forEach(function(chip){ chip.add
 
 var now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth() + 1;
 refreshAll();
-</script><script src="api-client.js"></script><script src="auth-nav.js"></script></body></html>
+</script><script src="api-client.js"></script><script src="auth-nav.js?v=2"></script></body></html>
 
 
 
