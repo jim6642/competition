@@ -191,13 +191,3 @@ body > .container {max-width: var(--site-width)}
   .hero-inner {padding-inline: 14px}
 }
 @supports not (scrollbar-gutter: stable) {html {overflow-y: scroll}}
-
-.site-header .account-loading {
-  grid-column: 1;
-  display: block;
-  width: 100%;
-  color: var(--muted);
-  text-align: center;
-  font-size: 13px;
-  line-height: 40px;
-}

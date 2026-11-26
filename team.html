@@ -9,14 +9,14 @@
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="live.css">
 <link rel="stylesheet" href="team-theme.css?v=5">
-<link rel="stylesheet" href="site.css?v=2">
+<link rel="stylesheet" href="site.css?v=3">
 </head>
 <body>
 <header class="site-header">
   <div class="nav">
     <a class="logo" href="index.html"><img src="favicon.svg" width="28" height="28" alt="">竞赛信息门户</a>
     <nav class="nav-links" aria-label="主导航"><a href="index.html">竞赛资讯</a><a href="team.html" class="active" aria-current="page">寻找队友</a><a href="personality.html">竞赛人格</a><a href="profile.html">个人中心</a></nav>
-    <div class="nav-account"><span class="account-loading" role="status" aria-label="正在确认登录状态">…</span><a class="account-entry" href="account.html" hidden>登录 / 注册</a><button class="account-logout" type="button" hidden>退出</button></div>
+    <div class="nav-account" data-auth-state="guest"><a class="account-entry" href="account.html">登录 / 注册</a><button class="account-logout" type="button" hidden>退出</button></div>
   </div>
 </header>
 <main class="team-page">
@@ -90,7 +90,7 @@
 <script src="profile.js"></script>
 <script src="matching-data.js"></script>
 <script src="api-client.js"></script>
-<script src="auth-nav.js?v=3"></script>
+<script src="auth-nav.js?v=4"></script>
 <script>
 let profile={};
 const competitionChoice=document.getElementById('competition-choice');

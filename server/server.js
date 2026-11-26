@@ -478,6 +478,17 @@ async function handleApi(req, res, url) {
   return false;
 }
 
+function renderAccountHeader(html, req) {
+  if (!html.includes('class="nav-account"')) return html;
+  const user = currentUser(req);
+  if (!user) return html;
+  const username = user.username.replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[char]);
+  const header = `<div class="nav-account" data-auth-state="signed-in"><a class="account-entry" href="profile.html" title="${username}" aria-label="个人中心，当前账号 ${username}">${username}</a><button class="account-logout" type="button">退出</button></div>`;
+  return html.replace(/<div class="nav-account"[^>]*>.*?<\/div>/s, () => header);
+}
+
 function serveStatic(req, res, url) {
   if (!['GET', 'HEAD'].includes(req.method || 'GET')) return fail(res, 405, '请求方式不支持。');
   let pathname;
@@ -489,9 +500,11 @@ function serveStatic(req, res, url) {
   const type = MIME[path.extname(filename).toLowerCase()];
   if (!type) return fail(res, 404, '页面不存在。');
   const extension = path.extname(filename).toLowerCase();
-  const cacheControl = extension === '.html' ? 'no-cache' : ['.js', '.css'].includes(extension) ? 'public, max-age=300' : 'public, max-age=86400';
+  const html = extension === '.html' ? renderAccountHeader(fs.readFileSync(filename, 'utf8'), req) : null;
+  const cacheControl = extension === '.html' ? 'private, no-store' : ['.js', '.css'].includes(extension) ? 'public, max-age=300' : 'public, max-age=86400';
   res.writeHead(200, {'Content-Type': type, 'Cache-Control': cacheControl, 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'Content-Security-Policy': "default-src 'self' https://cdn.bootcdn.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.bootcdn.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'self'; frame-ancestors 'none'"});
   if (req.method === 'HEAD') return res.end();
+  if (html !== null) return res.end(html);
   fs.createReadStream(filename).pipe(res);
 }
 
