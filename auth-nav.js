@@ -1,9 +1,15 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const account = document.querySelector('.nav-account');
-  if (!account || !window.CompetitionAPI?.enabled) return;
+  if (!account) return;
 
   const entry = account.querySelector('.account-entry');
   const logout = account.querySelector('.account-logout');
+  const loading = account.querySelector('.account-loading');
+  if (!window.CompetitionAPI?.enabled) {
+    loading.hidden = true;
+    entry.hidden = false;
+    return;
+  }
   try {
     const {user} = await CompetitionAPI.me();
     if (!user) return;
@@ -23,6 +29,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   } catch (_) {
-    // The fixed account slot remains usable when the service is unavailable.
+    entry.title = '登录状态暂时无法确认，点击进入账号页面';
+  } finally {
+    loading.hidden = true;
+    entry.hidden = false;
   }
 });
